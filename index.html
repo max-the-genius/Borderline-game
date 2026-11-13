@@ -1,7 +1,7 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +9,12 @@
   <title>Borderline</title>
 
   <style>
+
+    /* Main webpage */
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       background-color: #f5f7fa;
 
       display: flex;
@@ -19,16 +22,25 @@
       align-items: center;
     }
 
-    /* Globe logo */
+    /* Holds the logo and Start button */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    /* Borderline globe logo */
     .globe-logo {
       width: min(80vw, 400px);
       height: auto;
+      display: block;
 
-      /* Floating animation */
       animation: float 5s ease-in-out infinite;
     }
 
-    /* Smooth up-and-down movement */
+    /* Floating animation */
     @keyframes float {
       0% {
         transform: translateY(0);
@@ -43,43 +55,76 @@
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .globe-logo {
-        animation: none;
-      }
-    }
+    /* Start button */
     .image-button {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      
+      width: 200px;
+      height: 90px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
       background: transparent;
       border: none;
       padding: 0;
       cursor: pointer;
     }
 
+    /* Start2.png image */
     .image-button img {
-      width: 250px;
+      width: 90px;
       height: auto;
       display: block;
+
       transform: rotate(-90deg);
+      transition: scale 0.2s ease;
     }
+
+    /* Button hover animation */
+    .image-button:hover img {
+      scale: 1.1;
+    }
+
+    /* Reduce animations when requested */
+    @media (prefers-reduced-motion: reduce) {
+      .globe-logo {
+        animation: none;
+      }
+
+      .image-button img {
+        transition: none;
+      }
+    }
+
   </style>
 </head>
 
 <body>
 
-  <img
-    src="Untitled 2.png"
-    alt="Borderline Globe Logo"
-    class="globe-logo"
-  >
-  <button class="image-button">
-    <img src="Start2.png" alt="Play Game">
-  </button>
+  <main class="main-container">
+
+    <!-- Floating globe logo -->
+    <img
+      src="Untitled%202.png"
+      alt="Borderline Globe Logo"
+      class="globe-logo"
+    >
+
+    <!-- Start button -->
+    <button
+      class="image-button"
+      type="button"
+      aria-label="Start Game"
+    >
+      <img
+        src="Start2.png"
+        alt=""
+      >
+    </button>
+
+  </main>
 
 </body>
 </html>
+
 
