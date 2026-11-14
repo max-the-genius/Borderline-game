@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
 
     html, body {
       margin: 0;
+      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
@@ -21,7 +23,8 @@
       color: #252525;
     }
 
-    /* BOTH SCREENS */
+    /* SCREEN TRANSITIONS */
+
     .screen {
       position: absolute;
       inset: 0;
@@ -31,12 +34,10 @@
       overflow: hidden;
     }
 
-    /* LANDING SCREEN */
     #homeScreen {
-      transition:
-        transform 1.2s ease-in-out,
-        opacity 1.2s ease-in-out;
       z-index: 2;
+      transition: transform 1.2s ease-in-out,
+                  opacity 1.2s ease-in-out;
     }
 
     #homeScreen.leave {
@@ -44,6 +45,29 @@
       opacity: 0;
       pointer-events: none;
     }
+
+    #roundScreen {
+      z-index: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+
+      transform: translateY(110%);
+      opacity: 0;
+      pointer-events: none;
+
+      transition: transform 1.2s ease-in-out,
+                  opacity 1.2s ease-in-out;
+    }
+
+    #roundScreen.enter {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* LANDING PAGE */
 
     .game-header {
       position: absolute;
@@ -64,6 +88,7 @@
       0%, 100% {
         transform: translateY(0);
       }
+
       50% {
         transform: translateY(-15px);
       }
@@ -83,15 +108,19 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+
       width: 200px;
       height: 90px;
+
       background: transparent;
       border: none;
       padding: 0;
       cursor: pointer;
+
       display: flex;
       justify-content: center;
       align-items: center;
+
       transition: opacity 0.3s ease;
     }
 
@@ -117,10 +146,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+
       width: 100%;
       text-align: center;
       opacity: 0;
       visibility: hidden;
+
       transition: opacity 0.5s ease;
     }
 
@@ -150,54 +181,45 @@
         opacity: 0;
         transform: scale(0.7);
       }
+
       to {
         opacity: 1;
         transform: scale(1);
       }
     }
 
-    /* ROUND ONE SCREEN */
-    #roundScreen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      transform: translateY(110%);
-      opacity: 0;
-      pointer-events: none;
-      transition:
-        transform 1.2s ease-in-out,
-        opacity 1.2s ease-in-out;
-      z-index: 1;
-    }
-
-    #roundScreen.enter {
-      transform: translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
+    /* ROUND ONE LAYOUT */
 
     .round-layout {
       width: min(100%, 760px);
       max-height: 100%;
+      overflow-y: auto;
+
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: clamp(12px, 3vh, 28px);
+      gap: clamp(12px, 2.5vh, 24px);
+
+      scrollbar-width: thin;
     }
 
-    /* ROUND HEADING */
     .round-heading {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: clamp(12px, 3vw, 30px);
+      gap: clamp(10px, 3vw, 28px);
+      flex-shrink: 0;
     }
 
+    /* YOUR HAND-DRAWN GLOBES */
+
     .mini-globe {
-      font-size: clamp(38px, 7vw, 65px);
-      line-height: 1;
+      width: clamp(55px, 10vw, 100px);
+      height: clamp(55px, 10vw, 100px);
+      object-fit: contain;
+      flex-shrink: 0;
+
       animation: float 5s ease-in-out infinite;
     }
 
@@ -220,16 +242,19 @@
       margin-top: 5px;
     }
 
-    /* QUESTIONS BOX */
+    /* QUESTION PANEL */
+
     .questions-panel {
       width: 100%;
       border: 2px solid #343434;
       border-radius: 12px;
       padding: clamp(16px, 4vw, 32px);
-      background: #ffffff;
+      background: white;
+
       display: flex;
       flex-direction: column;
-      gap: clamp(14px, 3vh, 25px);
+      gap: clamp(14px, 2.5vh, 24px);
+      flex-shrink: 0;
     }
 
     .question {
@@ -246,8 +271,10 @@
     .answer-input {
       width: 100%;
       height: 48px;
+
       border: 2px solid #b9c1c8;
       border-radius: 8px;
+
       padding: 0 14px;
       font-size: 18px;
       background: #f5f7fa;
@@ -259,19 +286,65 @@
     }
 
     .answer-input:disabled {
-      opacity: 0.75;
+      opacity: 0.8;
     }
+
+    /* ANSWER REVEAL */
+
+    .answer-result {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+
+      background: #eaf8ef;
+      border-left: 4px solid #00b85b;
+
+      font-size: 15px;
+      line-height: 1.5;
+
+      animation: resultAppear 0.4s ease-out;
+    }
+
+    .answer-result.visible {
+      display: block;
+    }
+
+    .correct-value {
+      font-weight: bold;
+      color: #008b47;
+    }
+
+    .earned-points {
+      font-weight: bold;
+    }
+
+    @keyframes resultAppear {
+      from {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SUBMIT BUTTON */
 
     .submit-button {
       align-self: center;
       background: #00b85b;
       color: white;
+
       font-size: 17px;
       font-weight: bold;
+
       padding: 13px 32px;
       border: none;
       border-radius: 9px;
       cursor: pointer;
+
       transition: transform 0.2s ease;
     }
 
@@ -285,21 +358,24 @@
     }
 
     /* SCORE METER */
+
     .score-section {
       width: 100%;
       text-align: center;
+      flex-shrink: 0;
+      padding-bottom: 10px;
     }
 
     .score-label {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: bold;
       margin-bottom: 10px;
     }
 
     .score-track {
-      position: relative;
       width: 100%;
       height: 30px;
+
       border: 2px solid #343434;
       border-radius: 8px;
       overflow: hidden;
@@ -310,7 +386,7 @@
       height: 100%;
       width: 0%;
       background: #00b85b;
-      transition: width 1s ease;
+      transition: width 1.2s ease-out;
     }
 
     .score-scale {
@@ -323,25 +399,22 @@
     .score-feedback {
       min-height: 22px;
       margin-top: 10px;
-      font-size: 15px;
+      font-size: 16px;
+      font-weight: 500;
     }
 
-    @media (max-height: 650px) {
-      .round-layout {
-        gap: 10px;
-      }
-
-      .questions-panel {
-        gap: 10px;
+    @media (max-width: 500px) {
+      #roundScreen {
         padding: 12px;
       }
 
-      .answer-input {
-        height: 38px;
+      .questions-panel {
+        padding: 16px;
       }
 
       .mini-globe {
-        font-size: 32px;
+        width: 55px;
+        height: 55px;
       }
     }
 
@@ -351,13 +424,21 @@
       #countryName.reveal {
         animation: none;
       }
+
+      .screen,
+      .score-fill,
+      .answer-result {
+        transition: none;
+      }
     }
+
   </style>
 </head>
 
 <body>
 
-  <!-- FIRST SCREEN -->
+  <!-- LANDING PAGE -->
+
   <main class="screen" id="homeScreen">
 
     <div class="game-header">
@@ -389,39 +470,51 @@
       </div>
 
     </div>
+
   </main>
 
-  <!-- SECOND SCREEN: ROUND ONE -->
+  <!-- ROUND ONE -->
+
   <section class="screen" id="roundScreen">
 
     <div class="round-layout">
 
-      <!-- HEADING AND GLOBES -->
+      <!-- COUNTRY HEADING -->
+
       <header class="round-heading">
 
-        <span class="mini-globe" aria-hidden="true">
-          🌍
-        </span>
+        <img
+          src="Untitled%201.png"
+          alt=""
+          class="mini-globe"
+        >
 
         <div class="round-title">
           <div class="round-country">
             New Zealand
           </div>
+
           <div class="round-number">
             Round 1
           </div>
         </div>
 
-        <span class="mini-globe" aria-hidden="true">
-          🌎
-        </span>
+        <img
+          src="Untitled%201.png"
+          alt=""
+          class="mini-globe"
+        >
 
       </header>
 
-      <!-- THREE QUESTIONS -->
+      <!-- QUESTIONS -->
+
       <form class="questions-panel" id="questionsForm">
 
+        <!-- GDP -->
+
         <div class="question">
+
           <label for="gdpAnswer">
             What is the GDP of New Zealand?
             (USD billions)
@@ -436,9 +529,15 @@
             placeholder="Type your answer here..."
             required
           >
+
+          <div class="answer-result" id="gdpResult"></div>
+
         </div>
 
+        <!-- POPULATION -->
+
         <div class="question">
+
           <label for="populationAnswer">
             What is the population of New Zealand?
             (millions)
@@ -453,9 +552,18 @@
             placeholder="Type your answer here..."
             required
           >
+
+          <div
+            class="answer-result"
+            id="populationResult"
+          ></div>
+
         </div>
 
+        <!-- COASTLINE -->
+
         <div class="question">
+
           <label for="coastlineAnswer">
             How long is the coastline of New Zealand?
             (kilometres)
@@ -470,15 +578,25 @@
             placeholder="Type your answer here..."
             required
           >
+
+          <div
+            class="answer-result"
+            id="coastlineResult"
+          ></div>
+
         </div>
 
-        <button class="submit-button" type="submit">
+        <button
+          class="submit-button"
+          type="submit"
+        >
           Submit Answers
         </button>
 
       </form>
 
       <!-- SCORE METER -->
+
       <div class="score-section">
 
         <div class="score-label" id="scoreLabel">
@@ -486,7 +604,10 @@
         </div>
 
         <div class="score-track">
-          <div class="score-fill" id="scoreFill"></div>
+          <div
+            class="score-fill"
+            id="scoreFill"
+          ></div>
         </div>
 
         <div class="score-scale">
@@ -503,11 +624,13 @@
       </div>
 
     </div>
+
   </section>
 
   <script>
 
-    // LANDING SCREEN ELEMENTS
+    // LANDING PAGE
+
     const startButton =
       document.getElementById("startButton");
 
@@ -523,7 +646,6 @@
     const roundScreen =
       document.getElementById("roundScreen");
 
-    // START THE GAME
     startButton.addEventListener("click", function() {
 
       startButton.blur();
@@ -532,13 +654,11 @@
 
       countryDisplay.classList.add("visible");
 
-      // Reveal New Zealand after one second
       setTimeout(function() {
         countryName.textContent = "New Zealand";
         countryName.classList.add("reveal");
       }, 1000);
 
-      // Transition to Round 1
       setTimeout(function() {
         homeScreen.classList.add("leave");
         roundScreen.classList.add("enter");
@@ -546,15 +666,19 @@
 
     });
 
-    // PROTOTYPE ANSWER DATA
-    // Replace with verified, dated data later.
+    // ROUND DATA
+    // Prototype values: verify and date before launch.
+
     const correctAnswers = {
       gdp: 260,
       population: 5.3,
       coastline: 15134
     };
 
-    // SCORE ONE NUMERICAL GUESS
+    // Each question contributes to a total of 1000 points.
+
+    const MAX_ROUND_POINTS = 1000;
+
     function calculateAccuracy(guess, actual) {
 
       const difference = Math.abs(guess - actual);
@@ -562,9 +686,73 @@
       const relativeError = difference / actual;
 
       return Math.max(0, 1 - relativeError);
+
     }
 
-    // HANDLE QUESTION SUBMISSION
+    // SCORE COUNTER ANIMATION
+
+    function animateScore(finalScore) {
+
+      const scoreLabel =
+        document.getElementById("scoreLabel");
+
+      const duration = 1200;
+      const startTime = performance.now();
+
+      function updateScore(currentTime) {
+
+        const elapsed = currentTime - startTime;
+
+        const progress = Math.min(elapsed / duration, 1);
+
+        const easedProgress =
+          1 - Math.pow(1 - progress, 3);
+
+        const currentScore =
+          Math.round(finalScore * easedProgress);
+
+        scoreLabel.textContent =
+          currentScore + " / 1000 Points";
+
+        if (progress < 1) {
+          requestAnimationFrame(updateScore);
+        }
+
+      }
+
+      requestAnimationFrame(updateScore);
+
+    }
+
+    // DISPLAY CORRECT ANSWERS
+
+    function showAnswerResult(
+      elementId,
+      correctValue,
+      unit,
+      points,
+      maximum
+    ) {
+
+      const resultElement =
+        document.getElementById(elementId);
+
+      resultElement.innerHTML =
+        '<div>Correct answer: ' +
+        '<span class="correct-value">' +
+        correctValue + ' ' + unit +
+        '</span></div>' +
+        '<div>Points earned: ' +
+        '<span class="earned-points">' +
+        points + ' / ' + maximum +
+        '</span></div>';
+
+      resultElement.classList.add("visible");
+
+    }
+
+    // HANDLE SUBMISSION
+
     const questionsForm =
       document.getElementById("questionsForm");
 
@@ -581,7 +769,8 @@
       const coastlineGuess =
         Number(document.getElementById("coastlineAnswer").value);
 
-      // Calculate accuracy for each question
+      // Calculate accuracy
+
       const gdpAccuracy =
         calculateAccuracy(gdpGuess, correctAnswers.gdp);
 
@@ -597,27 +786,66 @@
           correctAnswers.coastline
         );
 
-      // Numerical questions are worth 500 points total
-      const averageAccuracy =
-        (gdpAccuracy + populationAccuracy + coastlineAccuracy) / 3;
+      // Distribute 1000 points across three questions
+      // 334 + 333 + 333 = 1000
 
-      const points = Math.round(averageAccuracy * 500);
+      const gdpPoints =
+        Math.round(gdpAccuracy * 334);
 
-      // Update score text
-      document.getElementById("scoreLabel").textContent =
-        points + " / 1000 Points";
+      const populationPoints =
+        Math.round(populationAccuracy * 333);
 
-      // Update score meter
+      const coastlinePoints =
+        Math.round(coastlineAccuracy * 333);
+
+      const totalPoints =
+        gdpPoints + populationPoints + coastlinePoints;
+
+      // Reveal correct answers
+
+      showAnswerResult(
+        "gdpResult",
+        correctAnswers.gdp,
+        "billion USD",
+        gdpPoints,
+        334
+      );
+
+      showAnswerResult(
+        "populationResult",
+        correctAnswers.population,
+        "million",
+        populationPoints,
+        333
+      );
+
+      showAnswerResult(
+        "coastlineResult",
+        correctAnswers.coastline.toLocaleString(),
+        "km",
+        coastlinePoints,
+        333
+      );
+
+      // Animate score counter
+
+      animateScore(totalPoints);
+
+      // Fill score meter
+
       document.getElementById("scoreFill").style.width =
-        (points / 1000 * 100) + "%";
+        (totalPoints / MAX_ROUND_POINTS * 100) + "%";
 
-      // Show feedback
+      // Feedback
+
       document.getElementById("scoreFeedback").textContent =
-        "You earned " + points +
-        " out of 500 available question points!";
+        "You earned " + totalPoints +
+        " out of 1000 points in Round 1!";
 
-      // Prevent multiple submissions
-      const inputs = questionsForm.querySelectorAll("input");
+      // Lock answers after submission
+
+      const inputs =
+        questionsForm.querySelectorAll("input");
 
       inputs.forEach(function(input) {
         input.disabled = true;
