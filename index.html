@@ -73,26 +73,33 @@
   top: 25%;
 }
 
-    /* Start button */
-    .image-button {
-      width: 200px;
-      height: 90px;
+  /* Start button */
+.image-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    /* Start2.png image */
-    .image-button img {
-      width: 90px;
-      height: auto;
-      display: block;
+/* Start button image */
+.image-button img {
+  width: 180px;
+  height: auto;
+  display: block;
 
-      transform: rotate(-90deg);
-      transition: scale 0.2s ease;
-    }
+  transform: rotate(-90%deg);
+
+  transition: transform 0.2s ease;
+}
+
+/* Hover animation */
+.image-button:hover img {
+  transform: scale(1.1);
+}
 
     .country-display {
   position: absolute;
@@ -116,6 +123,7 @@
 #countryName {
   color: #00b85b;
   font-size: 36px;
+}
 
     /* Button hover animation */
     .image-button:hover img {
@@ -152,6 +160,7 @@
     <button
       class="image-button"
       type="button"
+      id="startButton"
       aria-label="Start Game"
     >
       <img
