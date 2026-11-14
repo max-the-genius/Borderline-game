@@ -11,6 +11,10 @@
   <style>
 
     /* MAIN WEBPAGE */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -21,43 +25,31 @@
 
     /* MAIN CONTENT */
     .main-container {
-      min-height: 100vh;
-      min-height: 100dvh;
-      position: relative;
+      height: 100vh;
+      height: 100dvh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    /* LOGO AND START BUTTON CONTAINER */
+    /* LOGO AND BUTTON CONTAINER */
     .game-header {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
-
+      justify-content: center;
       width: min(90vw, 420px);
-
-      transition: top 1s ease;
+      gap: 20px;
     }
 
-    /* MOVE UP AFTER START */
-    .game-header.move-up {
-      top: 25%;
-    }
-
-    /* GLOBE LOGO */
+    /* FLOATING GLOBE */
     .globe-logo {
       width: min(80vw, 400px);
       height: auto;
       display: block;
-
       animation: float 5s ease-in-out infinite;
     }
 
-    /* FLOATING ANIMATION */
     @keyframes float {
       0%, 100% {
         transform: translateY(0);
@@ -68,38 +60,61 @@
       }
     }
 
+    /*
+      START / COUNTRY ANNOUNCEMENT AREA
+
+      Both elements occupy the same position.
+      Changing between them will not move the logo.
+    */
+    .start-area {
+      position: relative;
+      width: min(90vw, 360px);
+      height: 110px;
+      flex-shrink: 0;
+    }
+
     /* START BUTTON */
-  .image-button {
-  background: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+    .image-button {
+      position: absolute;
+      inset: 0;
+      margin: auto;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+      width: 200px;
+      height: 90px;
 
-  width: 200px;
-  height: 80px;
-  }
+      background: transparent;
+      border: none;
+      padding: 0;
+      cursor: pointer;
 
-    /* START BUTTON IMAGE */
-   .image-button img {
-  width: 180px;
-  height: auto;
-  display: block;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-  transform: rotate(-90deg);
-  transition: transform 0.2s ease;
-}
+      transition: opacity 0.3s ease;
+    }
 
+    /*
+      START2.PNG
 
-  /* Hover animation */
-.image-button:hover img {
-  transform: rotate(-90deg) scale(1.1);
-}
+      The original PNG is vertical.
+      Rotate it to display horizontally.
+    */
+    .image-button img {
+      width: 65px;
+      height: auto;
+      display: block;
 
-    /* HIDE BUTTON AFTER CLICK */
+      transform: rotate(-90deg);
+      transition: transform 0.2s ease;
+    }
+
+    /* BUTTON HOVER */
+    .image-button:hover img {
+      transform: rotate(-90deg) scale(1.1);
+    }
+
+    /* HIDE START BUTTON */
     .image-button.hidden {
       opacity: 0;
       pointer-events: none;
@@ -108,38 +123,41 @@
     /* COUNTRY ANNOUNCEMENT */
     .country-display {
       position: absolute;
-      top: 65%;
-      left: 50%;
-      transform: translate(-50%, 20px);
+      inset: 0;
 
-      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
       text-align: center;
       opacity: 0;
       visibility: hidden;
 
-      transition: opacity 0.5s ease,
-                  transform 0.5s ease;
+      transition: opacity 0.5s ease;
     }
 
-    /* SHOW COUNTRY ANNOUNCEMENT */
+    /* SHOW ANNOUNCEMENT */
     .country-display.visible {
       opacity: 1;
       visibility: visible;
-      transform: translate(-50%, 0);
     }
 
     .country-display h2 {
-      font-size: clamp(22px, 4vw, 32px);
+      font-size: clamp(18px, 3vw, 26px);
       color: #222;
+      margin: 0;
+      white-space: nowrap;
     }
 
+    /* COUNTRY NAME */
     #countryName {
       color: #00b85b;
-      font-size: clamp(32px, 5vw, 48px);
-      margin-top: 15px;
+      font-size: clamp(26px, 4vw, 36px);
+      margin: 12px 0 0;
     }
 
-    /* COUNTRY NAME APPEARANCE */
+    /* COUNTRY NAME POP ANIMATION */
     #countryName.reveal {
       animation: countryPop 0.5s ease-out;
     }
@@ -156,21 +174,17 @@
       }
     }
 
-    /* ACCESSIBILITY */
+    /* REDUCED MOTION */
     @media (prefers-reduced-motion: reduce) {
-      .globe-logo {
+      .globe-logo,
+      #countryName.reveal {
         animation: none;
       }
 
-      .game-header,
       .image-button,
       .image-button img,
       .country-display {
         transition: none;
-      }
-
-      #countryName.reveal {
-        animation: none;
       }
     }
 
@@ -181,37 +195,43 @@
 
   <main class="main-container">
 
-    <!-- LOGO AND START BUTTON -->
-    <div class="game-header" id="gameHeader">
+    <div class="game-header">
 
+      <!-- FLOATING BORDERLINE LOGO -->
       <img
         src="Untitled%202.png"
         alt="Borderline Globe Logo"
         class="globe-logo"
       >
 
-      <button
-        class="image-button"
-        id="startButton"
-        type="button"
-        aria-label="Start Game"
-      >
-        <img
-          src="Start2.png"
-          alt=""
+      <!-- START BUTTON / COUNTRY TEXT -->
+      <div class="start-area">
+
+        <!-- START BUTTON -->
+        <button
+          class="image-button"
+          id="startButton"
+          type="button"
+          aria-label="Start Game"
         >
-      </button>
+          <img
+            src="Start2.png"
+            alt=""
+          >
+        </button>
 
-    </div>
+        <!-- COUNTRY ANNOUNCEMENT -->
+        <div
+          class="country-display"
+          id="countryDisplay"
+          aria-live="polite"
+        >
+          <h2>Today's country is...</h2>
+          <h1 id="countryName"></h1>
+        </div>
 
-    <!-- COUNTRY ANNOUNCEMENT -->
-    <div
-      class="country-display"
-      id="countryDisplay"
-      aria-live="polite"
-    >
-      <h2>Today's country is...</h2>
-      <h1 id="countryName"></h1>
+      </div>
+
     </div>
 
   </main>
@@ -223,42 +243,32 @@
     const startButton =
       document.getElementById("startButton");
 
-    const gameHeader =
-      document.getElementById("gameHeader");
-
     const countryDisplay =
       document.getElementById("countryDisplay");
 
     const countryName =
       document.getElementById("countryName");
 
-    // Run when the Start button is clicked
+    // When Start is clicked
     startButton.addEventListener("click", function() {
 
-      // Prevent repeated clicks
+      // Prevent clicking twice
       startButton.disabled = true;
 
-      // Move the logo and button upward
-      gameHeader.classList.add("move-up");
+      // Hide Start button
+      startButton.classList.add("hidden");
 
-      // After 1 second, hide the button
-      // and show the introductory text
-      setTimeout(function() {
+      // Show "Today's country is..."
+      countryDisplay.classList.add("visible");
 
-        startButton.classList.add("hidden");
-
-        countryDisplay.classList.add("visible");
-
-      }, 1000);
-
-      // After 2 seconds, reveal the country
+      // After 1 second, reveal the country
       setTimeout(function() {
 
         countryName.textContent = "New Zealand";
 
         countryName.classList.add("reveal");
 
-      }, 2000);
+      }, 1000);
 
     });
 
@@ -266,6 +276,7 @@
 
 </body>
 </html>
+
 
 
 
