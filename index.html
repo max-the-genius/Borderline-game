@@ -69,36 +69,35 @@
     }
 
     /* START BUTTON */
-    .image-button {
-      background: transparent;
-      border: none;
-      padding: 0;
-      cursor: pointer;
+  .image-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
-      display: flex;
-      justify-content: center;
-      align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-      width: 180px;
-      height: 65px;
-
-      transition: opacity 0.3s ease;
-    }
+  width: 200px;
+  height: 80px;
+  }
 
     /* START BUTTON IMAGE */
-    .image-button img {
-      width: 65px;
-      height: auto;
-      display: block;
+   .image-button img {
+  width: 180px;
+  height: auto;
+  display: block;
 
-      transform: rotate(-90deg);
-      transition: transform 0.2s ease;
-    }
+  transform: rotate(90deg);
+  transition: transform 0.2s ease;
+}
 
-    /* BUTTON HOVER EFFECT */
-    .image-button:hover img {
-      transform: rotate(-90deg) scale(1.1);
-    }
+
+  /* Hover animation */
+.image-button:hover img {
+  transform: rotate(90deg) scale(1.1);
+}
 
     /* HIDE BUTTON AFTER CLICK */
     .image-button.hidden {
