@@ -6,7 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Borderline</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
@@ -18,8 +20,8 @@
 
 :root {
   --green: #00b85b;
+  --darkgreen: #008c46;
   --bg: #f5f7fa;
-  --ink: #252525;
 }
 
 * { box-sizing: border-box; }
@@ -31,7 +33,7 @@ html, body {
   overflow: hidden;
   background: var(--bg);
   font-family: Arial, sans-serif;
-  color: var(--ink);
+  color: #252525;
 }
 
 button {
@@ -49,8 +51,8 @@ button:disabled {
 .screen {
   position: absolute;
   inset: 0;
-  background: var(--bg);
   height: 100dvh;
+  background: var(--bg);
   overflow: hidden;
   transition: transform 1.1s ease, opacity 1.1s ease;
 }
@@ -111,10 +113,10 @@ button:disabled {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 0;
-  background: transparent;
   width: 200px;
   height: 90px;
+  border: none;
+  background: transparent;
   display: grid;
   place-items: center;
   transition: opacity .3s;
@@ -154,17 +156,17 @@ button:disabled {
 }
 
 .country-reveal h2 {
-  font-size: clamp(18px, 3vw, 26px);
   margin: 0;
+  font-size: clamp(18px, 3vw, 26px);
 }
 
 .country-reveal h1 {
-  font-size: clamp(26px, 4vw, 36px);
   margin: 12px 0 0;
   color: var(--green);
+  font-size: clamp(26px, 4vw, 36px);
 }
 
-/* ROUNDS */
+/* ROUND LAYOUT */
 
 .round-screen {
   display: flex;
@@ -182,7 +184,7 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 2px 0 10px;
+  padding: 3px 0 12px;
 }
 
 .round-header {
@@ -207,13 +209,14 @@ button:disabled {
 
 .round-heading { text-align: center; }
 
-.country-title, .round-number {
+.country-title,
+.round-number {
   font-family: Sigher, Arial, sans-serif;
 }
 
 .country-title {
+  color: var(--darkgreen);
   font-size: clamp(24px, 5vw, 40px);
-  color: #008c46;
 }
 
 .round-number {
@@ -221,14 +224,14 @@ button:disabled {
   margin-top: 4px;
 }
 
-/* ROUND 1 QUESTIONS */
+/* ROUND 1 */
 
 .panel {
   width: 100%;
+  padding: clamp(16px, 4vw, 30px);
   background: white;
   border: 2px solid #343434;
   border-radius: 12px;
-  padding: clamp(16px, 4vw, 30px);
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -247,13 +250,13 @@ button:disabled {
 }
 
 .question input {
+  width: 100%;
   height: 46px;
   padding: 0 14px;
   font-size: 18px;
   border: 2px solid #c4cbd1;
   border-radius: 8px;
   background: var(--bg);
-  width: 100%;
 }
 
 .question input:focus {
@@ -263,10 +266,10 @@ button:disabled {
 
 .answer-result {
   display: none;
+  padding: 10px 12px;
   background: #eaf8ef;
   border-left: 4px solid var(--green);
   border-radius: 6px;
-  padding: 10px 12px;
   line-height: 1.5;
 }
 
@@ -282,28 +285,29 @@ button:disabled {
 }
 
 .primary {
-  border: 0;
   background: var(--green);
   color: white;
+  border: 0;
 }
 
 .secondary {
-  border: 2px solid #abb6be;
   background: white;
   color: #333;
+  border: 2px solid #abb6be;
 }
 
 .secondary.selected {
   background: #e2f8eb;
   border-color: var(--green);
-  color: #008c46;
+  color: var(--darkgreen);
 }
 
 .panel > .primary { align-self: center; }
+
 .continue { display: none; }
 .continue.visible { display: block; }
 
-/* POINTS */
+/* SCORES */
 
 .score {
   width: 100%;
@@ -335,23 +339,23 @@ button:disabled {
 .score-scale {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
   margin-top: 5px;
+  font-size: 14px;
 }
 
 .score-note {
-  font-size: 15px;
-  min-height: 20px;
   margin-top: 10px;
+  min-height: 20px;
+  font-size: 15px;
 }
 
-/* ROUND 2 MAP */
+/* ROUND 2 */
 
 .map-instructions {
+  margin: 0;
   font-size: clamp(15px, 2.3vw, 20px);
   font-weight: 600;
   text-align: center;
-  margin: 0;
 }
 
 .map-frame {
@@ -369,7 +373,6 @@ button:disabled {
 #map {
   width: 100%;
   height: 100%;
-  background: #b5cbd5;
 }
 
 #drawCanvas {
@@ -379,8 +382,8 @@ button:disabled {
   height: 100%;
   z-index: 600;
   display: none;
-  touch-action: none;
   cursor: crosshair;
+  touch-action: none;
 }
 
 #drawCanvas.enabled { display: block; }
@@ -398,9 +401,9 @@ button:disabled {
 
 .map-status span {
   display: inline-block;
-  background: #fffffff0;
-  border-radius: 8px;
   padding: 8px 12px;
+  background: rgba(255,255,255,.95);
+  border-radius: 8px;
   font-size: 13px;
   box-shadow: 0 2px 8px #0002;
 }
@@ -428,7 +431,7 @@ button:disabled {
 .total {
   font-size: 21px;
   font-weight: bold;
-  color: #008c46;
+  color: var(--darkgreen);
 }
 
 .credit {
@@ -449,11 +452,13 @@ button:disabled {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-logo img, .round-header img {
+  .home-logo img,
+  .round-header img {
     animation: none;
   }
 
-  .screen, .score-fill {
+  .screen,
+  .score-fill {
     transition: none;
   }
 }
@@ -462,14 +467,16 @@ button:disabled {
 
 <body>
 
-<!-- HOME SCREEN -->
+<!-- HOME -->
 
 <main id="home" class="screen active">
+
   <div class="home-logo">
     <img src="Untitled%202.png" alt="Borderline logo">
   </div>
 
   <div class="start-area">
+
     <button id="start" class="start-btn" aria-label="Start game">
       <img src="Start2.png" alt="">
     </button>
@@ -478,10 +485,11 @@ button:disabled {
       <h2>Today's country is...</h2>
       <h1 id="revealName"></h1>
     </div>
+
   </div>
 </main>
 
-<!-- ROUND ONE -->
+<!-- ROUND 1 -->
 
 <section id="round1" class="screen offscreen round-screen">
   <div class="round-layout">
@@ -549,7 +557,7 @@ button:disabled {
   </div>
 </section>
 
-<!-- ROUND TWO -->
+<!-- ROUND 2 -->
 
 <section id="round2" class="screen offscreen round-screen">
   <div class="round-layout">
@@ -614,8 +622,7 @@ button:disabled {
     </div>
 
     <div class="credit">
-      Map imagery © Esri and contributors.
-      Country borders: Natural Earth.
+      Physical map © Esri. Country boundary data © Natural Earth.
     </div>
 
   </div>
@@ -624,7 +631,9 @@ button:disabled {
 <script>
 "use strict";
 
-/* DAILY COUNTRY */
+/* ==========================================
+   DAILY COUNTRY
+========================================== */
 
 const country = {
   name: "New Zealand",
@@ -657,7 +666,9 @@ el("qCoast").textContent =
 el("instructions").textContent =
   `Find ${country.name} on the world map and draw its borders`;
 
-/* SCREEN TRANSITIONS */
+/* ==========================================
+   SCREEN TRANSITIONS
+========================================== */
 
 function transition(from, to) {
   el(from).classList.remove("active");
@@ -666,8 +677,6 @@ function transition(from, to) {
   el(to).classList.remove("offscreen");
   el(to).classList.add("active");
 }
-
-/* START GAME */
 
 el("start").addEventListener("click", () => {
   el("start").disabled = true;
@@ -683,7 +692,9 @@ el("start").addEventListener("click", () => {
   }, 2800);
 });
 
-/* SCORE ANIMATION */
+/* ==========================================
+   SCORE ANIMATION
+========================================== */
 
 function scoreAnimation(label, fill, points) {
   el(fill).style.width = points / 10 + "%";
@@ -706,7 +717,9 @@ function scoreAnimation(label, fill, points) {
   requestAnimationFrame(frame);
 }
 
-/* ROUND ONE */
+/* ==========================================
+   ROUND 1
+========================================== */
 
 function accuracy(guess, actual) {
   return Math.max(
@@ -763,22 +776,24 @@ el("continue").addEventListener("click", () => {
   setTimeout(initMap, 1150);
 });
 
-/* ROUND TWO MAP */
+/* ==========================================
+   ROUND 2: MAP
+========================================== */
 
 let map = null;
 let boundary = null;
 let boundaryReady = false;
+
 let drawMode = false;
 let submitted = false;
 let isDrawing = false;
 let coords = [];
-let mapLayer = null;
 
 const canvas = el("drawCanvas");
 const ctx = canvas.getContext("2d");
 
-function status(s) {
-  el("mapStatus").textContent = s;
+function status(message) {
+  el("mapStatus").textContent = message;
 }
 
 function submitState() {
@@ -790,7 +805,9 @@ function submitState() {
     coords.length < 10;
 }
 
-/* CREATE MAP */
+/* ==========================================
+   MAP INITIALIZATION
+========================================== */
 
 function initMap() {
   if (map) {
@@ -799,7 +816,7 @@ function initMap() {
   }
 
   if (!window.L) {
-    status("Map library could not load. Refresh to retry.");
+    status("Map library failed to load. Refresh to retry.");
     return;
   }
 
@@ -807,52 +824,27 @@ function initMap() {
     center: [15, 0],
     zoom: 2,
     minZoom: 2,
-    maxZoom: 11,
+    maxZoom: 10,
     zoomControl: true,
-    worldCopyJump: false
+    worldCopyJump: true
   });
 
-  // Physical geography map without political boundaries.
-  const physical = L.tileLayer(
+  /*
+    Physical map without political borders.
+
+    World wrapping is enabled to avoid
+    the grey cutoff at the map edges.
+  */
+
+  L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
     {
-      maxZoom: 11,
+      maxZoom: 10,
       maxNativeZoom: 8,
-      noWrap: true,
+      noWrap: false,
       attribution: "Tiles © Esri"
     }
-  );
-
-  // Satellite imagery fallback.
-  const imagery = L.tileLayer(
-    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-    {
-      maxZoom: 11,
-      noWrap: true,
-      attribution: "Imagery © Esri"
-    }
-  );
-
-  let failures = 0;
-
-  physical.on("tileerror", () => {
-    failures++;
-
-    if (failures >= 2 && mapLayer === physical) {
-      map.removeLayer(physical);
-      mapLayer = imagery;
-      imagery.addTo(map);
-
-      status("Using satellite map fallback. Navigate and draw.");
-    }
-  });
-
-  mapLayer = physical;
-  physical.addTo(map);
-
-  map.on("moveend zoomend", () => {
-    if (drawMode && !isDrawing) redraw();
-  });
+  ).addTo(map);
 
   map.invalidateSize();
   resizeCanvas();
@@ -862,76 +854,235 @@ function initMap() {
   loadBoundary();
 }
 
-/* LOAD COUNTRY BORDER FROM TWO SOURCES */
+/* ==========================================
+   IMPORTANT FIX:
+   NORMALIZE DIFFERENT GEOJSON FORMATS
+========================================== */
+
+function normalizeGeoJSON(data) {
+
+  if (!data || typeof data !== "object") {
+    throw new Error("Empty geographic data");
+  }
+
+  /*
+    Case 1: GeoJSON Feature
+  */
+
+  if (
+    data.type === "Feature" &&
+    data.geometry &&
+    ["Polygon", "MultiPolygon"].includes(data.geometry.type)
+  ) {
+    return data;
+  }
+
+  /*
+    Case 2: GeoJSON FeatureCollection
+
+    Some country datasets store their
+    geometry inside a features array.
+  */
+
+  if (
+    data.type === "FeatureCollection" &&
+    Array.isArray(data.features)
+  ) {
+    const features = data.features.filter(feature =>
+      feature &&
+      feature.geometry &&
+      ["Polygon", "MultiPolygon"].includes(
+        feature.geometry.type
+      )
+    );
+
+    if (features.length === 1) {
+      return features[0];
+    }
+
+    if (features.length > 1) {
+      const polygons = [];
+
+      features.forEach(feature => {
+        const g = feature.geometry;
+
+        if (g.type === "Polygon") {
+          polygons.push(g.coordinates);
+        } else {
+          polygons.push(...g.coordinates);
+        }
+      });
+
+      return {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: polygons
+        }
+      };
+    }
+  }
+
+  /*
+    Case 3: Bare GeoJSON geometry
+  */
+
+  if (
+    ["Polygon", "MultiPolygon"].includes(data.type) &&
+    Array.isArray(data.coordinates)
+  ) {
+    return {
+      type: "Feature",
+      properties: {},
+      geometry: data
+    };
+  }
+
+  /*
+    Case 4: Object with a geometry property
+  */
+
+  if (
+    data.geometry &&
+    ["Polygon", "MultiPolygon"].includes(data.geometry.type)
+  ) {
+    return {
+      type: "Feature",
+      properties: data.properties || {},
+      geometry: data.geometry
+    };
+  }
+
+  throw new Error(
+    "Unsupported GeoJSON format: " + (data.type || "unknown")
+  );
+}
+
+/* ==========================================
+   LOAD BOUNDARY FROM RELIABLE SOURCES
+========================================== */
 
 async function loadBoundary() {
   boundaryReady = false;
   submitState();
 
+  /*
+    The first source uses Natural Earth
+    country boundaries from GitHub.
+
+    The second source is a CDN mirror.
+
+    Both use ISO three-letter country codes.
+  */
+
   const sources = [
-    `https://raw.githubusercontent.com/johan/world.geo.json/master/countries/${country.code}.geo.json`,
-    `https://cdn.jsdelivr.net/gh/johan/world.geo.json@master/countries/${country.code}.geo.json`
+    `https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson`,
+    `https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson`
   ];
 
-  let errorText = "";
+  let lastError = "";
 
   for (const url of sources) {
+
     const controller = new AbortController();
 
     const timeout = setTimeout(() => {
       controller.abort();
-    }, 12000);
+    }, 15000);
 
     try {
+
+      status("Loading border scoring data...");
+
       const response = await fetch(url, {
-        signal: controller.signal,
-        cache: "no-store"
+        signal: controller.signal
       });
 
       if (!response.ok) {
-        throw Error(`HTTP ${response.status}`);
+        throw new Error("HTTP " + response.status);
       }
 
       const data = await response.json();
 
+      /*
+        The global dataset contains every country.
+
+        Find only the country of the day.
+      */
+
+      let selected = null;
+
       if (
-        !data.geometry ||
-        !["Polygon", "MultiPolygon"].includes(data.geometry.type)
+        data.type === "FeatureCollection" &&
+        Array.isArray(data.features)
       ) {
-        throw Error("Invalid geometry");
+
+        selected = data.features.find(feature => {
+
+          const p = feature.properties || {};
+
+          return (
+            p.ISO3166_1_Alpha_3 === country.code ||
+            p.ISO_A3 === country.code ||
+            p.ADM0_A3 === country.code ||
+            p.iso_a3 === country.code ||
+            p.name === country.name ||
+            p.ADMIN === country.name
+          );
+
+        });
+
+      } else {
+        selected = data;
       }
 
-      boundary = data;
+      if (!selected) {
+        throw new Error(
+          "Country not found in geographic dataset"
+        );
+      }
+
+      boundary = normalizeGeoJSON(selected);
+
       boundaryReady = true;
       submitState();
 
       el("score2Note").textContent =
         "Draw a closed outline to earn up to 1000 points.";
 
-      if (!drawMode) {
-        status("Map ready. Navigate to the country, then choose Draw.");
-      } else {
-        status("Map ready. Finish your drawing and submit.");
-      }
+      status(
+        drawMode
+          ? "Border data ready. Finish your drawing."
+          : "Map ready. Navigate to the country, then choose Draw."
+      );
 
       return;
 
-    } catch (err) {
-      errorText = err.message;
-      console.warn("Boundary source failed", url, err);
+    } catch (error) {
+
+      lastError = error.message;
+
+      console.warn(
+        "Boundary source failed:",
+        url,
+        error
+      );
 
     } finally {
       clearTimeout(timeout);
     }
   }
 
-  status("Scoring data unavailable. Refresh to retry.");
+  status("Unable to load country border data.");
 
   el("score2Note").textContent =
-    "Border scoring could not load (" + errorText + ").";
+    "Scoring data unavailable: " + lastError;
 }
 
-/* NAVIGATION AND DRAWING MODES */
+/* ==========================================
+   NAVIGATION AND DRAWING
+========================================== */
 
 function setMode(draw) {
   if (!map || submitted) return;
@@ -943,6 +1094,7 @@ function setMode(draw) {
   canvas.classList.toggle("enabled", draw);
 
   if (draw) {
+
     map.dragging.disable();
     map.scrollWheelZoom.disable();
     map.doubleClickZoom.disable();
@@ -953,10 +1105,11 @@ function setMode(draw) {
     status(
       boundaryReady
         ? "Draw a closed outline around the country."
-        : "Drawing available; scoring data still loading."
+        : "Drawing available. Scoring data still loading."
     );
 
   } else {
+
     map.dragging.enable();
     map.scrollWheelZoom.enable();
     map.doubleClickZoom.enable();
@@ -971,7 +1124,9 @@ function setMode(draw) {
 el("navigate").onclick = () => setMode(false);
 el("draw").onclick = () => setMode(true);
 
-/* CANVAS */
+/* ==========================================
+   CANVAS
+========================================== */
 
 function resizeCanvas() {
   const r = canvas.getBoundingClientRect();
@@ -988,12 +1143,12 @@ function resizeCanvas() {
   redraw();
 }
 
-function point(e) {
+function point(event) {
   const r = canvas.getBoundingClientRect();
 
   return {
-    x: e.clientX - r.left,
-    y: e.clientY - r.top
+    x: event.clientX - r.left,
+    y: event.clientY - r.top
   };
 }
 
@@ -1005,8 +1160,6 @@ function geo(p) {
   return [v.lng, v.lat];
 }
 
-/* DRAW STORED COORDINATES */
-
 function redraw() {
   const r = canvas.getBoundingClientRect();
 
@@ -1017,6 +1170,7 @@ function redraw() {
   ctx.beginPath();
 
   coords.forEach((c, i) => {
+
     const p = map.latLngToContainerPoint(
       L.latLng(c[1], c[0])
     );
@@ -1045,9 +1199,11 @@ function redraw() {
 /* START DRAWING */
 
 canvas.addEventListener("pointerdown", e => {
+
   if (!drawMode || submitted) return;
 
   e.preventDefault();
+
   canvas.setPointerCapture(e.pointerId);
 
   isDrawing = true;
@@ -1060,6 +1216,7 @@ canvas.addEventListener("pointerdown", e => {
 /* CONTINUE DRAWING */
 
 canvas.addEventListener("pointermove", e => {
+
   if (!isDrawing) return;
 
   e.preventDefault();
@@ -1081,9 +1238,11 @@ canvas.addEventListener("pointermove", e => {
 /* FINISH DRAWING */
 
 function endDrawing() {
+
   if (!isDrawing) return;
 
   isDrawing = false;
+
   redraw();
   submitState();
 
@@ -1100,6 +1259,7 @@ canvas.addEventListener("pointercancel", endDrawing);
 /* CLEAR */
 
 el("clear").onclick = () => {
+
   if (submitted) return;
 
   coords = [];
@@ -1114,25 +1274,28 @@ el("clear").onclick = () => {
 /* RESET MAP */
 
 el("reset").onclick = () => {
+
   if (!map || submitted) return;
 
-  if (coords.length) {
-    coords = [];
-    redraw();
-    submitState();
-  }
+  coords = [];
+  isDrawing = false;
 
   setMode(false);
+
   map.setView([15, 0], 2);
 
-  status("World map reset. Navigate to the country.");
+  redraw();
+  submitState();
+
+  status("World map reset.");
 };
 
-/* GEOGRAPHIC SCORING */
-
-/* Determine whether a point is inside a polygon ring. */
+/* ==========================================
+   GEOGRAPHIC SCORING
+========================================== */
 
 function inRing(point, ring) {
+
   let inside = false;
 
   const [x, y] = point;
@@ -1142,6 +1305,7 @@ function inRing(point, ring) {
     i < ring.length;
     j = i++
   ) {
+
     const [xi, yi] = ring[i];
     const [xj, yj] = ring[j];
 
@@ -1157,6 +1321,7 @@ function inRing(point, ring) {
 }
 
 function inPolygon(point, rings) {
+
   if (!inRing(point, rings[0])) return false;
 
   for (let i = 1; i < rings.length; i++) {
@@ -1166,29 +1331,39 @@ function inPolygon(point, rings) {
   return true;
 }
 
-function inGeometry(point, g) {
-  if (g.type === "Polygon") {
-    return inPolygon(point, g.coordinates);
+function inGeometry(point, geometry) {
+
+  if (geometry.type === "Polygon") {
+    return inPolygon(point, geometry.coordinates);
   }
 
-  return g.coordinates.some(poly => {
-    return inPolygon(point, poly);
-  });
+  if (geometry.type === "MultiPolygon") {
+    return geometry.coordinates.some(poly =>
+      inPolygon(point, poly)
+    );
+  }
+
+  return false;
 }
 
-function allCoords(g) {
-  return g.type === "Polygon"
-    ? g.coordinates.flat()
-    : g.coordinates.flat(2);
+function allCoords(geometry) {
+
+  return geometry.type === "Polygon"
+    ? geometry.coordinates.flat()
+    : geometry.coordinates.flat(2);
 }
 
 /*
-  Approximate score using sampled geographic overlap.
-  This is a prototype, not a precise geodesic algorithm.
+  Approximate geographic overlap score.
+
+  This version handles Polygon and MultiPolygon
+  GeoJSON data, including islands.
 */
 
 function calculateScore() {
+
   const geometry = boundary.geometry;
+
   const points = allCoords(geometry).concat(coords);
 
   let minX = Infinity;
@@ -1197,13 +1372,15 @@ function calculateScore() {
   let maxY = -Infinity;
 
   for (const [x, y] of points) {
+
     minX = Math.min(minX, x);
     maxX = Math.max(maxX, x);
     minY = Math.min(minY, y);
     maxY = Math.max(maxY, y);
   }
 
-  const n = 170;
+  const n = 180;
+
   const dx = (maxX - minX) / n;
   const dy = (maxY - minY) / n;
 
@@ -1213,39 +1390,44 @@ function calculateScore() {
   let union = 0;
 
   for (let i = 0; i < n; i++) {
+
     const x = minX + (i + .5) * dx;
 
     for (let j = 0; j < n; j++) {
+
       const y = minY + (j + .5) * dy;
       const p = [x, y];
 
-      const a = inGeometry(p, geometry);
-      const b = inRing(p, coords);
+      const actual = inGeometry(p, geometry);
+      const drawn = inRing(p, coords);
 
       const weight = Math.max(
         0,
         Math.cos(y * Math.PI / 180)
       );
 
-      if (a || b) union += weight;
-      if (a && b) intersection += weight;
+      if (actual || drawn) union += weight;
+      if (actual && drawn) intersection += weight;
     }
   }
 
-  return union
-    ? Math.max(
-        0,
-        Math.min(
-          1000,
-          Math.round(1000 * intersection / union)
-        )
-      )
-    : 0;
+  if (!union) return 0;
+
+  return Math.max(
+    0,
+    Math.min(
+      1000,
+      Math.round(1000 * intersection / union)
+    )
+  );
 }
 
-/* SUBMIT BORDER */
+/* ==========================================
+   SUBMIT BORDER
+========================================== */
 
 el("submitBorder").onclick = () => {
+
   if (
     !boundaryReady ||
     !drawMode ||
@@ -1256,7 +1438,9 @@ el("submitBorder").onclick = () => {
   }
 
   try {
+
     round2Score = calculateScore();
+
     submitted = true;
     redraw();
 
@@ -1270,7 +1454,10 @@ el("submitBorder").onclick = () => {
       el(id).disabled = true;
     });
 
-    /* Reveal correct country outline */
+    /*
+      Reveal the actual border only
+      after the drawing is submitted.
+    */
 
     L.geoJSON(boundary, {
       style: {
@@ -1304,8 +1491,9 @@ el("submitBorder").onclick = () => {
 
     status("Compare your drawing with the correct border.");
 
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+
+    console.error("Scoring error:", error);
 
     status(
       "Unable to score this outline. Clear and try again."
@@ -1313,15 +1501,18 @@ el("submitBorder").onclick = () => {
   }
 };
 
-/* HANDLE RESIZING */
+/* ==========================================
+   RESIZE
+========================================== */
 
 window.addEventListener("resize", () => {
+
   if (map) {
     map.invalidateSize();
     resizeCanvas();
   }
 });
-</script>
 
+</script>
 </body>
 </html>
