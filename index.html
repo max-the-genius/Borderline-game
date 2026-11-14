@@ -15,23 +15,34 @@
   src: url("Sigher.woff2") format("woff2");
   font-display: swap;
 }
+
 :root {
   --green: #00b85b;
   --darkgreen: #008c46;
   --bg: #f5f7fa;
 }
+
 * { box-sizing: border-box; }
-html,body {
+
+html, body {
   margin: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: var(--bg);
-  font-family: Arial,sans-serif;
+  font-family: Arial, sans-serif;
   color: #252525;
 }
-button { font: inherit; cursor: pointer; }
-button:disabled { opacity: .5; cursor: not-allowed; }
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
 .screen {
   position: absolute;
@@ -39,58 +50,66 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   height: 100dvh;
   background: var(--bg);
   overflow: hidden;
-  transition: transform 1.1s ease,opacity 1.1s ease;
+  transition: transform 1.1s ease, opacity 1.1s ease;
 }
+
 .screen.active {
   transform: translateY(0);
   opacity: 1;
   pointer-events: auto;
 }
+
 .screen.offscreen {
   transform: translateY(110%);
   opacity: 0;
   pointer-events: none;
 }
+
 .screen.leave {
   transform: translateY(-110%);
   opacity: 0;
   pointer-events: none;
 }
+
 #home { z-index: 5; }
 #round1 { z-index: 4; }
 #round2 { z-index: 3; }
 #round3 { z-index: 2; }
 
-/* LANDING PAGE */
+/* HOME */
 
 .home-logo {
   position: absolute;
   top: 38%;
   left: 50%;
-  width: min(65vw,350px);
-  transform: translate(-50%,-50%);
+  width: min(65vw, 350px);
+  transform: translate(-50%, -50%);
 }
+
 .home-logo img {
   width: 100%;
   display: block;
   animation: float 5s ease-in-out infinite;
 }
+
 @keyframes float {
   50% { transform: translateY(-15px); }
 }
+
 .start-area {
   position: absolute;
   top: 75%;
   left: 50%;
-  transform: translate(-50%,-50%);
-  width: min(90vw,360px);
+  transform: translate(-50%, -50%);
+  width: min(90vw, 360px);
   height: 120px;
 }
+
 .start-btn {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   width: 200px;
   height: 90px;
   border: none;
@@ -99,14 +118,17 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   place-items: center;
   transition: opacity .3s;
 }
+
 .start-btn img {
   width: 65px;
   transform: rotate(-90deg);
 }
+
 .start-btn.hidden {
   opacity: 0;
   pointer-events: none;
 }
+
 .country-reveal {
   position: absolute;
   inset: 0;
@@ -119,18 +141,24 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   visibility: hidden;
   transition: opacity .4s;
 }
+
 .country-reveal.visible {
   opacity: 1;
   visibility: visible;
 }
-.country-reveal h2 { margin: 0; font-size: 24px; }
+
+.country-reveal h2 {
+  margin: 0;
+  font-size: 24px;
+}
+
 .country-reveal h1 {
   margin: 12px 0 0;
   color: var(--green);
   font-size: 36px;
 }
 
-/* COMMON ROUND DESIGN */
+/* COMMON ROUND LAYOUT */
 
 .round-screen {
   display: flex;
@@ -138,8 +166,9 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   justify-content: center;
   padding: 18px;
 }
+
 .round-layout {
-  width: min(100%,800px);
+  width: min(100%, 800px);
   max-height: 100%;
   overflow-y: auto;
   scrollbar-width: thin;
@@ -149,68 +178,90 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   gap: 15px;
   padding: 5px 0 15px;
 }
+
 .round-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(12px,3vw,28px);
+  gap: clamp(12px, 3vw, 28px);
   width: 100%;
   flex-shrink: 0;
 }
+
 .round-header img {
-  width: clamp(45px,9vw,75px);
-  height: clamp(45px,9vw,75px);
+  width: clamp(45px, 9vw, 75px);
+  height: clamp(45px, 9vw, 75px);
   object-fit: contain;
   animation: float 5s ease-in-out infinite;
 }
-.round-header img:last-child { animation-delay: -2.5s; }
-.round-heading { text-align: center; }
-.country-title,.round-number {
-  font-family: Sigher,Arial,sans-serif;
+
+.round-header img:last-child {
+  animation-delay: -2.5s;
 }
+
+.round-heading {
+  text-align: center;
+}
+
+.country-title, .round-number {
+  font-family: Sigher, Arial, sans-serif;
+}
+
 .country-title {
   color: var(--darkgreen);
-  font-size: clamp(25px,5vw,40px);
+  font-size: clamp(25px, 5vw, 40px);
 }
+
 .round-number {
-  font-size: clamp(18px,3vw,26px);
+  font-size: clamp(18px, 3vw, 26px);
   margin-top: 4px;
 }
+
 .instructions {
-  font-size: clamp(16px,2.3vw,20px);
+  font-size: clamp(16px, 2.3vw, 20px);
   font-weight: 600;
   text-align: center;
   margin: 0;
 }
-.primary,.secondary {
+
+.primary, .secondary {
   border-radius: 9px;
   font-size: 16px;
   font-weight: bold;
   padding: 12px 22px;
 }
+
 .primary {
   background: var(--green);
   color: white;
   border: none;
 }
+
 .secondary {
   background: white;
   color: #333;
   border: 2px solid #abb6be;
 }
+
 .secondary.selected {
   background: #e2f8eb;
   border-color: var(--green);
   color: var(--darkgreen);
 }
-.continue { display: none; }
-.continue.visible { display: block; }
 
-/* QUESTIONS */
+.continue {
+  display: none;
+}
+
+.continue.visible {
+  display: block;
+}
+
+/* ROUND 1 */
 
 .panel {
   width: 100%;
-  padding: clamp(16px,4vw,30px);
+  padding: clamp(16px, 4vw, 30px);
   background: white;
   border: 2px solid #343434;
   border-radius: 12px;
@@ -218,15 +269,18 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   flex-direction: column;
   gap: 18px;
 }
+
 .question {
   display: flex;
   flex-direction: column;
   gap: 7px;
 }
+
 .question label {
-  font-size: clamp(15px,2.3vw,20px);
+  font-size: clamp(15px, 2.3vw, 20px);
   font-weight: 600;
 }
+
 .question input {
   width: 100%;
   height: 46px;
@@ -236,6 +290,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   border-radius: 8px;
   background: var(--bg);
 }
+
 .answer-result {
   display: none;
   padding: 10px 12px;
@@ -244,21 +299,29 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   border-radius: 6px;
   line-height: 1.5;
 }
-.answer-result.visible { display: block; }
-.panel > .primary { align-self: center; }
 
-/* POINT METERS */
+.answer-result.visible {
+  display: block;
+}
+
+.panel > .primary {
+  align-self: center;
+}
+
+/* POINTS */
 
 .score {
   width: 100%;
   text-align: center;
   flex-shrink: 0;
 }
+
 .score-label {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
 }
+
 .score-track {
   height: 30px;
   background: #e1e7ec;
@@ -266,23 +329,27 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   border-radius: 8px;
   overflow: hidden;
 }
+
 .score-fill {
   width: 0;
   height: 100%;
   background: var(--green);
   transition: width 1s ease;
 }
+
 .score-scale {
   display: flex;
   justify-content: space-between;
   margin-top: 5px;
   font-size: 14px;
 }
+
 .score-note {
   margin-top: 10px;
   min-height: 20px;
   font-size: 15px;
 }
+
 .result {
   display: none;
   width: 100%;
@@ -293,7 +360,11 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   text-align: center;
   line-height: 1.7;
 }
-.result.visible { display: block; }
+
+.result.visible {
+  display: block;
+}
+
 .total {
   font-size: 23px;
   font-weight: bold;
@@ -305,7 +376,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .map-frame {
   position: relative;
   width: 100%;
-  height: clamp(270px,45vh,420px);
+  height: clamp(270px, 45vh, 420px);
   min-height: 270px;
   border: 2px solid #343434;
   border-radius: 12px;
@@ -313,7 +384,12 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   background: #b5cbd5;
   flex-shrink: 0;
 }
-#map { width: 100%; height: 100%; }
+
+#map {
+  width: 100%;
+  height: 100%;
+}
+
 #drawCanvas {
   position: absolute;
   inset: 0;
@@ -324,7 +400,11 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   cursor: crosshair;
   touch-action: none;
 }
-#drawCanvas.enabled { display: block; }
+
+#drawCanvas.enabled {
+  display: block;
+}
+
 .map-status {
   position: absolute;
   top: 9px;
@@ -335,6 +415,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   max-width: 92%;
   text-align: center;
 }
+
 .map-status span {
   display: inline-block;
   padding: 8px 12px;
@@ -343,37 +424,53 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   font-size: 13px;
   box-shadow: 0 2px 8px #0002;
 }
+
 .actions {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 9px;
 }
+
 .credit {
   font-size: 11px;
   color: #64717b;
   text-align: center;
 }
 
-/* ROUND 3 FLAG DRAWING */
+/* ROUND 3 - FIXED SCROLLING */
+
+#round3 {
+  overflow-y: auto;
+  align-items: flex-start;
+}
+
+#round3 .round-layout {
+  max-height: none;
+  overflow: visible;
+  margin: 0 auto;
+  padding: 24px 0 50px;
+}
 
 .flag-workspace {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0,1fr) 68px;
+  grid-template-columns: minmax(0, 1fr) 68px;
   gap: 12px;
   align-items: stretch;
 }
+
 .flag-board {
-  min-height: 300px;
+  min-height: 0;
   background: white;
   border: 2px solid #343434;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 18px;
 }
+
 .flag-surface {
   width: 100%;
   max-width: 600px;
@@ -382,6 +479,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   box-shadow: 0 3px 14px #0002;
   overflow: hidden;
 }
+
 #flagCanvas {
   display: block;
   width: 100%;
@@ -389,6 +487,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   touch-action: none;
   cursor: crosshair;
 }
+
 .flag-tools {
   display: flex;
   flex-direction: column;
@@ -399,6 +498,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   border: 2px solid #343434;
   border-radius: 12px;
 }
+
 .tool-btn {
   width: 44px;
   height: 42px;
@@ -406,11 +506,15 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   border-radius: 9px;
   background: white;
   font-size: 23px;
+  display: grid;
+  place-items: center;
 }
+
 .tool-btn.selected {
   background: #e2f8eb;
   border-color: var(--green);
 }
+
 .color-swatch {
   width: 30px;
   height: 30px;
@@ -419,10 +523,12 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   padding: 0;
   flex-shrink: 0;
 }
+
 .color-swatch.selected {
   outline: 3px solid var(--green);
   outline-offset: 2px;
 }
+
 #customColor {
   width: 36px;
   height: 32px;
@@ -431,6 +537,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   background: transparent;
   cursor: pointer;
 }
+
 .brush-controls {
   display: flex;
   align-items: center;
@@ -439,14 +546,22 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   flex-wrap: wrap;
   font-size: 14px;
 }
-.brush-controls input { width: 140px; }
+
+.brush-controls input {
+  width: 140px;
+}
+
 .flag-comparison {
   display: none;
   width: 100%;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-.flag-comparison.visible { display: grid; }
+
+.flag-comparison.visible {
+  display: grid;
+}
+
 .flag-preview {
   background: white;
   border: 1px solid #ccd3d9;
@@ -454,28 +569,56 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   padding: 12px;
   text-align: center;
 }
+
 .flag-preview img {
   width: 100%;
   max-height: 200px;
   object-fit: contain;
   margin-top: 10px;
 }
-.flag-preview strong { display: block; }
+
+.flag-preview strong {
+  display: block;
+}
 
 @media(max-width:550px) {
   .round-screen { padding: 10px; }
   .round-layout { gap: 11px; }
   .panel { padding: 16px; }
-  .actions button { font-size: 13px; padding: 10px 12px; }
-  .flag-workspace { grid-template-columns: minmax(0,1fr) 52px; gap: 6px; }
-  .flag-board { padding: 8px; min-height: 220px; }
-  .flag-tools { gap: 7px; padding: 8px 2px; }
-  .tool-btn { width: 37px; height: 36px; }
-  .color-swatch { width: 25px; height: 25px; }
+
+  .actions button {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .flag-workspace {
+    grid-template-columns: minmax(0, 1fr) 52px;
+    gap: 6px;
+  }
+
+  .flag-board {
+    padding: 8px;
+  }
+
+  .flag-tools {
+    gap: 7px;
+    padding: 8px 2px;
+  }
+
+  .tool-btn {
+    width: 37px;
+    height: 36px;
+  }
+
+  .color-swatch {
+    width: 25px;
+    height: 25px;
+  }
 }
+
 @media(prefers-reduced-motion:reduce) {
-  .screen,.score-fill { transition: none; }
-  .home-logo img,.round-header img { animation: none; }
+  .screen, .score-fill { transition: none; }
+  .home-logo img, .round-header img { animation: none; }
 }
 </style>
 </head>
@@ -488,10 +631,12 @@ button:disabled { opacity: .5; cursor: not-allowed; }
   <div class="home-logo">
     <img src="Untitled%202.png" alt="Borderline logo">
   </div>
+
   <div class="start-area">
     <button id="start" class="start-btn" aria-label="Start game">
       <img src="Start2.png" alt="">
     </button>
+
     <div id="reveal" class="country-reveal">
       <h2>Today's country is...</h2>
       <h1 id="revealName"></h1>
@@ -503,6 +648,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 <section id="round1" class="screen offscreen round-screen">
   <div class="round-layout">
+
     <header class="round-header">
       <img src="Untitled%201.png" alt="">
       <div class="round-heading">
@@ -518,16 +664,19 @@ button:disabled { opacity: .5; cursor: not-allowed; }
         <input id="gdp" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aGDP"></div>
       </div>
+
       <div class="question">
         <label id="qPopulation" for="population"></label>
         <input id="population" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aPopulation"></div>
       </div>
+
       <div class="question">
         <label id="qCoast" for="coast"></label>
         <input id="coast" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aCoast"></div>
       </div>
+
       <button class="primary" type="submit">Submit Answers</button>
     </form>
 
@@ -538,7 +687,10 @@ button:disabled { opacity: .5; cursor: not-allowed; }
       <div id="score1Note" class="score-note"></div>
     </div>
 
-    <button id="continue1" class="primary continue">Continue to Round 2</button>
+    <button id="continue1" class="primary continue">
+      Continue to Round 2
+    </button>
+
   </div>
 </section>
 
@@ -546,6 +698,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
 <section id="round2" class="screen offscreen round-screen">
   <div class="round-layout">
+
     <header class="round-header">
       <img src="Untitled%201.png" alt="">
       <div class="round-heading">
@@ -560,7 +713,9 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     <div class="map-frame">
       <div id="map"></div>
       <canvas id="drawCanvas"></canvas>
-      <div class="map-status"><span id="mapStatus">Preparing map...</span></div>
+      <div class="map-status">
+        <span id="mapStatus">Preparing map...</span>
+      </div>
     </div>
 
     <div class="actions">
@@ -579,11 +734,19 @@ button:disabled { opacity: .5; cursor: not-allowed; }
       <div id="score2Label" class="score-label">0 / 1000 Points</div>
       <div class="score-track"><div id="score2Fill" class="score-fill"></div></div>
       <div class="score-scale"><span>0</span><span>1000</span></div>
-      <div id="score2Note" class="score-note">Find the country, then draw its border.</div>
+      <div id="score2Note" class="score-note">
+        Find the country, then draw its border.
+      </div>
     </div>
 
-    <button id="continue2" class="primary continue">Continue to Round 3</button>
-    <div class="credit">Physical map © Esri. Boundary data © Natural Earth.</div>
+    <button id="continue2" class="primary continue">
+      Continue to Round 3
+    </button>
+
+    <div class="credit">
+      Physical map © Esri. Boundary data © Natural Earth.
+    </div>
+
   </div>
 </section>
 
@@ -604,6 +767,7 @@ button:disabled { opacity: .5; cursor: not-allowed; }
     <p id="instructions3" class="instructions"></p>
 
     <div class="flag-workspace">
+
       <div class="flag-board">
         <div id="flagSurface" class="flag-surface">
           <canvas id="flagCanvas" width="600" height="300"></canvas>
@@ -612,11 +776,15 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 
       <div class="flag-tools">
         <button id="penTool" class="tool-btn selected" title="Pen" aria-label="Pen">✎</button>
-        <button id="bucketTool" class="tool-btn" title="Paint bucket" aria-label="Paint bucket">▰</button>
+        <button id="bucketTool" class="tool-btn" title="Paint bucket" aria-label="Paint bucket">🪣</button>
         <button id="eraserTool" class="tool-btn" title="Eraser" aria-label="Eraser">⌫</button>
+
         <div id="colorPalette" style="display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:6px"></div>
-        <input id="customColor" type="color" value="#ffffff" title="Custom colour" aria-label="Custom colour">
+
+        <input id="customColor" type="color" value="#ffffff"
+          title="Custom colour" aria-label="Custom colour">
       </div>
+
     </div>
 
     <div class="brush-controls">
@@ -651,10 +819,13 @@ button:disabled { opacity: .5; cursor: not-allowed; }
       <div id="score3Label" class="score-label">0 / 1000 Points</div>
       <div class="score-track"><div id="score3Fill" class="score-fill"></div></div>
       <div class="score-scale"><span>0</span><span>1000</span></div>
-      <div id="score3Note" class="score-note">Draw the flag and submit it to earn points.</div>
+      <div id="score3Note" class="score-note">
+        Draw the flag and submit it to earn points.
+      </div>
     </div>
 
     <div class="credit">Flag reference images from FlagCDN.</div>
+
   </div>
 </section>
 
@@ -688,18 +859,22 @@ document.querySelectorAll(".country-name").forEach(node => {
 
 el("qGDP").textContent =
   `What is the GDP of ${country.name}? (USD billions)`;
+
 el("qPopulation").textContent =
   `What is the population of ${country.name}? (millions)`;
+
 el("qCoast").textContent =
   `How long is the coastline of ${country.name}? (kilometres)`;
+
 el("instructions2").textContent =
   `Find ${country.name} on the world map and draw its borders`;
+
 el("instructions3").textContent =
   `Draw the flag of ${country.name}`;
 
 /* TRANSITIONS */
 
-function transition(from,to) {
+function transition(from, to) {
   el(from).classList.remove("active");
   el(from).classList.add("leave");
   el(to).classList.remove("offscreen");
@@ -713,65 +888,73 @@ el("start").onclick = () => {
 
   setTimeout(() => {
     el("revealName").textContent = country.name;
-  },1000);
+  }, 1000);
 
-  setTimeout(() => transition("home","round1"),2800);
+  setTimeout(() => transition("home", "round1"), 2800);
 };
 
-function scoreAnimation(label,fill,points) {
+function scoreAnimation(label, fill, points) {
   el(fill).style.width = points / 10 + "%";
   const start = performance.now();
 
   function frame(now) {
-    const p = Math.min((now-start)/1000,1);
-    const shown = Math.round(points*(1-(1-p)**3));
+    const p = Math.min((now - start) / 1000, 1);
+    const shown = Math.round(points * (1 - (1 - p) ** 3));
+
     el(label).textContent = `${shown} / 1000 Points`;
-    if(p<1) requestAnimationFrame(frame);
+
+    if (p < 1) requestAnimationFrame(frame);
   }
+
   requestAnimationFrame(frame);
 }
 
 /* ROUND 1 */
 
-function accuracy(guess,actual) {
-  return Math.max(0,1-Math.abs(guess-actual)/actual);
+function accuracy(guess, actual) {
+  return Math.max(0, 1 - Math.abs(guess - actual) / actual);
 }
 
-function answer(id,value,unit,points,max) {
+function answer(id, value, unit, points, max) {
   el(id).innerHTML =
-    `Correct answer: <strong>${value} ${unit}</strong>`+
+    `Correct answer: <strong>${value} ${unit}</strong>` +
     `<div>Points earned: ${points} / ${max}</div>`;
+
   el(id).classList.add("visible");
 }
 
-el("questions").addEventListener("submit",e => {
+el("questions").addEventListener("submit", e => {
   e.preventDefault();
+
   const a = country.answers;
 
-  const g = Math.round(accuracy(+el("gdp").value,a.gdp)*334);
-  const p = Math.round(accuracy(+el("population").value,a.population)*333);
-  const c = Math.round(accuracy(+el("coast").value,a.coastline)*333);
+  const g = Math.round(accuracy(+el("gdp").value, a.gdp) * 334);
+  const p = Math.round(accuracy(+el("population").value, a.population) * 333);
+  const c = Math.round(accuracy(+el("coast").value, a.coastline) * 333);
 
-  round1Score = g+p+c;
+  round1Score = g + p + c;
 
-  answer("aGDP",a.gdp,"billion USD",g,334);
-  answer("aPopulation",a.population,"million",p,333);
-  answer("aCoast",a.coastline.toLocaleString(),"km",c,333);
+  answer("aGDP", a.gdp, "billion USD", g, 334);
+  answer("aPopulation", a.population, "million", p, 333);
+  answer("aCoast", a.coastline.toLocaleString(), "km", c, 333);
 
-  scoreAnimation("score1Label","score1Fill",round1Score);
+  scoreAnimation("score1Label", "score1Fill", round1Score);
+
   el("score1Note").textContent =
     `You earned ${round1Score} out of 1000 points!`;
 
-  e.target.querySelectorAll("input,button").forEach(x => x.disabled=true);
+  e.target.querySelectorAll("input,button")
+    .forEach(x => x.disabled = true);
+
   el("continue1").classList.add("visible");
 });
 
 el("continue1").onclick = () => {
-  transition("round1","round2");
-  setTimeout(initMap,1150);
+  transition("round1", "round2");
+  setTimeout(initMap, 1150);
 };
 
-/* ROUND 2 */
+/* ROUND 2 MAP */
 
 let map = null;
 let boundary = null;
@@ -784,742 +967,918 @@ let coords = [];
 const canvas = el("drawCanvas");
 const ctx = canvas.getContext("2d");
 
-function mapStatus(s) { el("mapStatus").textContent=s; }
+function mapStatus(s) {
+  el("mapStatus").textContent = s;
+}
 
 function submitState() {
   el("submitBorder").disabled =
-    !boundaryReady || !drawMode || borderSubmitted ||
-    isDrawing || coords.length<10;
+    !boundaryReady ||
+    !drawMode ||
+    borderSubmitted ||
+    isDrawing ||
+    coords.length < 10;
 }
 
 function initMap() {
-  if(map) {
+  if (map) {
     map.invalidateSize();
     return;
   }
 
-  if(!window.L) {
+  if (!window.L) {
     mapStatus("Map library unavailable. Refresh to retry.");
     return;
   }
 
-  map = L.map("map",{
-    center:[15,0],
-    zoom:2,
-    minZoom:2,
-    maxZoom:10,
-    worldCopyJump:true
+  map = L.map("map", {
+    center: [15, 0],
+    zoom: 2,
+    minZoom: 2,
+    maxZoom: 10,
+    worldCopyJump: true
   });
 
   L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
     {
-      maxZoom:10,
-      maxNativeZoom:8,
-      noWrap:false,
-      attribution:"Tiles © Esri"
+      maxZoom: 10,
+      maxNativeZoom: 8,
+      noWrap: false,
+      attribution: "Tiles © Esri"
     }
   ).addTo(map);
 
   map.invalidateSize();
   resizeCanvas();
+
   mapStatus("Navigate to the country, then choose Draw.");
   loadBoundary();
 }
 
 function normalizeGeoJSON(data) {
-  if(data.type==="Feature" && data.geometry) return data;
+  if (data.type === "Feature" && data.geometry) return data;
 
-  if(data.type==="Polygon" || data.type==="MultiPolygon") {
-    return {type:"Feature",properties:{},geometry:data};
+  if (data.type === "Polygon" || data.type === "MultiPolygon") {
+    return {
+      type: "Feature",
+      properties: {},
+      geometry: data
+    };
   }
 
   throw Error("Unsupported country geometry");
 }
 
 async function loadBoundary() {
-  boundaryReady=false;
+  boundaryReady = false;
   submitState();
 
-  const sources=[
+  const sources = [
     "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson",
     "https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson"
   ];
 
-  let lastError="";
+  let lastError = "";
 
-  for(const url of sources) {
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),15000);
+  for (const url of sources) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
 
     try {
       mapStatus("Loading scoring data...");
-      const response=await fetch(url,{signal:controller.signal});
 
-      if(!response.ok) throw Error("HTTP "+response.status);
+      const response = await fetch(url, {
+        signal: controller.signal
+      });
 
-      const data=await response.json();
-      const feature=data.features.find(f=>{
-        const p=f.properties||{};
+      if (!response.ok) throw Error("HTTP " + response.status);
+
+      const data = await response.json();
+
+      const feature = data.features.find(f => {
+        const p = f.properties || {};
+
         return (
-          p.ISO3166_1_Alpha_3===country.code ||
-          p.ISO_A3===country.code ||
-          p.ADM0_A3===country.code ||
-          p.iso_a3===country.code ||
-          p.name===country.name ||
-          p.ADMIN===country.name
+          p.ISO3166_1_Alpha_3 === country.code ||
+          p.ISO_A3 === country.code ||
+          p.ADM0_A3 === country.code ||
+          p.iso_a3 === country.code ||
+          p.name === country.name ||
+          p.ADMIN === country.name
         );
       });
 
-      if(!feature) throw Error("Country not found");
+      if (!feature) throw Error("Country not found");
 
-      boundary=normalizeGeoJSON(feature);
-      boundaryReady=true;
+      boundary = normalizeGeoJSON(feature);
+      boundaryReady = true;
+
       submitState();
-
       mapStatus("Map ready. Draw the country's outline.");
+
       el("score2Note").textContent =
         "Draw a closed outline to earn up to 1000 points.";
+
       return;
-    } catch(error) {
-      lastError=error.message;
+
+    } catch (error) {
+      lastError = error.message;
       console.warn(error);
+
     } finally {
       clearTimeout(timeout);
     }
   }
 
   mapStatus("Unable to load country data.");
-  el("score2Note").textContent="Scoring unavailable: "+lastError;
+
+  el("score2Note").textContent =
+    "Scoring unavailable: " + lastError;
 }
 
 function setMode(draw) {
-  if(!map || borderSubmitted) return;
-  drawMode=draw;
+  if (!map || borderSubmitted) return;
 
-  el("draw").classList.toggle("selected",draw);
-  el("navigate").classList.toggle("selected",!draw);
-  canvas.classList.toggle("enabled",draw);
+  drawMode = draw;
 
-  if(draw) {
+  el("draw").classList.toggle("selected", draw);
+  el("navigate").classList.toggle("selected", !draw);
+  canvas.classList.toggle("enabled", draw);
+
+  if (draw) {
     map.dragging.disable();
     map.scrollWheelZoom.disable();
     map.doubleClickZoom.disable();
     map.touchZoom.disable();
+
     resizeCanvas();
     mapStatus("Draw a closed outline around the country.");
+
   } else {
     map.dragging.enable();
     map.scrollWheelZoom.enable();
     map.doubleClickZoom.enable();
     map.touchZoom.enable();
+
     mapStatus("Navigate and zoom, then select Draw.");
   }
 
   submitState();
 }
 
-el("navigate").onclick=()=>setMode(false);
-el("draw").onclick=()=>setMode(true);
+el("navigate").onclick = () => setMode(false);
+el("draw").onclick = () => setMode(true);
 
 function resizeCanvas() {
-  const r=canvas.getBoundingClientRect();
-  if(!r.width || !r.height) return;
-  const d=window.devicePixelRatio||1;
-  canvas.width=Math.round(r.width*d);
-  canvas.height=Math.round(r.height*d);
-  ctx.setTransform(d,0,0,d,0,0);
+  const r = canvas.getBoundingClientRect();
+
+  if (!r.width || !r.height) return;
+
+  const d = window.devicePixelRatio || 1;
+
+  canvas.width = Math.round(r.width * d);
+  canvas.height = Math.round(r.height * d);
+
+  ctx.setTransform(d, 0, 0, d, 0, 0);
   redraw();
 }
 
 function canvasPoint(e) {
-  const r=canvas.getBoundingClientRect();
-  return {x:e.clientX-r.left,y:e.clientY-r.top};
+  const r = canvas.getBoundingClientRect();
+
+  return {
+    x: e.clientX - r.left,
+    y: e.clientY - r.top
+  };
 }
 
 function geo(p) {
-  const v=map.containerPointToLatLng(L.point(p.x,p.y));
-  return [v.lng,v.lat];
+  const v = map.containerPointToLatLng(L.point(p.x, p.y));
+  return [v.lng, v.lat];
 }
 
 function redraw() {
-  const r=canvas.getBoundingClientRect();
-  ctx.clearRect(0,0,r.width,r.height);
-  if(!map || coords.length<2) return;
+  const r = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, r.width, r.height);
+
+  if (!map || coords.length < 2) return;
 
   ctx.beginPath();
 
-  coords.forEach((c,i)=>{
-    const p=map.latLngToContainerPoint(L.latLng(c[1],c[0]));
-    if(i===0) ctx.moveTo(p.x,p.y);
-    else ctx.lineTo(p.x,p.y);
+  coords.forEach((c, i) => {
+    const p = map.latLngToContainerPoint(
+      L.latLng(c[1], c[0])
+    );
+
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
   });
 
-  if(!isDrawing) ctx.closePath();
+  if (!isDrawing) ctx.closePath();
 
-  ctx.strokeStyle="#00b85b";
-  ctx.lineWidth=3.5;
-  ctx.lineJoin="round";
-  ctx.lineCap="round";
+  ctx.strokeStyle = "#00b85b";
+  ctx.lineWidth = 3.5;
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
   ctx.stroke();
 
-  if(!isDrawing) {
-    ctx.fillStyle="rgba(0,184,91,.12)";
+  if (!isDrawing) {
+    ctx.fillStyle = "rgba(0,184,91,.12)";
     ctx.fill();
   }
 }
 
-canvas.addEventListener("pointerdown",e=>{
-  if(!drawMode || borderSubmitted) return;
+canvas.addEventListener("pointerdown", e => {
+  if (!drawMode || borderSubmitted) return;
+
   e.preventDefault();
   canvas.setPointerCapture(e.pointerId);
-  isDrawing=true;
-  coords=[geo(canvasPoint(e))];
+
+  isDrawing = true;
+  coords = [geo(canvasPoint(e))];
+
   redraw();
   submitState();
 });
 
-canvas.addEventListener("pointermove",e=>{
-  if(!isDrawing) return;
+canvas.addEventListener("pointermove", e => {
+  if (!isDrawing) return;
+
   e.preventDefault();
 
-  const p=geo(canvasPoint(e));
-  const last=coords[coords.length-1];
+  const p = geo(canvasPoint(e));
+  const last = coords[coords.length - 1];
 
-  if(Math.hypot(p[0]-last[0],p[1]-last[1])>.001) {
+  if (Math.hypot(p[0] - last[0], p[1] - last[1]) > .001) {
     coords.push(p);
     redraw();
   }
 });
 
 function endDrawing() {
-  if(!isDrawing) return;
-  isDrawing=false;
+  if (!isDrawing) return;
+
+  isDrawing = false;
   redraw();
   submitState();
-  mapStatus(coords.length>=10
-    ? "Drawing complete. Submit or clear to retry."
-    : "Draw a longer outline.");
+
+  mapStatus(
+    coords.length >= 10
+      ? "Drawing complete. Submit or clear to retry."
+      : "Draw a longer outline."
+  );
 }
 
-canvas.addEventListener("pointerup",endDrawing);
-canvas.addEventListener("pointercancel",endDrawing);
+canvas.addEventListener("pointerup", endDrawing);
+canvas.addEventListener("pointercancel", endDrawing);
 
-el("clear").onclick=()=>{
-  if(borderSubmitted) return;
-  coords=[];
-  isDrawing=false;
+el("clear").onclick = () => {
+  if (borderSubmitted) return;
+
+  coords = [];
+  isDrawing = false;
+
   redraw();
   submitState();
   mapStatus("Drawing cleared.");
 };
 
-el("reset").onclick=()=>{
-  if(!map || borderSubmitted) return;
-  coords=[];
-  isDrawing=false;
+el("reset").onclick = () => {
+  if (!map || borderSubmitted) return;
+
+  coords = [];
+  isDrawing = false;
+
   setMode(false);
-  map.setView([15,0],2);
+  map.setView([15, 0], 2);
+
   redraw();
   submitState();
 };
 
 /* BORDER SCORING */
 
-function inRing(point,ring) {
-  let inside=false;
-  const [x,y]=point;
+function inRing(point, ring) {
+  let inside = false;
+  const [x, y] = point;
 
-  for(let i=0,j=ring.length-1;i<ring.length;j=i++) {
-    const [xi,yi]=ring[i];
-    const [xj,yj]=ring[j];
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
 
-    if((yi>y)!==(yj>y) &&
-       x<(xj-xi)*(y-yi)/(yj-yi)+xi) {
-      inside=!inside;
+    if (
+      (yi > y) !== (yj > y) &&
+      x < (xj - xi) * (y - yi) / (yj - yi) + xi
+    ) {
+      inside = !inside;
     }
   }
+
   return inside;
 }
 
-function inPolygon(point,rings) {
-  if(!inRing(point,rings[0])) return false;
-  for(let i=1;i<rings.length;i++) {
-    if(inRing(point,rings[i])) return false;
+function inPolygon(point, rings) {
+  if (!inRing(point, rings[0])) return false;
+
+  for (let i = 1; i < rings.length; i++) {
+    if (inRing(point, rings[i])) return false;
   }
+
   return true;
 }
 
-function inGeometry(point,g) {
-  if(g.type==="Polygon") return inPolygon(point,g.coordinates);
-  return g.coordinates.some(poly=>inPolygon(point,poly));
+function inGeometry(point, g) {
+  if (g.type === "Polygon") {
+    return inPolygon(point, g.coordinates);
+  }
+
+  return g.coordinates.some(poly => inPolygon(point, poly));
 }
 
 function allCoords(g) {
-  return g.type==="Polygon"
+  return g.type === "Polygon"
     ? g.coordinates.flat()
     : g.coordinates.flat(2);
 }
 
 function calculateBorderScore() {
-  const geometry=boundary.geometry;
-  const points=allCoords(geometry).concat(coords);
+  const geometry = boundary.geometry;
+  const points = allCoords(geometry).concat(coords);
 
-  let minX=Infinity,maxX=-Infinity;
-  let minY=Infinity,maxY=-Infinity;
+  let minX = Infinity, maxX = -Infinity;
+  let minY = Infinity, maxY = -Infinity;
 
-  for(const [x,y] of points) {
-    minX=Math.min(minX,x);
-    maxX=Math.max(maxX,x);
-    minY=Math.min(minY,y);
-    maxY=Math.max(maxY,y);
+  for (const [x, y] of points) {
+    minX = Math.min(minX, x);
+    maxX = Math.max(maxX, x);
+    minY = Math.min(minY, y);
+    maxY = Math.max(maxY, y);
   }
 
-  const n=180;
-  const dx=(maxX-minX)/n;
-  const dy=(maxY-minY)/n;
+  const n = 180;
+  const dx = (maxX - minX) / n;
+  const dy = (maxY - minY) / n;
 
-  if(dx<=0 || dy<=0) return 0;
+  if (dx <= 0 || dy <= 0) return 0;
 
-  let intersection=0,union=0;
+  let intersection = 0;
+  let union = 0;
 
-  for(let i=0;i<n;i++) {
-    const x=minX+(i+.5)*dx;
+  for (let i = 0; i < n; i++) {
+    const x = minX + (i + .5) * dx;
 
-    for(let j=0;j<n;j++) {
-      const y=minY+(j+.5)*dy;
-      const point=[x,y];
+    for (let j = 0; j < n; j++) {
+      const y = minY + (j + .5) * dy;
+      const point = [x, y];
 
-      const actual=inGeometry(point,geometry);
-      const drawn=inRing(point,coords);
-      const weight=Math.max(0,Math.cos(y*Math.PI/180));
+      const actual = inGeometry(point, geometry);
+      const drawn = inRing(point, coords);
+      const weight = Math.max(
+        0, Math.cos(y * Math.PI / 180)
+      );
 
-      if(actual||drawn) union+=weight;
-      if(actual&&drawn) intersection+=weight;
+      if (actual || drawn) union += weight;
+      if (actual && drawn) intersection += weight;
     }
   }
 
   return union
-    ? Math.round(1000*intersection/union)
+    ? Math.round(1000 * intersection / union)
     : 0;
 }
 
-el("submitBorder").onclick=()=>{
-  if(!boundaryReady || !drawMode ||
-     borderSubmitted || coords.length<10) return;
+el("submitBorder").onclick = () => {
+  if (
+    !boundaryReady ||
+    !drawMode ||
+    borderSubmitted ||
+    coords.length < 10
+  ) return;
 
   try {
-    round2Score=calculateBorderScore();
-    borderSubmitted=true;
+    round2Score = calculateBorderScore();
+    borderSubmitted = true;
+
     redraw();
 
-    ["submitBorder","clear","reset","navigate","draw"]
-      .forEach(id=>el(id).disabled=true);
+    ["submitBorder", "clear", "reset", "navigate", "draw"]
+      .forEach(id => el(id).disabled = true);
 
-    L.geoJSON(boundary,{
-      style:{
-        color:"#ee564a",
-        weight:3.5,
-        dashArray:"7,5",
-        fillColor:"#ee564a",
-        fillOpacity:.12
+    L.geoJSON(boundary, {
+      style: {
+        color: "#ee564a",
+        weight: 3.5,
+        dashArray: "7,5",
+        fillColor: "#ee564a",
+        fillOpacity: .12
       },
-      interactive:false
+      interactive: false
     }).addTo(map);
 
-    scoreAnimation("score2Label","score2Fill",round2Score);
+    scoreAnimation("score2Label", "score2Fill", round2Score);
 
     el("score2Note").textContent =
       `You earned ${round2Score} out of 1000 border points!`;
 
     el("borderResult").innerHTML =
-      "<strong>Correct border revealed!</strong>"+
+      "<strong>Correct border revealed!</strong>" +
       "<div>Green: your drawing · Red: actual border</div>";
 
     el("result2").classList.add("visible");
     el("continue2").classList.add("visible");
+
     mapStatus("Compare your drawing with the correct border.");
-  } catch(error) {
+
+  } catch (error) {
     console.error(error);
     mapStatus("Scoring failed. Please try again.");
   }
 };
 
-window.addEventListener("resize",()=>{
-  if(map) {
+window.addEventListener("resize", () => {
+  if (map) {
     map.invalidateSize();
     resizeCanvas();
   }
 });
 
-/* ROUND 3: FLAG DRAWING */
+/* ROUND 3 FLAG DRAWING */
 
-const flagCanvas=el("flagCanvas");
-const flagCtx=flagCanvas.getContext("2d",{
-  willReadFrequently:true
+const flagCanvas = el("flagCanvas");
+
+const flagCtx = flagCanvas.getContext("2d", {
+  willReadFrequently: true
 });
 
-let flagTool="pen";
-let flagColor="#ffffff";
-let flagBrush=10;
-let flagDrawing=false;
-let flagSubmitted=false;
-let flagHistory=[];
+let flagTool = "pen";
+let flagColor = "#ffffff";
+let flagBrush = 10;
+let flagDrawing = false;
+let flagSubmitted = false;
+let flagHistory = [];
 
 function fillFlagBackground() {
-  flagCtx.fillStyle=country.flagBackground;
-  flagCtx.fillRect(0,0,flagCanvas.width,flagCanvas.height);
+  flagCtx.fillStyle = country.flagBackground;
+  flagCtx.fillRect(
+    0, 0,
+    flagCanvas.width,
+    flagCanvas.height
+  );
 }
 
 function saveFlagHistory() {
   flagHistory.push(
     flagCtx.getImageData(
-      0,0,flagCanvas.width,flagCanvas.height
+      0, 0,
+      flagCanvas.width,
+      flagCanvas.height
     )
   );
-  if(flagHistory.length>15) flagHistory.shift();
+
+  if (flagHistory.length > 15) flagHistory.shift();
 }
 
 function initFlag() {
-  const w=600;
-  const h=Math.round(w/country.flagRatio);
+  const w = 600;
+  const h = Math.round(w / country.flagRatio);
 
-  flagCanvas.width=w;
-  flagCanvas.height=h;
+  flagCanvas.width = w;
+  flagCanvas.height = h;
 
   el("flagSurface").style.aspectRatio =
     String(country.flagRatio);
 
   fillFlagBackground();
-  flagHistory=[];
-  el("flagFeedback").textContent="";
+
+  flagHistory = [];
+
+  el("flagFeedback").textContent = "";
+
   el("score3Note").textContent =
     "Use the pen and paint bucket to complete the flag.";
 }
 
 function setFlagTool(tool) {
-  if(flagSubmitted) return;
-  flagTool=tool;
+  if (flagSubmitted) return;
 
-  ["pen","bucket","eraser"].forEach(t=>{
-    el(t+"Tool").classList.toggle("selected",t===tool);
+  flagTool = tool;
+
+  ["pen", "bucket", "eraser"].forEach(t => {
+    el(t + "Tool").classList.toggle(
+      "selected", t === tool
+    );
   });
 }
 
-el("penTool").onclick=()=>setFlagTool("pen");
-el("bucketTool").onclick=()=>setFlagTool("bucket");
-el("eraserTool").onclick=()=>setFlagTool("eraser");
+el("penTool").onclick = () => setFlagTool("pen");
+el("bucketTool").onclick = () => setFlagTool("bucket");
+el("eraserTool").onclick = () => setFlagTool("eraser");
 
-const palette=[
-  "#ffffff","#000000","#e4002b",
-  "#00247d","#00843d","#ffcc00",
-  "#ff8000","#00aaff"
+const palette = [
+  "#ffffff", "#000000", "#e4002b",
+  "#00247d", "#00843d", "#ffcc00",
+  "#ff8000", "#00aaff"
 ];
 
-const paletteElement=el("colorPalette");
+const paletteElement = el("colorPalette");
 
-palette.forEach(color=>{
-  const button=document.createElement("button");
-  button.className="color-swatch";
-  button.style.background=color;
-  button.title=color;
-  button.setAttribute("aria-label","Select "+color);
+palette.forEach(color => {
+  const button = document.createElement("button");
 
-  button.onclick=()=>{
-    flagColor=color;
+  button.className = "color-swatch";
+  button.style.background = color;
+  button.title = color;
+  button.setAttribute("aria-label", "Select " + color);
+
+  button.onclick = () => {
+    flagColor = color;
+
     document.querySelectorAll(".color-swatch")
-      .forEach(b=>b.classList.remove("selected"));
+      .forEach(b => b.classList.remove("selected"));
+
     button.classList.add("selected");
   };
 
-  if(color===flagColor) button.classList.add("selected");
+  if (color === flagColor) {
+    button.classList.add("selected");
+  }
+
   paletteElement.appendChild(button);
 });
 
-el("customColor").oninput=e=>{
-  flagColor=e.target.value;
+el("customColor").oninput = e => {
+  flagColor = e.target.value;
+
   document.querySelectorAll(".color-swatch")
-    .forEach(b=>b.classList.remove("selected"));
+    .forEach(b => b.classList.remove("selected"));
 };
 
-el("brushSize").oninput=e=>{
-  flagBrush=+e.target.value;
-  el("brushValue").textContent=flagBrush;
+el("brushSize").oninput = e => {
+  flagBrush = +e.target.value;
+  el("brushValue").textContent = flagBrush;
 };
 
 function flagPoint(e) {
-  const r=flagCanvas.getBoundingClientRect();
+  const r = flagCanvas.getBoundingClientRect();
 
   return {
-    x:(e.clientX-r.left)*flagCanvas.width/r.width,
-    y:(e.clientY-r.top)*flagCanvas.height/r.height
+    x: (e.clientX - r.left) * flagCanvas.width / r.width,
+    y: (e.clientY - r.top) * flagCanvas.height / r.height
   };
 }
 
-function strokeFlag(from,to) {
+function strokeFlag(from, to) {
   flagCtx.beginPath();
-  flagCtx.moveTo(from.x,from.y);
-  flagCtx.lineTo(to.x,to.y);
-  flagCtx.lineCap="round";
-  flagCtx.lineJoin="round";
-  flagCtx.lineWidth=flagBrush;
-  flagCtx.strokeStyle=flagTool==="eraser"
-    ? country.flagBackground
-    : flagColor;
+  flagCtx.moveTo(from.x, from.y);
+  flagCtx.lineTo(to.x, to.y);
+
+  flagCtx.lineCap = "round";
+  flagCtx.lineJoin = "round";
+  flagCtx.lineWidth = flagBrush;
+
+  flagCtx.strokeStyle =
+    flagTool === "eraser"
+      ? country.flagBackground
+      : flagColor;
+
   flagCtx.stroke();
 }
 
-/*
-  Flood fill changes a connected region of similar
-  pixels to the selected colour.
-*/
+/* PAINT BUCKET */
 
-function bucketFill(x,y,newColor) {
-  const w=flagCanvas.width;
-  const h=flagCanvas.height;
-  x=Math.floor(x);
-  y=Math.floor(y);
+function bucketFill(x, y, newColor) {
+  const w = flagCanvas.width;
+  const h = flagCanvas.height;
 
-  if(x<0||y<0||x>=w||y>=h) return;
+  x = Math.floor(x);
+  y = Math.floor(y);
 
-  const image=flagCtx.getImageData(0,0,w,h);
-  const data=image.data;
-  const start=(y*w+x)*4;
+  if (x < 0 || y < 0 || x >= w || y >= h) return;
 
-  const target=[
-    data[start],data[start+1],data[start+2]
+  const image = flagCtx.getImageData(0, 0, w, h);
+  const data = image.data;
+  const start = (y * w + x) * 4;
+
+  const target = [
+    data[start],
+    data[start + 1],
+    data[start + 2]
   ];
 
-  const colourCanvas=document.createElement("canvas");
-  colourCanvas.width=1;
-  colourCanvas.height=1;
-  const colourCtx=colourCanvas.getContext("2d");
-  colourCtx.fillStyle=newColor;
-  colourCtx.fillRect(0,0,1,1);
-  const replacement=colourCtx.getImageData(0,0,1,1).data;
+  const colourCanvas = document.createElement("canvas");
+  colourCanvas.width = 1;
+  colourCanvas.height = 1;
 
-  if(target.every((v,i)=>v===replacement[i])) return;
+  const colourCtx = colourCanvas.getContext("2d");
 
-  const visited=new Uint8Array(w*h);
-  const stack=[y*w+x];
-  const tolerance=22;
+  colourCtx.fillStyle = newColor;
+  colourCtx.fillRect(0, 0, 1, 1);
 
-  while(stack.length) {
-    const pos=stack.pop();
+  const replacement =
+    colourCtx.getImageData(0, 0, 1, 1).data;
 
-    if(visited[pos]) continue;
-    visited[pos]=1;
-
-    const offset=pos*4;
-
-    if(
-      Math.abs(data[offset]-target[0])>tolerance ||
-      Math.abs(data[offset+1]-target[1])>tolerance ||
-      Math.abs(data[offset+2]-target[2])>tolerance
-    ) continue;
-
-    data[offset]=replacement[0];
-    data[offset+1]=replacement[1];
-    data[offset+2]=replacement[2];
-    data[offset+3]=255;
-
-    const px=pos%w;
-    const py=Math.floor(pos/w);
-
-    if(px>0) stack.push(pos-1);
-    if(px<w-1) stack.push(pos+1);
-    if(py>0) stack.push(pos-w);
-    if(py<h-1) stack.push(pos+w);
-  }
-
-  flagCtx.putImageData(image,0,0);
-}
-
-let previousFlagPoint=null;
-
-flagCanvas.addEventListener("pointerdown",e=>{
-  if(flagSubmitted) return;
-
-  e.preventDefault();
-  flagCanvas.setPointerCapture(e.pointerId);
-  saveFlagHistory();
-
-  const p=flagPoint(e);
-
-  if(flagTool==="bucket") {
-    bucketFill(p.x,p.y,flagColor);
+  if (target.every((v, i) => v === replacement[i])) {
     return;
   }
 
-  flagDrawing=true;
-  previousFlagPoint=p;
-  strokeFlag(p,p);
+  const visited = new Uint8Array(w * h);
+  const stack = [y * w + x];
+  const tolerance = 22;
+
+  while (stack.length) {
+    const pos = stack.pop();
+
+    if (visited[pos]) continue;
+    visited[pos] = 1;
+
+    const offset = pos * 4;
+
+    if (
+      Math.abs(data[offset] - target[0]) > tolerance ||
+      Math.abs(data[offset + 1] - target[1]) > tolerance ||
+      Math.abs(data[offset + 2] - target[2]) > tolerance
+    ) continue;
+
+    data[offset] = replacement[0];
+    data[offset + 1] = replacement[1];
+    data[offset + 2] = replacement[2];
+    data[offset + 3] = 255;
+
+    const px = pos % w;
+    const py = Math.floor(pos / w);
+
+    if (px > 0) stack.push(pos - 1);
+    if (px < w - 1) stack.push(pos + 1);
+    if (py > 0) stack.push(pos - w);
+    if (py < h - 1) stack.push(pos + w);
+  }
+
+  flagCtx.putImageData(image, 0, 0);
+}
+
+let previousFlagPoint = null;
+
+flagCanvas.addEventListener("pointerdown", e => {
+  if (flagSubmitted) return;
+
+  e.preventDefault();
+  flagCanvas.setPointerCapture(e.pointerId);
+
+  saveFlagHistory();
+
+  const p = flagPoint(e);
+
+  if (flagTool === "bucket") {
+    bucketFill(p.x, p.y, flagColor);
+    return;
+  }
+
+  flagDrawing = true;
+  previousFlagPoint = p;
+
+  strokeFlag(p, p);
 });
 
-flagCanvas.addEventListener("pointermove",e=>{
-  if(!flagDrawing||flagSubmitted) return;
+flagCanvas.addEventListener("pointermove", e => {
+  if (!flagDrawing || flagSubmitted) return;
+
   e.preventDefault();
 
-  const p=flagPoint(e);
-  strokeFlag(previousFlagPoint,p);
-  previousFlagPoint=p;
+  const p = flagPoint(e);
+
+  strokeFlag(previousFlagPoint, p);
+  previousFlagPoint = p;
 });
 
 function finishFlagStroke() {
-  flagDrawing=false;
-  previousFlagPoint=null;
+  flagDrawing = false;
+  previousFlagPoint = null;
 }
 
-flagCanvas.addEventListener("pointerup",finishFlagStroke);
-flagCanvas.addEventListener("pointercancel",finishFlagStroke);
+flagCanvas.addEventListener("pointerup", finishFlagStroke);
+flagCanvas.addEventListener("pointercancel", finishFlagStroke);
 
-el("undoFlag").onclick=()=>{
-  if(flagSubmitted||!flagHistory.length) return;
-  flagCtx.putImageData(flagHistory.pop(),0,0);
+el("undoFlag").onclick = () => {
+  if (flagSubmitted || !flagHistory.length) return;
+
+  flagCtx.putImageData(flagHistory.pop(), 0, 0);
 };
 
-el("resetFlag").onclick=()=>{
-  if(flagSubmitted) return;
+el("resetFlag").onclick = () => {
+  if (flagSubmitted) return;
+
   saveFlagHistory();
   fillFlagBackground();
 };
 
-/* FLAG REFERENCE AND SCORING */
+/* FLAG REFERENCE */
 
-let referenceFlag=null;
-let referenceFlagReady=false;
-let referenceFlagURL="";
+let referenceFlag = null;
+let referenceFlagReady = false;
+let referenceFlagURL = "";
 
 async function loadReferenceFlag() {
-  referenceFlagReady=false;
-  el("submitFlag").disabled=true;
-  el("score3Note").textContent="Preparing flag scoring...";
+  referenceFlagReady = false;
+  el("submitFlag").disabled = true;
 
-  const url=`https://flagcdn.com/w640/${country.flagCode}.png`;
+  el("score3Note").textContent =
+    "Preparing flag scoring...";
+
+  const url =
+    `https://flagcdn.com/w640/${country.flagCode}.png`;
 
   try {
-    const image=new Image();
-    image.crossOrigin="anonymous";
+    const image = new Image();
+    image.crossOrigin = "anonymous";
 
-    await new Promise((resolve,reject)=>{
-      image.onload=resolve;
-      image.onerror=()=>reject(Error("Flag image unavailable"));
-      image.src=url;
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () =>
+        reject(Error("Flag image unavailable"));
+
+      image.src = url;
     });
 
-    const offscreen=document.createElement("canvas");
-    offscreen.width=flagCanvas.width;
-    offscreen.height=flagCanvas.height;
-    const offCtx=offscreen.getContext("2d",{
-      willReadFrequently:true
+    const offscreen = document.createElement("canvas");
+
+    offscreen.width = flagCanvas.width;
+    offscreen.height = flagCanvas.height;
+
+    const offCtx = offscreen.getContext("2d", {
+      willReadFrequently: true
     });
 
-    offCtx.drawImage(image,0,0,offscreen.width,offscreen.height);
+    offCtx.drawImage(
+      image, 0, 0,
+      offscreen.width,
+      offscreen.height
+    );
 
-    // Reading the pixels also checks that CORS permits scoring.
-    offCtx.getImageData(0,0,1,1);
+    offCtx.getImageData(0, 0, 1, 1);
 
-    referenceFlag=offscreen;
-    referenceFlagURL=offscreen.toDataURL("image/png");
-    referenceFlagReady=true;
-    el("submitFlag").disabled=false;
+    referenceFlag = offscreen;
+    referenceFlagURL = offscreen.toDataURL("image/png");
+
+    referenceFlagReady = true;
+    el("submitFlag").disabled = false;
+
     el("score3Note").textContent =
       "Complete the flag, then submit your drawing.";
-  } catch(error) {
-    console.warn("Flag reference failed:",error);
+
+  } catch (error) {
+    console.warn("Flag reference failed:", error);
+
     el("score3Note").textContent =
       "Flag reference unavailable. Scoring cannot begin yet.";
   }
 }
 
-/*
-  Pixel colour comparison.
-
-  Scores how closely the player's image matches
-  the correct flag at the same position.
-*/
+/* IMPROVED FLAG SCORING */
 
 function calculateFlagScore() {
-  const w=flagCanvas.width;
-  const h=flagCanvas.height;
+  const w = flagCanvas.width;
+  const h = flagCanvas.height;
 
-  const player=flagCtx.getImageData(0,0,w,h).data;
-  const correct=referenceFlag
-    .getContext("2d",{willReadFrequently:true})
-    .getImageData(0,0,w,h).data;
+  const player = flagCtx.getImageData(0, 0, w, h).data;
 
-  let difference=0;
-  let count=0;
+  const correct = referenceFlag
+    .getContext("2d", { willReadFrequently: true })
+    .getImageData(0, 0, w, h).data;
 
-  // Sample every fourth pixel in each direction.
-  for(let y=0;y<h;y+=4) {
-    for(let x=0;x<w;x+=4) {
-      const i=(y*w+x)*4;
+  const baseCanvas = document.createElement("canvas");
+  baseCanvas.width = 1;
+  baseCanvas.height = 1;
 
-      const dr=Math.abs(player[i]-correct[i]);
-      const dg=Math.abs(player[i+1]-correct[i+1]);
-      const db=Math.abs(player[i+2]-correct[i+2]);
+  const baseCtx = baseCanvas.getContext("2d");
+  baseCtx.fillStyle = country.flagBackground;
+  baseCtx.fillRect(0, 0, 1, 1);
 
-      difference+=(dr+dg+db)/(3*255);
-      count++;
+  const base = baseCtx.getImageData(0, 0, 1, 1).data;
+
+  let backgroundError = 0;
+  let backgroundCount = 0;
+
+  let featureError = 0;
+  let featureCount = 0;
+
+  // RGB distance between a colour and an image pixel.
+  const distance = (a, b, i) => {
+    const dr = a[0] - b[i];
+    const dg = a[1] - b[i + 1];
+    const db = a[2] - b[i + 2];
+
+    return Math.sqrt(dr * dr + dg * dg + db * db) /
+      Math.sqrt(3 * 255 * 255);
+  };
+
+  for (let y = 0; y < h; y += 3) {
+    for (let x = 0; x < w; x += 3) {
+      const i = (y * w + x) * 4;
+
+      const correctColor = [
+        correct[i],
+        correct[i + 1],
+        correct[i + 2]
+      ];
+
+      const differenceFromBase =
+        distance(base, correct, i);
+
+      const playerDifference =
+        distance(correctColor, player, i);
+
+      const isFeature = differenceFromBase > 0.12;
+
+      if (isFeature) {
+        featureError += playerDifference;
+        featureCount++;
+      } else {
+        backgroundError += playerDifference;
+        backgroundCount++;
+      }
     }
   }
 
-  const similarity=1-difference/count;
-  return Math.max(0,Math.min(1000,Math.round(similarity*1000)));
+  const backgroundAccuracy = backgroundCount
+    ? 1 - backgroundError / backgroundCount
+    : 0;
+
+  const featureAccuracy = featureCount
+    ? 1 - featureError / featureCount
+    : 0;
+
+  // 200 points for background accuracy.
+  // 800 points for the distinctive flag elements.
+  const score =
+    backgroundAccuracy * 200 +
+    featureAccuracy * 800;
+
+  return Math.max(
+    0,
+    Math.min(1000, Math.round(score))
+  );
 }
 
-el("submitFlag").onclick=()=>{
-  if(flagSubmitted||!referenceFlagReady) return;
+/* SUBMIT FLAG */
+
+el("submitFlag").onclick = () => {
+  if (flagSubmitted || !referenceFlagReady) return;
 
   try {
-    round3Score=calculateFlagScore();
-    flagSubmitted=true;
+    round3Score = calculateFlagScore();
+    flagSubmitted = true;
 
-    el("userFlagPreview").src=flagCanvas.toDataURL("image/png");
-    el("correctFlagPreview").src=referenceFlagURL;
+    el("userFlagPreview").src =
+      flagCanvas.toDataURL("image/png");
+
+    el("correctFlagPreview").src = referenceFlagURL;
 
     el("flagComparison").classList.add("visible");
 
-    ["penTool","bucketTool","eraserTool",
-     "undoFlag","resetFlag","submitFlag",
-     "customColor","brushSize"]
-      .forEach(id=>el(id).disabled=true);
+    [
+      "penTool", "bucketTool", "eraserTool",
+      "undoFlag", "resetFlag", "submitFlag",
+      "customColor", "brushSize"
+    ].forEach(id => el(id).disabled = true);
 
     document.querySelectorAll(".color-swatch")
-      .forEach(b=>b.disabled=true);
+      .forEach(b => b.disabled = true);
 
-    scoreAnimation("score3Label","score3Fill",round3Score);
+    scoreAnimation(
+      "score3Label",
+      "score3Fill",
+      round3Score
+    );
 
     el("score3Note").textContent =
       `You earned ${round3Score} out of 1000 flag points!`;
 
     el("flagFeedback").innerHTML =
-      "<strong>Correct flag revealed!</strong>"+
+      "<strong>Correct flag revealed!</strong>" +
       "<div>Compare your drawing with the original flag.</div>";
 
-    const finalScore=round1Score+round2Score+round3Score;
+    const finalScore =
+      round1Score + round2Score + round3Score;
 
     el("finalTotal").textContent =
       `Final Score: ${finalScore} / 3000`;
 
     el("result3").classList.add("visible");
-  } catch(error) {
-    console.error("Flag scoring failed:",error);
+
+  } catch (error) {
+    console.error("Flag scoring failed:", error);
+
     el("score3Note").textContent =
       "Unable to score the flag. Please try again.";
   }
 };
 
-/* ROUND 2 TO ROUND 3 */
+/* CONTINUE TO ROUND 3 */
 
-el("continue2").onclick=()=>{
-  transition("round2","round3");
-
-  // Prepare a blank flag with its correct base colour.
+el("continue2").onclick = () => {
+  transition("round2", "round3");
   initFlag();
-
-  // Load the correct flag privately for scoring.
   loadReferenceFlag();
 };
 
