@@ -1,73 +1,94 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Borderline</title>
 
+  <!-- Map library -->
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Geographic calculations -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6.5.0/turf.min.js"></script>
+
   <style>
+    /*
+      SIGher FONT
+
+      Upload a licensed web-compatible font file
+      named Sigher.woff2 to your repository.
+    */
+    @font-face {
+      font-family: "Sigher";
+      src: url("Sigher.woff2") format("woff2");
+      font-display: swap;
+    }
+
+    :root {
+      --green: #00b85b;
+      --dark-green: #008c46;
+      --background: #f5f7fa;
+      --ink: #252525;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #f5f7fa;
+      background: var(--background);
+      color: var(--ink);
       font-family: Arial, sans-serif;
-      color: #252525;
     }
 
-    /* SCREEN TRANSITIONS */
+    button {
+      font-family: inherit;
+    }
 
     .screen {
       position: absolute;
       inset: 0;
-      width: 100%;
       height: 100vh;
       height: 100dvh;
+      width: 100%;
       overflow: hidden;
+      background: var(--background);
+      transition:
+        transform 1.2s ease-in-out,
+        opacity 1.2s ease-in-out;
     }
 
-    #homeScreen {
-      z-index: 2;
-      transition: transform 1.2s ease-in-out,
-                  opacity 1.2s ease-in-out;
-    }
-
-    #homeScreen.leave {
-      transform: translateY(-110%);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #roundScreen {
-      z-index: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-
+    .screen.offscreen {
       transform: translateY(110%);
       opacity: 0;
       pointer-events: none;
-
-      transition: transform 1.2s ease-in-out,
-                  opacity 1.2s ease-in-out;
     }
 
-    #roundScreen.enter {
+    .screen.active {
       transform: translateY(0);
       opacity: 1;
       pointer-events: auto;
     }
 
-    /* LANDING PAGE */
+    .screen.leave {
+      transform: translateY(-110%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* HOME SCREEN */
+
+    #homeScreen {
+      z-index: 3;
+    }
 
     .game-header {
       position: absolute;
@@ -79,7 +100,6 @@
 
     .globe-logo {
       width: 100%;
-      height: auto;
       display: block;
       animation: float 5s ease-in-out infinite;
     }
@@ -88,7 +108,6 @@
       0%, 100% {
         transform: translateY(0);
       }
-
       50% {
         transform: translateY(-15px);
       }
@@ -108,28 +127,22 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: 200px;
       height: 90px;
-
-      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: none;
       padding: 0;
+      background: transparent;
       cursor: pointer;
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s;
     }
 
     .image-button img {
       width: 65px;
-      height: auto;
-      display: block;
       transform: rotate(-90deg);
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
 
     .image-button:hover img {
@@ -146,13 +159,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: 100%;
       text-align: center;
       opacity: 0;
       visibility: hidden;
-
-      transition: opacity 0.5s ease;
+      transition: opacity 0.5s;
     }
 
     .country-display.visible {
@@ -163,44 +174,41 @@
     .country-display h2 {
       font-size: clamp(18px, 3vw, 26px);
       margin: 0;
-      white-space: nowrap;
     }
 
     #countryName {
-      color: #00b85b;
+      color: var(--green);
       font-size: clamp(26px, 4vw, 36px);
       margin: 12px 0 0;
     }
 
-    #countryName.reveal {
-      animation: countryPop 0.5s ease-out;
+    /* SHARED ROUND STYLES */
+
+    #roundOneScreen,
+    #roundTwoScreen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
-    @keyframes countryPop {
-      from {
-        opacity: 0;
-        transform: scale(0.7);
-      }
-
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    #roundOneScreen {
+      z-index: 2;
     }
 
-    /* ROUND ONE LAYOUT */
+    #roundTwoScreen {
+      z-index: 1;
+    }
 
     .round-layout {
       width: min(100%, 760px);
       max-height: 100%;
       overflow-y: auto;
-
+      scrollbar-width: thin;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: clamp(12px, 2.5vh, 24px);
-
-      scrollbar-width: thin;
+      gap: 18px;
     }
 
     .round-heading {
@@ -212,14 +220,10 @@
       flex-shrink: 0;
     }
 
-    /* YOUR HAND-DRAWN GLOBES */
-
     .mini-globe {
-      width: clamp(55px, 10vw, 100px);
-      height: clamp(55px, 10vw, 100px);
+      width: clamp(55px, 10vw, 95px);
+      height: clamp(55px, 10vw, 95px);
       object-fit: contain;
-      flex-shrink: 0;
-
       animation: float 5s ease-in-out infinite;
     }
 
@@ -231,29 +235,30 @@
       text-align: center;
     }
 
+    .round-country,
+    .round-number {
+      font-family: "Sigher", Arial, sans-serif;
+    }
+
     .round-country {
-      font-size: clamp(22px, 5vw, 40px);
-      font-weight: bold;
-      color: #00a955;
+      font-size: clamp(23px, 5vw, 40px);
+      color: var(--dark-green);
     }
 
     .round-number {
-      font-size: clamp(18px, 3vw, 25px);
+      font-size: clamp(18px, 3vw, 26px);
       margin-top: 5px;
     }
 
-    /* QUESTION PANEL */
-
     .questions-panel {
       width: 100%;
+      background: white;
       border: 2px solid #343434;
       border-radius: 12px;
       padding: clamp(16px, 4vw, 32px);
-      background: white;
-
       display: flex;
       flex-direction: column;
-      gap: clamp(14px, 2.5vh, 24px);
+      gap: 20px;
       flex-shrink: 0;
     }
 
@@ -264,58 +269,38 @@
     }
 
     .question label {
-      font-size: clamp(15px, 2.4vw, 21px);
+      font-size: clamp(15px, 2.4vw, 20px);
       font-weight: 600;
     }
 
     .answer-input {
       width: 100%;
-      height: 48px;
-
+      height: 46px;
       border: 2px solid #b9c1c8;
       border-radius: 8px;
-
       padding: 0 14px;
       font-size: 18px;
-      background: #f5f7fa;
-      outline: none;
+      background: var(--background);
     }
 
     .answer-input:focus {
-      border-color: #00a955;
+      outline: none;
+      border-color: var(--green);
     }
-
-    .answer-input:disabled {
-      opacity: 0.8;
-    }
-
-    /* ANSWER REVEAL */
 
     .answer-result {
       display: none;
-      padding: 10px 14px;
-      border-radius: 8px;
-
       background: #eaf8ef;
-      border-left: 4px solid #00b85b;
-
+      border-left: 4px solid var(--green);
+      padding: 12px 14px;
+      border-radius: 7px;
       font-size: 15px;
-      line-height: 1.5;
-
-      animation: resultAppear 0.4s ease-out;
+      line-height: 1.6;
     }
 
     .answer-result.visible {
       display: block;
-    }
-
-    .correct-value {
-      font-weight: bold;
-      color: #008b47;
-    }
-
-    .earned-points {
-      font-weight: bold;
+      animation: resultAppear 0.4s ease-out;
     }
 
     @keyframes resultAppear {
@@ -323,47 +308,56 @@
         opacity: 0;
         transform: translateY(-8px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    /* SUBMIT BUTTON */
-
-    .submit-button {
-      align-self: center;
-      background: #00b85b;
-      color: white;
-
-      font-size: 17px;
+    .correct-value {
+      color: var(--dark-green);
       font-weight: bold;
+    }
 
-      padding: 13px 32px;
+    .action-button {
+      background: var(--green);
+      color: white;
       border: none;
       border-radius: 9px;
+      padding: 13px 30px;
+      font-size: 17px;
+      font-weight: bold;
       cursor: pointer;
-
-      transition: transform 0.2s ease;
+      transition: transform 0.2s;
     }
 
-    .submit-button:hover {
-      transform: scale(1.05);
+    .action-button:hover:not(:disabled) {
+      transform: scale(1.04);
     }
 
-    .submit-button:disabled {
-      opacity: 0.65;
+    .action-button:disabled {
+      opacity: 0.6;
       cursor: default;
     }
 
-    /* SCORE METER */
+    .questions-panel .action-button {
+      align-self: center;
+    }
+
+    .continue-button {
+      display: none;
+      margin: 0 auto;
+    }
+
+    .continue-button.visible {
+      display: block;
+    }
 
     .score-section {
       width: 100%;
       text-align: center;
       flex-shrink: 0;
-      padding-bottom: 10px;
+      padding-bottom: 12px;
     }
 
     .score-label {
@@ -375,7 +369,6 @@
     .score-track {
       width: 100%;
       height: 30px;
-
       border: 2px solid #343434;
       border-radius: 8px;
       overflow: hidden;
@@ -383,9 +376,9 @@
     }
 
     .score-fill {
-      height: 100%;
       width: 0%;
-      background: #00b85b;
+      height: 100%;
+      background: var(--green);
       transition: width 1.2s ease-out;
     }
 
@@ -397,14 +390,110 @@
     }
 
     .score-feedback {
-      min-height: 22px;
       margin-top: 10px;
+      min-height: 22px;
+      font-size: 15px;
+    }
+
+    /* ROUND 2: MAP */
+
+    .map-instructions {
+      text-align: center;
+      font-size: clamp(15px, 2.4vw, 20px);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .map-frame {
+      width: 100%;
+      height: clamp(250px, 46vh, 440px);
+      min-height: 250px;
+      border: 2px solid #343434;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      background: #e8f0f2;
+      flex-shrink: 0;
+    }
+
+    #borderMap {
+      width: 100%;
+      height: 100%;
+      background: #e8f0f2;
+    }
+
+    /* Drawing overlay on top of Leaflet */
+    #drawingCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 600;
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    .map-status {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      z-index: 700;
+      pointer-events: none;
+      text-align: center;
+    }
+
+    .map-status span {
+      display: inline-block;
+      background: rgba(255,255,255,0.94);
+      border-radius: 7px;
+      padding: 7px 12px;
+      font-size: 13px;
+      box-shadow: 0 2px 8px #00000015;
+    }
+
+    .map-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .secondary-button {
+      background: white;
+      color: #333;
+      border: 2px solid #aab4bc;
+      border-radius: 9px;
+      padding: 11px 25px;
       font-size: 16px;
-      font-weight: 500;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .round-two-result {
+      display: none;
+      width: 100%;
+      text-align: center;
+      background: #eaf8ef;
+      border: 1px solid #a7dfbb;
+      border-radius: 10px;
+      padding: 14px;
+      line-height: 1.6;
+    }
+
+    .round-two-result.visible {
+      display: block;
+    }
+
+    .total-score {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--dark-green);
     }
 
     @media (max-width: 500px) {
-      #roundScreen {
+      #roundOneScreen,
+      #roundTwoScreen {
         padding: 12px;
       }
 
@@ -412,34 +501,29 @@
         padding: 16px;
       }
 
-      .mini-globe {
-        width: 55px;
-        height: 55px;
+      .round-layout {
+        gap: 12px;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
       .globe-logo,
-      .mini-globe,
-      #countryName.reveal {
+      .mini-globe {
         animation: none;
       }
 
       .screen,
-      .score-fill,
-      .answer-result {
+      .score-fill {
         transition: none;
       }
     }
-
   </style>
 </head>
 
 <body>
 
-  <!-- LANDING PAGE -->
-
-  <main class="screen" id="homeScreen">
+  <!-- HOME PAGE -->
+  <main class="screen active" id="homeScreen">
 
     <div class="game-header">
       <img
@@ -460,66 +544,36 @@
         <img src="Start2.png" alt="">
       </button>
 
-      <div
-        class="country-display"
-        id="countryDisplay"
-        aria-live="polite"
-      >
+      <div class="country-display" id="countryDisplay">
         <h2>Today's country is...</h2>
         <h1 id="countryName"></h1>
       </div>
 
     </div>
-
   </main>
 
-  <!-- ROUND ONE -->
-
-  <section class="screen" id="roundScreen">
+  <!-- ROUND 1 -->
+  <section class="screen offscreen" id="roundOneScreen">
 
     <div class="round-layout">
 
-      <!-- COUNTRY HEADING -->
-
       <header class="round-heading">
-
-        <img
-          src="Untitled%201.png"
-          alt=""
-          class="mini-globe"
-        >
+        <img src="Untitled%201.png" alt="" class="mini-globe">
 
         <div class="round-title">
-          <div class="round-country">
-            New Zealand
-          </div>
-
-          <div class="round-number">
-            Round 1
-          </div>
+          <div class="round-country">New Zealand</div>
+          <div class="round-number">Round 1</div>
         </div>
 
-        <img
-          src="Untitled%201.png"
-          alt=""
-          class="mini-globe"
-        >
-
+        <img src="Untitled%201.png" alt="" class="mini-globe">
       </header>
-
-      <!-- QUESTIONS -->
 
       <form class="questions-panel" id="questionsForm">
 
-        <!-- GDP -->
-
         <div class="question">
-
           <label for="gdpAnswer">
-            What is the GDP of New Zealand?
-            (USD billions)
+            What is the GDP of New Zealand? (USD billions)
           </label>
-
           <input
             class="answer-input"
             id="gdpAnswer"
@@ -529,20 +583,13 @@
             placeholder="Type your answer here..."
             required
           >
-
           <div class="answer-result" id="gdpResult"></div>
-
         </div>
 
-        <!-- POPULATION -->
-
         <div class="question">
-
           <label for="populationAnswer">
-            What is the population of New Zealand?
-            (millions)
+            What is the population of New Zealand? (millions)
           </label>
-
           <input
             class="answer-input"
             id="populationAnswer"
@@ -552,23 +599,13 @@
             placeholder="Type your answer here..."
             required
           >
-
-          <div
-            class="answer-result"
-            id="populationResult"
-          ></div>
-
+          <div class="answer-result" id="populationResult"></div>
         </div>
 
-        <!-- COASTLINE -->
-
         <div class="question">
-
           <label for="coastlineAnswer">
-            How long is the coastline of New Zealand?
-            (kilometres)
+            How long is the coastline of New Zealand? (kilometres)
           </label>
-
           <input
             class="answer-input"
             id="coastlineAnswer"
@@ -578,36 +615,22 @@
             placeholder="Type your answer here..."
             required
           >
-
-          <div
-            class="answer-result"
-            id="coastlineResult"
-          ></div>
-
+          <div class="answer-result" id="coastlineResult"></div>
         </div>
 
-        <button
-          class="submit-button"
-          type="submit"
-        >
+        <button class="action-button" type="submit">
           Submit Answers
         </button>
 
       </form>
 
-      <!-- SCORE METER -->
-
       <div class="score-section">
-
-        <div class="score-label" id="scoreLabel">
+        <div class="score-label" id="scoreOneLabel">
           0 / 1000 Points
         </div>
 
         <div class="score-track">
-          <div
-            class="score-fill"
-            id="scoreFill"
-          ></div>
+          <div class="score-fill" id="scoreOneFill"></div>
         </div>
 
         <div class="score-scale">
@@ -615,59 +638,188 @@
           <span>1000</span>
         </div>
 
-        <div
-          class="score-feedback"
-          id="scoreFeedback"
-          aria-live="polite"
-        ></div>
+        <div class="score-feedback" id="scoreOneFeedback"></div>
+      </div>
+
+      <button
+        class="action-button continue-button"
+        id="continueButton"
+        type="button"
+      >
+        Continue to Round 2
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ROUND 2 -->
+  <section class="screen offscreen" id="roundTwoScreen">
+
+    <div class="round-layout">
+
+      <header class="round-heading">
+        <img src="Untitled%201.png" alt="" class="mini-globe">
+
+        <div class="round-title">
+          <div class="round-country">Netherlands</div>
+          <div class="round-number">Round 2</div>
+        </div>
+
+        <img src="Untitled%201.png" alt="" class="mini-globe">
+      </header>
+
+      <p class="map-instructions">
+        Draw the borders of the Netherlands
+      </p>
+
+      <div class="map-frame">
+
+        <div id="borderMap"></div>
+
+        <canvas id="drawingCanvas"></canvas>
+
+        <div class="map-status">
+          <span id="mapStatus">
+            Loading the regional map...
+          </span>
+        </div>
+
+      </div>
+
+      <div class="map-actions">
+
+        <button
+          class="secondary-button"
+          id="clearDrawingButton"
+          type="button"
+        >
+          Clear Drawing
+        </button>
+
+        <button
+          class="action-button"
+          id="submitDrawingButton"
+          type="button"
+          disabled
+        >
+          Submit Border
+        </button>
+
+      </div>
+
+      <div class="round-two-result" id="roundTwoResult">
+        <div id="borderFeedback"></div>
+        <div class="total-score" id="totalScore"></div>
+      </div>
+
+      <div class="score-section">
+
+        <div class="score-label" id="scoreTwoLabel">
+          0 / 1000 Points
+        </div>
+
+        <div class="score-track">
+          <div class="score-fill" id="scoreTwoFill"></div>
+        </div>
+
+        <div class="score-scale">
+          <span>0</span>
+          <span>1000</span>
+        </div>
+
+        <div class="score-feedback" id="scoreTwoFeedback">
+          Draw a closed outline to earn points.
+        </div>
 
       </div>
 
     </div>
-
   </section>
 
   <script>
+    /*
+      BORDERLINE GAME STATE
+    */
 
-    // LANDING PAGE
-
-    const startButton =
-      document.getElementById("startButton");
-
-    const countryDisplay =
-      document.getElementById("countryDisplay");
-
-    const countryName =
-      document.getElementById("countryName");
+    let roundOneScore = 0;
+    let roundTwoScore = 0;
 
     const homeScreen =
       document.getElementById("homeScreen");
 
-    const roundScreen =
-      document.getElementById("roundScreen");
+    const roundOneScreen =
+      document.getElementById("roundOneScreen");
+
+    const roundTwoScreen =
+      document.getElementById("roundTwoScreen");
+
+    function changeScreen(currentScreen, nextScreen) {
+      currentScreen.classList.remove("active");
+      currentScreen.classList.add("leave");
+
+      nextScreen.classList.remove("offscreen");
+      nextScreen.classList.add("active");
+    }
+
+    /*
+      START GAME
+    */
+
+    const startButton =
+      document.getElementById("startButton");
 
     startButton.addEventListener("click", function() {
-
       startButton.blur();
       startButton.disabled = true;
       startButton.classList.add("hidden");
 
-      countryDisplay.classList.add("visible");
+      document.getElementById("countryDisplay")
+        .classList.add("visible");
 
       setTimeout(function() {
-        countryName.textContent = "New Zealand";
-        countryName.classList.add("reveal");
+        document.getElementById("countryName")
+          .textContent = "New Zealand";
       }, 1000);
 
       setTimeout(function() {
-        homeScreen.classList.add("leave");
-        roundScreen.classList.add("enter");
+        changeScreen(homeScreen, roundOneScreen);
       }, 2800);
-
     });
 
-    // ROUND DATA
-    // Prototype values: verify and date before launch.
+    /*
+      SCORE ANIMATION
+    */
+
+    function animateScore(labelId, fillId, points) {
+      const label = document.getElementById(labelId);
+      const fill = document.getElementById(fillId);
+
+      const duration = 1200;
+      const start = performance.now();
+
+      fill.style.width = (points / 10) + "%";
+
+      function update(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        label.textContent =
+          Math.round(points * eased) + " / 1000 Points";
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    /*
+      ROUND 1: NUMERICAL QUESTIONS
+
+      These are prototype reference values.
+      Verify and date them before publishing.
+    */
 
     const correctAnswers = {
       gdp: 260,
@@ -675,184 +827,512 @@
       coastline: 15134
     };
 
-    // Each question contributes to a total of 1000 points.
-
-    const MAX_ROUND_POINTS = 1000;
-
     function calculateAccuracy(guess, actual) {
-
-      const difference = Math.abs(guess - actual);
-
-      const relativeError = difference / actual;
-
-      return Math.max(0, 1 - relativeError);
-
+      return Math.max(
+        0,
+        1 - Math.abs(guess - actual) / actual
+      );
     }
 
-    // SCORE COUNTER ANIMATION
+    function showAnswer(id, value, unit, points, maximum) {
+      const element = document.getElementById(id);
 
-    function animateScore(finalScore) {
+      element.innerHTML =
+        'Correct answer: <span class="correct-value">' +
+        value + ' ' + unit +
+        '</span><div>Points earned: ' +
+        points + ' / ' + maximum + '</div>';
 
-      const scoreLabel =
-        document.getElementById("scoreLabel");
+      element.classList.add("visible");
+    }
 
-      const duration = 1200;
-      const startTime = performance.now();
+    document.getElementById("questionsForm")
+      .addEventListener("submit", function(event) {
 
-      function updateScore(currentTime) {
+        event.preventDefault();
 
-        const elapsed = currentTime - startTime;
+        const gdp = Number(
+          document.getElementById("gdpAnswer").value
+        );
 
-        const progress = Math.min(elapsed / duration, 1);
+        const population = Number(
+          document.getElementById("populationAnswer").value
+        );
 
-        const easedProgress =
-          1 - Math.pow(1 - progress, 3);
+        const coastline = Number(
+          document.getElementById("coastlineAnswer").value
+        );
 
-        const currentScore =
-          Math.round(finalScore * easedProgress);
+        const gdpPoints = Math.round(
+          calculateAccuracy(gdp, correctAnswers.gdp) * 334
+        );
 
-        scoreLabel.textContent =
-          currentScore + " / 1000 Points";
+        const populationPoints = Math.round(
+          calculateAccuracy(
+            population,
+            correctAnswers.population
+          ) * 333
+        );
 
-        if (progress < 1) {
-          requestAnimationFrame(updateScore);
-        }
+        const coastlinePoints = Math.round(
+          calculateAccuracy(
+            coastline,
+            correctAnswers.coastline
+          ) * 333
+        );
 
+        roundOneScore =
+          gdpPoints + populationPoints + coastlinePoints;
+
+        showAnswer(
+          "gdpResult",
+          correctAnswers.gdp,
+          "billion USD",
+          gdpPoints,
+          334
+        );
+
+        showAnswer(
+          "populationResult",
+          correctAnswers.population,
+          "million",
+          populationPoints,
+          333
+        );
+
+        showAnswer(
+          "coastlineResult",
+          correctAnswers.coastline.toLocaleString(),
+          "km",
+          coastlinePoints,
+          333
+        );
+
+        animateScore(
+          "scoreOneLabel",
+          "scoreOneFill",
+          roundOneScore
+        );
+
+        document.getElementById("scoreOneFeedback")
+          .textContent =
+          "You earned " + roundOneScore +
+          " out of 1000 points in Round 1!";
+
+        this.querySelectorAll("input").forEach(function(input) {
+          input.disabled = true;
+        });
+
+        this.querySelector("button").disabled = true;
+
+        document.getElementById("continueButton")
+          .classList.add("visible");
+      });
+
+    /*
+      CONTINUE TO ROUND 2
+    */
+
+    document.getElementById("continueButton")
+      .addEventListener("click", function() {
+
+        this.blur();
+
+        changeScreen(roundOneScreen, roundTwoScreen);
+
+        // Wait until the screen transition is complete.
+        setTimeout(initializeMap, 1250);
+      });
+
+    /*
+      ROUND 2: GEOGRAPHIC DRAWING
+    */
+
+    let map = null;
+    let mapReady = false;
+    let mapLoading = false;
+    let netherlandsGeometry = null;
+    let correctBorderLayer = null;
+
+    let drawingPoints = [];
+    let isDrawing = false;
+    let drawingSubmitted = false;
+
+    const canvas =
+      document.getElementById("drawingCanvas");
+
+    const context = canvas.getContext("2d");
+
+    const mapStatus =
+      document.getElementById("mapStatus");
+
+    const submitDrawingButton =
+      document.getElementById("submitDrawingButton");
+
+    const clearDrawingButton =
+      document.getElementById("clearDrawingButton");
+
+    const countryCodes = [
+      "BEL", "DEU", "LUX", "FRA", "GBR", "NLD"
+    ];
+
+    async function loadCountry(code) {
+      const url =
+        "https://raw.githubusercontent.com/johan/world.geo.json/master/countries/" +
+        code + ".geo.json";
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Could not load " + code);
       }
 
-      requestAnimationFrame(updateScore);
-
+      return response.json();
     }
 
-    // DISPLAY CORRECT ANSWERS
+    async function initializeMap() {
+      if (mapReady || mapLoading) return;
 
-    function showAnswerResult(
-      elementId,
-      correctValue,
-      unit,
-      points,
-      maximum
-    ) {
+      mapLoading = true;
 
-      const resultElement =
-        document.getElementById(elementId);
+      try {
+        if (typeof L === "undefined" ||
+            typeof turf === "undefined") {
+          throw new Error("Map libraries unavailable");
+        }
 
-      resultElement.innerHTML =
-        '<div>Correct answer: ' +
-        '<span class="correct-value">' +
-        correctValue + ' ' + unit +
-        '</span></div>' +
-        '<div>Points earned: ' +
-        '<span class="earned-points">' +
-        points + ' / ' + maximum +
-        '</span></div>';
+        map = L.map("borderMap", {
+          zoomControl: false,
+          attributionControl: false,
+          dragging: false,
+          scrollWheelZoom: false,
+          doubleClickZoom: false,
+          touchZoom: false,
+          boxZoom: false,
+          keyboard: false
+        });
 
-      resultElement.classList.add("visible");
+        // Regional view of the Netherlands and neighbours.
+        map.fitBounds([
+          [50.5, 2.7],
+          [53.7, 7.4]
+        ]);
 
+        map.invalidateSize();
+
+        const countries = await Promise.all(
+          countryCodes.map(loadCountry)
+        );
+
+        countries.forEach(function(country, index) {
+          const code = countryCodes[index];
+
+          if (code === "NLD") {
+            netherlandsGeometry = country;
+            return;
+          }
+
+          // Show neighbouring countries, but hide the
+          // Netherlands outline until the player submits.
+          L.geoJSON(country, {
+            style: {
+              color: "#83949b",
+              weight: 1.6,
+              fillColor: "#e5e9df",
+              fillOpacity: 0.8
+            },
+            interactive: false
+          }).addTo(map);
+        });
+
+        mapReady = true;
+
+        resizeDrawingCanvas();
+
+        submitDrawingButton.disabled = false;
+
+        mapStatus.firstElementChild.textContent =
+          "Draw around the Netherlands in one stroke";
+
+      } catch (error) {
+        console.error(error);
+
+        mapStatus.firstElementChild.textContent =
+          "Map could not load. Check your internet connection.";
+
+        mapLoading = false;
+      }
     }
 
-    // HANDLE SUBMISSION
+    /*
+      CANVAS DRAWING
+    */
 
-    const questionsForm =
-      document.getElementById("questionsForm");
+    function resizeDrawingCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const scale = window.devicePixelRatio || 1;
 
-    questionsForm.addEventListener("submit", function(event) {
+      canvas.width = Math.round(rect.width * scale);
+      canvas.height = Math.round(rect.height * scale);
+
+      context.setTransform(scale, 0, 0, scale, 0, 0);
+
+      redrawCanvas();
+    }
+
+    function getCanvasPosition(event) {
+      const rect = canvas.getBoundingClientRect();
+
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function redrawCanvas() {
+      const rect = canvas.getBoundingClientRect();
+
+      context.clearRect(0, 0, rect.width, rect.height);
+
+      if (drawingPoints.length < 2) return;
+
+      context.beginPath();
+      context.moveTo(
+        drawingPoints[0].x,
+        drawingPoints[0].y
+      );
+
+      for (let i = 1; i < drawingPoints.length; i++) {
+        context.lineTo(
+          drawingPoints[i].x,
+          drawingPoints[i].y
+        );
+      }
+
+      if (drawingSubmitted) {
+        context.closePath();
+      }
+
+      context.strokeStyle = "#00b85b";
+      context.lineWidth = 3.5;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+
+      context.stroke();
+
+      if (drawingSubmitted) {
+        context.fillStyle = "rgba(0,184,91,0.12)";
+        context.fill();
+      }
+    }
+
+    canvas.addEventListener("pointerdown", function(event) {
+      if (!mapReady || drawingSubmitted) return;
+
+      event.preventDefault();
+      canvas.setPointerCapture(event.pointerId);
+
+      isDrawing = true;
+      drawingPoints = [getCanvasPosition(event)];
+
+      redrawCanvas();
+    });
+
+    canvas.addEventListener("pointermove", function(event) {
+      if (!isDrawing || drawingSubmitted) return;
 
       event.preventDefault();
 
-      const gdpGuess =
-        Number(document.getElementById("gdpAnswer").value);
+      const point = getCanvasPosition(event);
+      const last = drawingPoints[drawingPoints.length - 1];
 
-      const populationGuess =
-        Number(document.getElementById("populationAnswer").value);
+      const distance = Math.hypot(
+        point.x - last.x,
+        point.y - last.y
+      );
 
-      const coastlineGuess =
-        Number(document.getElementById("coastlineAnswer").value);
+      if (distance >= 3) {
+        drawingPoints.push(point);
+        redrawCanvas();
+      }
+    });
 
-      // Calculate accuracy
+    function finishDrawing() {
+      if (!isDrawing) return;
 
-      const gdpAccuracy =
-        calculateAccuracy(gdpGuess, correctAnswers.gdp);
+      isDrawing = false;
 
-      const populationAccuracy =
-        calculateAccuracy(
-          populationGuess,
-          correctAnswers.population
+      if (drawingPoints.length >= 3) {
+        redrawCanvas();
+        mapStatus.firstElementChild.textContent =
+          "Ready to submit or clear your drawing";
+      }
+    }
+
+    canvas.addEventListener("pointerup", finishDrawing);
+    canvas.addEventListener("pointercancel", finishDrawing);
+
+    clearDrawingButton.addEventListener("click", function() {
+      if (drawingSubmitted) return;
+
+      drawingPoints = [];
+      redrawCanvas();
+
+      mapStatus.firstElementChild.textContent =
+        "Draw around the Netherlands in one stroke";
+    });
+
+    /*
+      CONVERT DRAWING INTO A GEOGRAPHIC POLYGON
+    */
+
+    function drawingToPolygon() {
+      if (drawingPoints.length < 3) return null;
+
+      const coordinates = drawingPoints.map(function(point) {
+        const location = map.containerPointToLatLng(
+          L.point(point.x, point.y)
         );
 
-      const coastlineAccuracy =
-        calculateAccuracy(
-          coastlineGuess,
-          correctAnswers.coastline
-        );
-
-      // Distribute 1000 points across three questions
-      // 334 + 333 + 333 = 1000
-
-      const gdpPoints =
-        Math.round(gdpAccuracy * 334);
-
-      const populationPoints =
-        Math.round(populationAccuracy * 333);
-
-      const coastlinePoints =
-        Math.round(coastlineAccuracy * 333);
-
-      const totalPoints =
-        gdpPoints + populationPoints + coastlinePoints;
-
-      // Reveal correct answers
-
-      showAnswerResult(
-        "gdpResult",
-        correctAnswers.gdp,
-        "billion USD",
-        gdpPoints,
-        334
-      );
-
-      showAnswerResult(
-        "populationResult",
-        correctAnswers.population,
-        "million",
-        populationPoints,
-        333
-      );
-
-      showAnswerResult(
-        "coastlineResult",
-        correctAnswers.coastline.toLocaleString(),
-        "km",
-        coastlinePoints,
-        333
-      );
-
-      // Animate score counter
-
-      animateScore(totalPoints);
-
-      // Fill score meter
-
-      document.getElementById("scoreFill").style.width =
-        (totalPoints / MAX_ROUND_POINTS * 100) + "%";
-
-      // Feedback
-
-      document.getElementById("scoreFeedback").textContent =
-        "You earned " + totalPoints +
-        " out of 1000 points in Round 1!";
-
-      // Lock answers after submission
-
-      const inputs =
-        questionsForm.querySelectorAll("input");
-
-      inputs.forEach(function(input) {
-        input.disabled = true;
+        return [location.lng, location.lat];
       });
 
-      questionsForm.querySelector("button").disabled = true;
+      // Close the polygon.
+      coordinates.push([...coordinates[0]]);
 
+      return turf.polygon([coordinates]);
+    }
+
+    /*
+      SCORE THE BORDER
+
+      Intersection over Union:
+      overlap area divided by combined area.
+
+      This rewards matching both the location
+      and the shape of the country.
+    */
+
+    function calculateBorderScore(playerPolygon) {
+      const actualPolygon = turf.feature(
+        netherlandsGeometry.geometry
+      );
+
+      let overlap = null;
+
+      try {
+        overlap = turf.intersect(
+          playerPolygon,
+          actualPolygon
+        );
+      } catch (error) {
+        console.warn("Invalid drawn polygon", error);
+        throw new Error("Please redraw a simpler outline.");
+      }
+
+      if (!overlap) return 0;
+
+      const overlapArea = turf.area(overlap);
+
+      const playerArea = turf.area(playerPolygon);
+      const actualArea = turf.area(actualPolygon);
+
+      const unionArea =
+        playerArea + actualArea - overlapArea;
+
+      if (unionArea <= 0) return 0;
+
+      return Math.max(
+        0,
+        Math.min(
+          1000,
+          Math.round(overlapArea / unionArea * 1000)
+        )
+      );
+    }
+
+    /*
+      SUBMIT BORDER
+    */
+
+    submitDrawingButton.addEventListener("click", function() {
+      if (!mapReady || drawingSubmitted) return;
+
+      if (drawingPoints.length < 10) {
+        mapStatus.firstElementChild.textContent =
+          "Draw a longer outline before submitting";
+        return;
+      }
+
+      let playerPolygon;
+
+      try {
+        playerPolygon = drawingToPolygon();
+
+        roundTwoScore = calculateBorderScore(playerPolygon);
+
+      } catch (error) {
+        mapStatus.firstElementChild.textContent =
+          error.message || "Please try drawing again";
+        return;
+      }
+
+      drawingSubmitted = true;
+      redrawCanvas();
+
+      submitDrawingButton.disabled = true;
+      clearDrawingButton.disabled = true;
+
+      // Reveal the actual Netherlands border.
+      correctBorderLayer = L.geoJSON(
+        netherlandsGeometry,
+        {
+          style: {
+            color: "#e65b48",
+            weight: 3.5,
+            fillColor: "#e65b48",
+            fillOpacity: 0.12,
+            dashArray: "7, 5"
+          },
+          interactive: false
+        }
+      ).addTo(map);
+
+      animateScore(
+        "scoreTwoLabel",
+        "scoreTwoFill",
+        roundTwoScore
+      );
+
+      document.getElementById("scoreTwoFeedback")
+        .textContent =
+        "You earned " + roundTwoScore +
+        " out of 1000 border points!";
+
+      document.getElementById("borderFeedback")
+        .innerHTML =
+        "<strong>Border revealed!</strong>" +
+        "<div>Green: your drawing</div>" +
+        "<div>Red dashed line: actual border</div>";
+
+      const finalTotal = roundOneScore + roundTwoScore;
+
+      document.getElementById("totalScore")
+        .textContent =
+        "Total Score: " + finalTotal + " / 2000";
+
+      document.getElementById("roundTwoResult")
+        .classList.add("visible");
+
+      mapStatus.firstElementChild.textContent =
+        "Your border compared with the real Netherlands";
+    });
+
+    window.addEventListener("resize", function() {
+      if (mapReady) {
+        map.invalidateSize();
+        resizeDrawingCanvas();
+      }
     });
 
   </script>
