@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Borderline</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -11,614 +11,555 @@
 
 <style>
 @font-face {
-  font-family: Sigher;
-  src: url("Sigher.woff2") format("woff2");
-  font-display: swap;
+  font-family:Sigher;
+  src:url("Sigher.woff2") format("woff2");
+  font-display:swap;
 }
-
 :root {
-  --green: #00b85b;
-  --darkgreen: #008c46;
-  --bg: #f5f7fa;
+  --green:#00b85b;
+  --darkgreen:#008e49;
+  --bg:#f5f7fa;
 }
-
-* { box-sizing: border-box; }
-
-html, body {
-  margin: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  font-family: Arial, sans-serif;
-  color: #252525;
+* {box-sizing:border-box}
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:#252525;
 }
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-}
-
+button,input {font:inherit}
+button {cursor:pointer}
+button:disabled {opacity:.45;cursor:not-allowed}
 .screen {
-  position: absolute;
-  inset: 0;
-  height: 100dvh;
-  background: var(--bg);
-  overflow: hidden;
-  transition: transform 1.1s ease, opacity 1.1s ease;
+  position:absolute;
+  inset:0;
+  height:100dvh;
+  background:var(--bg);
+  overflow:hidden;
+  transform:translateY(110%);
+  opacity:0;
+  pointer-events:none;
+  transition:transform 1s ease,opacity 1s ease;
 }
-
 .screen.active {
-  transform: translateY(0);
-  opacity: 1;
-  pointer-events: auto;
+  transform:translateY(0);
+  opacity:1;
+  pointer-events:auto;
 }
-
-.screen.offscreen {
-  transform: translateY(110%);
-  opacity: 0;
-  pointer-events: none;
-}
-
 .screen.leave {
-  transform: translateY(-110%);
-  opacity: 0;
-  pointer-events: none;
+  transform:translateY(-110%);
+  opacity:0;
+  pointer-events:none;
 }
-
-#home { z-index: 5; }
-#round1 { z-index: 4; }
-#round2 { z-index: 3; }
-#round3 { z-index: 2; }
+#home {z-index:6}
+#round1 {z-index:5}
+#round2 {z-index:4}
+#round3 {z-index:3}
+#results {z-index:2}
 
 /* HOME */
-
 .home-logo {
-  position: absolute;
-  top: 38%;
-  left: 50%;
-  width: min(65vw, 350px);
-  transform: translate(-50%, -50%);
+  position:absolute;
+  top:38%;
+  left:50%;
+  width:min(65vw,350px);
+  transform:translate(-50%,-50%);
 }
-
 .home-logo img {
-  width: 100%;
-  display: block;
-  animation: float 5s ease-in-out infinite;
+  width:100%;
+  display:block;
+  animation:float 5s ease-in-out infinite;
 }
-
 @keyframes float {
-  50% { transform: translateY(-15px); }
+  50% {transform:translateY(-15px)}
 }
-
 .start-area {
-  position: absolute;
-  top: 75%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(90vw, 360px);
-  height: 120px;
+  position:absolute;
+  top:75%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:min(90vw,360px);
+  height:120px;
 }
-
 .start-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 200px;
-  height: 90px;
-  border: none;
-  background: transparent;
-  display: grid;
-  place-items: center;
-  transition: opacity .3s;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:200px;
+  height:90px;
+  background:transparent;
+  border:0;
+  display:grid;
+  place-items:center;
 }
-
 .start-btn img {
-  width: 65px;
-  transform: rotate(-90deg);
+  width:65px;
+  transform:rotate(-90deg);
 }
-
 .start-btn.hidden {
-  opacity: 0;
-  pointer-events: none;
+  opacity:0;
+  pointer-events:none;
 }
-
 .country-reveal {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity .4s;
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .4s;
 }
-
 .country-reveal.visible {
-  opacity: 1;
-  visibility: visible;
+  opacity:1;
+  visibility:visible;
 }
-
-.country-reveal h2 {
-  margin: 0;
-  font-size: 24px;
-}
-
+.country-reveal h2 {margin:0;font-size:24px}
 .country-reveal h1 {
-  margin: 12px 0 0;
-  color: var(--green);
-  font-size: 36px;
+  margin:12px 0 0;
+  font-size:36px;
+  color:var(--green);
 }
 
-/* COMMON ROUND LAYOUT */
-
+/* ROUND SCREENS */
 .round-screen {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:18px;
+  overflow-y:auto;
 }
-
 .round-layout {
-  width: min(100%, 800px);
-  max-height: 100%;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  padding: 5px 0 15px;
+  width:min(100%,800px);
+  margin:0 auto;
+  padding:20px 0 45px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
 }
-
 .round-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(12px, 3vw, 28px);
-  width: 100%;
-  flex-shrink: 0;
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:clamp(12px,3vw,28px);
 }
-
 .round-header img {
-  width: clamp(45px, 9vw, 75px);
-  height: clamp(45px, 9vw, 75px);
-  object-fit: contain;
-  animation: float 5s ease-in-out infinite;
+  width:clamp(45px,9vw,75px);
+  height:clamp(45px,9vw,75px);
+  object-fit:contain;
+  animation:float 5s ease-in-out infinite;
 }
-
-.round-header img:last-child {
-  animation-delay: -2.5s;
+.round-heading {text-align:center}
+.country-title,.round-number {
+  font-family:Sigher,Arial,sans-serif;
 }
-
-.round-heading {
-  text-align: center;
-}
-
-.country-title, .round-number {
-  font-family: Sigher, Arial, sans-serif;
-}
-
 .country-title {
-  color: var(--darkgreen);
-  font-size: clamp(25px, 5vw, 40px);
+  color:var(--darkgreen);
+  font-size:clamp(26px,5vw,40px);
 }
-
 .round-number {
-  font-size: clamp(18px, 3vw, 26px);
-  margin-top: 4px;
+  font-size:clamp(19px,3vw,26px);
+  margin-top:4px;
 }
-
 .instructions {
-  font-size: clamp(16px, 2.3vw, 20px);
-  font-weight: 600;
-  text-align: center;
-  margin: 0;
+  text-align:center;
+  font-size:clamp(16px,2.3vw,20px);
+  font-weight:bold;
+  margin:0;
 }
-
-.primary, .secondary {
-  border-radius: 9px;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 12px 22px;
+.primary,.secondary {
+  border-radius:9px;
+  padding:12px 22px;
+  font-size:16px;
+  font-weight:bold;
 }
-
 .primary {
-  background: var(--green);
-  color: white;
-  border: none;
+  background:var(--green);
+  color:white;
+  border:0;
 }
-
+.primary:hover:not(:disabled) {background:var(--darkgreen)}
 .secondary {
-  background: white;
-  color: #333;
-  border: 2px solid #abb6be;
+  background:white;
+  color:#333;
+  border:2px solid #abb6be;
 }
-
 .secondary.selected {
-  background: #e2f8eb;
-  border-color: var(--green);
-  color: var(--darkgreen);
+  background:#e2f8eb;
+  color:var(--darkgreen);
+  border-color:var(--green);
 }
-
-.continue {
-  display: none;
-}
-
-.continue.visible {
-  display: block;
+.continue {display:none}
+.continue.visible {display:block}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:9px;
 }
 
 /* ROUND 1 */
-
 .panel {
-  width: 100%;
-  padding: clamp(16px, 4vw, 30px);
-  background: white;
-  border: 2px solid #343434;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  width:100%;
+  padding:clamp(16px,4vw,30px);
+  background:white;
+  border:2px solid #343434;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
 }
-
 .question {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
 }
-
 .question label {
-  font-size: clamp(15px, 2.3vw, 20px);
-  font-weight: 600;
+  font-size:clamp(15px,2.3vw,20px);
+  font-weight:bold;
 }
-
 .question input {
-  width: 100%;
-  height: 46px;
-  padding: 0 14px;
-  font-size: 18px;
-  border: 2px solid #c4cbd1;
-  border-radius: 8px;
-  background: var(--bg);
+  width:100%;
+  height:46px;
+  padding:0 14px;
+  font-size:18px;
+  border:2px solid #c4cbd1;
+  border-radius:8px;
+  background:var(--bg);
 }
-
 .answer-result {
-  display: none;
-  padding: 10px 12px;
-  background: #eaf8ef;
-  border-left: 4px solid var(--green);
-  border-radius: 6px;
-  line-height: 1.5;
+  display:none;
+  padding:10px 12px;
+  background:#eaf8ef;
+  border-left:4px solid var(--green);
+  border-radius:6px;
+  line-height:1.5;
 }
-
-.answer-result.visible {
-  display: block;
-}
-
-.panel > .primary {
-  align-self: center;
-}
+.answer-result.visible {display:block}
+.panel>.primary {align-self:center}
 
 /* POINTS */
-
 .score {
-  width: 100%;
-  text-align: center;
-  flex-shrink: 0;
+  width:100%;
+  text-align:center;
 }
-
 .score-label {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
-
 .score-track {
-  height: 30px;
-  background: #e1e7ec;
-  border: 2px solid #343434;
-  border-radius: 8px;
-  overflow: hidden;
+  height:30px;
+  background:#e1e7ec;
+  border:2px solid #343434;
+  border-radius:8px;
+  overflow:hidden;
 }
-
 .score-fill {
-  width: 0;
-  height: 100%;
-  background: var(--green);
-  transition: width 1s ease;
+  width:0;
+  height:100%;
+  background:var(--green);
+  transition:width 1s ease;
 }
-
 .score-scale {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
-  font-size: 14px;
+  display:flex;
+  justify-content:space-between;
+  margin-top:5px;
+  font-size:14px;
 }
-
 .score-note {
-  margin-top: 10px;
-  min-height: 20px;
-  font-size: 15px;
+  margin-top:10px;
+  min-height:20px;
+  font-size:15px;
 }
-
 .result {
-  display: none;
-  width: 100%;
-  padding: 14px;
-  background: #eaf8ef;
-  border: 1px solid #a7dfbb;
-  border-radius: 10px;
-  text-align: center;
-  line-height: 1.7;
+  display:none;
+  width:100%;
+  padding:14px;
+  background:#eaf8ef;
+  border:1px solid #a7dfbb;
+  border-radius:10px;
+  text-align:center;
+  line-height:1.7;
 }
-
-.result.visible {
-  display: block;
-}
-
+.result.visible {display:block}
 .total {
-  font-size: 23px;
-  font-weight: bold;
-  color: var(--darkgreen);
+  font-size:23px;
+  font-weight:bold;
+  color:var(--darkgreen);
 }
 
 /* ROUND 2 MAP */
-
 .map-frame {
-  position: relative;
-  width: 100%;
-  height: clamp(270px, 45vh, 420px);
-  min-height: 270px;
-  border: 2px solid #343434;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #b5cbd5;
-  flex-shrink: 0;
+  position:relative;
+  width:100%;
+  height:clamp(270px,45vh,420px);
+  min-height:270px;
+  border:2px solid #343434;
+  border-radius:12px;
+  overflow:hidden;
+  background:#b5cbd5;
 }
-
-#map {
-  width: 100%;
-  height: 100%;
-}
-
+#map {width:100%;height:100%}
 #drawCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 600;
-  display: none;
-  cursor: crosshair;
-  touch-action: none;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:600;
+  display:none;
+  cursor:crosshair;
+  touch-action:none;
 }
-
-#drawCanvas.enabled {
-  display: block;
-}
-
+#drawCanvas.enabled {display:block}
 .map-status {
-  position: absolute;
-  top: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 700;
-  pointer-events: none;
-  max-width: 92%;
-  text-align: center;
+  position:absolute;
+  top:9px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:700;
+  pointer-events:none;
+  max-width:92%;
+  text-align:center;
 }
-
 .map-status span {
-  display: inline-block;
-  padding: 8px 12px;
-  background: #fffffff0;
-  border-radius: 8px;
-  font-size: 13px;
-  box-shadow: 0 2px 8px #0002;
+  display:inline-block;
+  padding:8px 12px;
+  background:#fffffff0;
+  border-radius:8px;
+  font-size:13px;
+  box-shadow:0 2px 8px #0002;
 }
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 9px;
-}
-
 .credit {
-  font-size: 11px;
-  color: #64717b;
-  text-align: center;
+  font-size:11px;
+  color:#64717b;
+  text-align:center;
 }
 
-/* ROUND 3 - FIXED SCROLLING */
-
-#round3 {
-  overflow-y: auto;
-  align-items: flex-start;
-}
-
-#round3 .round-layout {
-  max-height: none;
-  overflow: visible;
-  margin: 0 auto;
-  padding: 24px 0 50px;
-}
-
+/* ROUND 3 FLAG */
 .flag-workspace {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 68px;
-  gap: 12px;
-  align-items: stretch;
+  width:100%;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 68px;
+  gap:12px;
 }
-
 .flag-board {
-  min-height: 0;
-  background: white;
-  border: 2px solid #343434;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
+  background:white;
+  border:2px solid #343434;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  min-width:0;
 }
-
 .flag-surface {
-  width: 100%;
-  max-width: 600px;
-  aspect-ratio: 2 / 1;
-  border: 1px solid #888;
-  box-shadow: 0 3px 14px #0002;
-  overflow: hidden;
+  width:100%;
+  max-width:600px;
+  aspect-ratio:2/1;
+  border:1px solid #888;
+  box-shadow:0 3px 14px #0002;
+  overflow:hidden;
 }
-
 #flagCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-  touch-action: none;
-  cursor: crosshair;
+  display:block;
+  width:100%;
+  height:100%;
+  touch-action:none;
+  cursor:crosshair;
 }
-
 .flag-tools {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 9px;
-  padding: 10px 4px;
-  background: white;
-  border: 2px solid #343434;
-  border-radius: 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  padding:10px 4px;
+  background:white;
+  border:2px solid #343434;
+  border-radius:12px;
 }
-
 .tool-btn {
-  width: 44px;
-  height: 42px;
-  border: 2px solid #c6cdd3;
-  border-radius: 9px;
-  background: white;
-  font-size: 23px;
-  display: grid;
-  place-items: center;
+  width:44px;
+  height:42px;
+  border:2px solid #c6cdd3;
+  border-radius:9px;
+  background:white;
+  font-size:23px;
+  display:grid;
+  place-items:center;
 }
-
 .tool-btn.selected {
-  background: #e2f8eb;
-  border-color: var(--green);
+  background:#e2f8eb;
+  border-color:var(--green);
 }
-
 .color-swatch {
-  width: 30px;
-  height: 30px;
-  border: 2px solid #777;
-  border-radius: 50%;
-  padding: 0;
-  flex-shrink: 0;
+  width:30px;
+  height:30px;
+  border:2px solid #777;
+  border-radius:50%;
+  padding:0;
 }
-
 .color-swatch.selected {
-  outline: 3px solid var(--green);
-  outline-offset: 2px;
+  outline:3px solid var(--green);
+  outline-offset:2px;
 }
-
 #customColor {
-  width: 36px;
-  height: 32px;
-  border: none;
-  padding: 0;
-  background: transparent;
-  cursor: pointer;
+  width:36px;
+  height:32px;
+  border:0;
+  padding:0;
+  background:transparent;
 }
-
 .brush-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  font-size: 14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  font-size:14px;
 }
-
-.brush-controls input {
-  width: 140px;
-}
-
+.brush-controls input {width:140px}
 .flag-comparison {
-  display: none;
-  width: 100%;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display:none;
+  width:100%;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
 }
-
-.flag-comparison.visible {
-  display: grid;
-}
-
+.flag-comparison.visible {display:grid}
 .flag-preview {
-  background: white;
-  border: 1px solid #ccd3d9;
-  border-radius: 10px;
-  padding: 12px;
-  text-align: center;
+  background:white;
+  border:1px solid #ccd3d9;
+  border-radius:10px;
+  padding:12px;
+  text-align:center;
 }
-
 .flag-preview img {
-  width: 100%;
-  max-height: 200px;
-  object-fit: contain;
-  margin-top: 10px;
+  width:100%;
+  max-height:200px;
+  object-fit:contain;
+  margin-top:10px;
 }
 
-.flag-preview strong {
-  display: block;
+/* FINAL RESULTS PAGE */
+#results {
+  overflow-y:auto;
+  padding:25px 18px 60px;
+}
+.results-layout {
+  width:min(100%,900px);
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:22px;
+  text-align:center;
+}
+.results-title {
+  font-family:Sigher,Arial,sans-serif;
+  color:var(--darkgreen);
+  font-size:clamp(32px,6vw,55px);
+  margin:12px 0 0;
+}
+.results-subtitle {
+  margin:0;
+  font-size:clamp(18px,3vw,24px);
+  font-weight:bold;
+}
+.final-score-number {
+  font-size:clamp(30px,6vw,48px);
+  font-weight:bold;
+  color:var(--darkgreen);
+}
+.medal-image {
+  width:min(70vw,260px);
+  height:260px;
+  object-fit:contain;
+  display:block;
+}
+.medal-name {
+  font-size:26px;
+  font-weight:bold;
+}
+.results-stats {
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.stat-card {
+  background:white;
+  border:1px solid #d5dce1;
+  border-radius:12px;
+  padding:17px 10px;
+}
+.stat-card strong {
+  display:block;
+  font-size:24px;
+  color:var(--darkgreen);
+  margin-top:8px;
+}
+.curve-card {
+  width:100%;
+  background:white;
+  border:2px solid #343434;
+  border-radius:14px;
+  padding:18px;
+}
+.curve-title {
+  font-size:20px;
+  font-weight:bold;
+  margin:0 0 10px;
+}
+.curve-caption {
+  color:#64717b;
+  font-size:13px;
+  margin:10px 0 0;
+}
+#bellCurve {
+  display:block;
+  width:100%;
+  height:auto;
+}
+.results-actions {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
 }
 
+/* RESPONSIVE */
 @media(max-width:550px) {
-  .round-screen { padding: 10px; }
-  .round-layout { gap: 11px; }
-  .panel { padding: 16px; }
-
+  .round-screen {padding:10px}
+  .round-layout {gap:11px}
+  .panel {padding:16px}
   .actions button {
-    font-size: 13px;
-    padding: 10px 12px;
+    font-size:13px;
+    padding:10px 12px;
   }
-
   .flag-workspace {
-    grid-template-columns: minmax(0, 1fr) 52px;
-    gap: 6px;
+    grid-template-columns:minmax(0,1fr) 52px;
+    gap:6px;
   }
-
-  .flag-board {
-    padding: 8px;
-  }
-
-  .flag-tools {
-    gap: 7px;
-    padding: 8px 2px;
-  }
-
-  .tool-btn {
-    width: 37px;
-    height: 36px;
-  }
-
-  .color-swatch {
-    width: 25px;
-    height: 25px;
-  }
+  .flag-board {padding:8px}
+  .flag-tools {gap:7px;padding:8px 2px}
+  .tool-btn {width:37px;height:36px}
+  .color-swatch {width:25px;height:25px}
+  .results-stats {gap:6px}
+  .stat-card {padding:12px 5px;font-size:12px}
+  .stat-card strong {font-size:19px}
+  .medal-image {height:210px}
 }
-
 @media(prefers-reduced-motion:reduce) {
-  .screen, .score-fill { transition: none; }
-  .home-logo img, .round-header img { animation: none; }
+  .screen,.score-fill {transition:none}
+  .home-logo img,.round-header img {animation:none}
 }
 </style>
 </head>
@@ -626,17 +567,14 @@ button:disabled {
 <body>
 
 <!-- HOME -->
-
 <main id="home" class="screen active">
   <div class="home-logo">
     <img src="Untitled%202.png" alt="Borderline logo">
   </div>
-
   <div class="start-area">
     <button id="start" class="start-btn" aria-label="Start game">
       <img src="Start2.png" alt="">
     </button>
-
     <div id="reveal" class="country-reveal">
       <h2>Today's country is...</h2>
       <h1 id="revealName"></h1>
@@ -645,10 +583,8 @@ button:disabled {
 </main>
 
 <!-- ROUND 1 -->
-
-<section id="round1" class="screen offscreen round-screen">
+<section id="round1" class="screen round-screen">
   <div class="round-layout">
-
     <header class="round-header">
       <img src="Untitled%201.png" alt="">
       <div class="round-heading">
@@ -664,19 +600,16 @@ button:disabled {
         <input id="gdp" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aGDP"></div>
       </div>
-
       <div class="question">
         <label id="qPopulation" for="population"></label>
         <input id="population" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aPopulation"></div>
       </div>
-
       <div class="question">
         <label id="qCoast" for="coast"></label>
         <input id="coast" type="number" min="0" step="any" required placeholder="Type your answer here...">
         <div class="answer-result" id="aCoast"></div>
       </div>
-
       <button class="primary" type="submit">Submit Answers</button>
     </form>
 
@@ -690,15 +623,12 @@ button:disabled {
     <button id="continue1" class="primary continue">
       Continue to Round 2
     </button>
-
   </div>
 </section>
 
 <!-- ROUND 2 -->
-
-<section id="round2" class="screen offscreen round-screen">
+<section id="round2" class="screen round-screen">
   <div class="round-layout">
-
     <header class="round-header">
       <img src="Untitled%201.png" alt="">
       <div class="round-heading">
@@ -746,15 +676,12 @@ button:disabled {
     <div class="credit">
       Physical map © Esri. Boundary data © Natural Earth.
     </div>
-
   </div>
 </section>
 
 <!-- ROUND 3 -->
-
-<section id="round3" class="screen offscreen round-screen">
+<section id="round3" class="screen round-screen">
   <div class="round-layout">
-
     <header class="round-header">
       <img src="Untitled%201.png" alt="">
       <div class="round-heading">
@@ -767,7 +694,6 @@ button:disabled {
     <p id="instructions3" class="instructions"></p>
 
     <div class="flag-workspace">
-
       <div class="flag-board">
         <div id="flagSurface" class="flag-surface">
           <canvas id="flagCanvas" width="600" height="300"></canvas>
@@ -778,13 +704,9 @@ button:disabled {
         <button id="penTool" class="tool-btn selected" title="Pen" aria-label="Pen">✎</button>
         <button id="bucketTool" class="tool-btn" title="Paint bucket" aria-label="Paint bucket">🪣</button>
         <button id="eraserTool" class="tool-btn" title="Eraser" aria-label="Eraser">⌫</button>
-
         <div id="colorPalette" style="display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:6px"></div>
-
-        <input id="customColor" type="color" value="#ffffff"
-          title="Custom colour" aria-label="Custom colour">
+        <input id="customColor" type="color" value="#ffffff" title="Custom colour" aria-label="Custom colour">
       </div>
-
     </div>
 
     <div class="brush-controls">
@@ -796,7 +718,7 @@ button:disabled {
     <div class="actions">
       <button id="undoFlag" class="secondary">Undo</button>
       <button id="resetFlag" class="secondary">Reset Flag</button>
-      <button id="submitFlag" class="primary">Submit Flag</button>
+      <button id="submitFlag" class="primary" disabled>Submit Flag</button>
     </div>
 
     <div id="flagComparison" class="flag-comparison">
@@ -824,86 +746,160 @@ button:disabled {
       </div>
     </div>
 
-    <div class="credit">Flag reference images from FlagCDN.</div>
+    <button id="viewResults" class="primary continue">
+      View Final Results
+    </button>
 
+    <div class="credit">Flag reference images from FlagCDN.</div>
+  </div>
+</section>
+
+<!-- FINAL RESULTS -->
+<section id="results" class="screen">
+  <div class="results-layout">
+
+    <h1 class="results-title">Your Results</h1>
+    <p class="results-subtitle" id="resultsCountry"></p>
+
+    <div class="final-score-number" id="resultsScore">
+      0 / 3000
+    </div>
+
+    <img id="medalImage" class="medal-image"
+      src="Failed.png" alt="Your award">
+
+    <div id="medalName" class="medal-name"></div>
+
+    <div class="results-stats">
+      <div class="stat-card">
+        Round 1
+        <strong id="stat1">0</strong>
+      </div>
+      <div class="stat-card">
+        Round 2
+        <strong id="stat2">0</strong>
+      </div>
+      <div class="stat-card">
+        Round 3
+        <strong id="stat3">0</strong>
+      </div>
+    </div>
+
+    <div class="curve-card">
+      <p class="curve-title" id="curveHeading">
+        Your position on the score scale
+      </p>
+      <svg id="bellCurve" viewBox="0 0 800 310"
+        role="img" aria-label="Illustrative bell curve showing your score">
+        <defs>
+          <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#00b85b" stop-opacity=".28"/>
+            <stop offset="100%" stop-color="#00b85b" stop-opacity=".03"/>
+          </linearGradient>
+        </defs>
+        <path id="curveArea" fill="url(#curveGradient)"></path>
+        <path id="curveLine" fill="none"
+          stroke="#252525" stroke-width="4"
+          stroke-linecap="round"></path>
+        <line x1="45" y1="260" x2="755" y2="260"
+          stroke="#555" stroke-width="2"/>
+        <line id="playerLine" x1="400" y1="260"
+          x2="400" y2="50"
+          stroke="#00b85b" stroke-width="3"
+          stroke-dasharray="7 6"/>
+        <circle id="playerDot" cx="400" cy="50" r="8"
+          fill="#00b85b" stroke="white" stroke-width="3"/>
+        <text id="playerMarker" x="400" y="28"
+          text-anchor="middle" fill="#008e49"
+          font-size="18" font-weight="bold">You</text>
+        <text x="45" y="290" font-size="15">0</text>
+        <text x="755" y="290" font-size="15"
+          text-anchor="end">3000</text>
+      </svg>
+      <p class="curve-caption">
+        Illustrative bell curve only. Real player rankings will
+        become available when score data is collected.
+      </p>
+    </div>
+
+    <div class="results-actions">
+      <button id="playAgain" class="primary">Play Again</button>
+    </div>
   </div>
 </section>
 
 <script>
 "use strict";
 
-/* COUNTRY SETTINGS */
+/* COUNTRY DATA */
 
 const country = {
-  name: "New Zealand",
-  code: "NZL",
-  flagCode: "nz",
-  flagBackground: "#00247d",
-  flagRatio: 2,
-  answers: {
-    gdp: 260,
-    population: 5.3,
-    coastline: 15134
+  name:"New Zealand",
+  code:"NZL",
+  flagCode:"nz",
+  flagBackground:"#00247d",
+  flagRatio:2,
+  answers:{
+    gdp:260,
+    population:5.3,
+    coastline:15134
   }
 };
 
-const el = id => document.getElementById(id);
+const el=id=>document.getElementById(id);
 
-let round1Score = 0;
-let round2Score = 0;
-let round3Score = 0;
+let round1Score=0;
+let round2Score=0;
+let round3Score=0;
 
-document.querySelectorAll(".country-name").forEach(node => {
-  node.textContent = country.name;
+document.querySelectorAll(".country-name").forEach(node=>{
+  node.textContent=country.name;
 });
 
-el("qGDP").textContent =
+el("qGDP").textContent=
   `What is the GDP of ${country.name}? (USD billions)`;
-
-el("qPopulation").textContent =
+el("qPopulation").textContent=
   `What is the population of ${country.name}? (millions)`;
-
-el("qCoast").textContent =
+el("qCoast").textContent=
   `How long is the coastline of ${country.name}? (kilometres)`;
-
-el("instructions2").textContent =
+el("instructions2").textContent=
   `Find ${country.name} on the world map and draw its borders`;
-
-el("instructions3").textContent =
+el("instructions3").textContent=
   `Draw the flag of ${country.name}`;
 
-/* TRANSITIONS */
+/* SCREEN TRANSITIONS */
 
-function transition(from, to) {
+function transition(from,to) {
   el(from).classList.remove("active");
   el(from).classList.add("leave");
-  el(to).classList.remove("offscreen");
+  el(to).classList.remove("leave");
   el(to).classList.add("active");
+  el(to).scrollTop=0;
 }
 
-el("start").onclick = () => {
-  el("start").disabled = true;
+el("start").onclick=()=>{
+  el("start").disabled=true;
   el("start").classList.add("hidden");
   el("reveal").classList.add("visible");
 
-  setTimeout(() => {
-    el("revealName").textContent = country.name;
-  }, 1000);
+  setTimeout(()=>{
+    el("revealName").textContent=country.name;
+  },1000);
 
-  setTimeout(() => transition("home", "round1"), 2800);
+  setTimeout(()=>{
+    transition("home","round1");
+  },2800);
 };
 
-function scoreAnimation(label, fill, points) {
-  el(fill).style.width = points / 10 + "%";
-  const start = performance.now();
+function scoreAnimation(label,fill,points) {
+  el(fill).style.width=points/10+"%";
+  const start=performance.now();
 
   function frame(now) {
-    const p = Math.min((now - start) / 1000, 1);
-    const shown = Math.round(points * (1 - (1 - p) ** 3));
-
-    el(label).textContent = `${shown} / 1000 Points`;
-
-    if (p < 1) requestAnimationFrame(frame);
+    const p=Math.min((now-start)/1000,1);
+    const shown=Math.round(points*(1-(1-p)**3));
+    el(label).textContent=`${shown} / 1000 Points`;
+    if(p<1) requestAnimationFrame(frame);
   }
 
   requestAnimationFrame(frame);
@@ -911,977 +907,884 @@ function scoreAnimation(label, fill, points) {
 
 /* ROUND 1 */
 
-function accuracy(guess, actual) {
-  return Math.max(0, 1 - Math.abs(guess - actual) / actual);
+function accuracy(guess,actual) {
+  return Math.max(0,1-Math.abs(guess-actual)/actual);
 }
 
-function answer(id, value, unit, points, max) {
-  el(id).innerHTML =
-    `Correct answer: <strong>${value} ${unit}</strong>` +
+function answer(id,value,unit,points,max) {
+  el(id).innerHTML=
+    `Correct answer: <strong>${value} ${unit}</strong>`+
     `<div>Points earned: ${points} / ${max}</div>`;
-
   el(id).classList.add("visible");
 }
 
-el("questions").addEventListener("submit", e => {
+el("questions").addEventListener("submit",e=>{
   e.preventDefault();
+  const a=country.answers;
 
-  const a = country.answers;
+  const g=Math.round(accuracy(+el("gdp").value,a.gdp)*334);
+  const p=Math.round(accuracy(+el("population").value,a.population)*333);
+  const c=Math.round(accuracy(+el("coast").value,a.coastline)*333);
 
-  const g = Math.round(accuracy(+el("gdp").value, a.gdp) * 334);
-  const p = Math.round(accuracy(+el("population").value, a.population) * 333);
-  const c = Math.round(accuracy(+el("coast").value, a.coastline) * 333);
+  round1Score=g+p+c;
 
-  round1Score = g + p + c;
+  answer("aGDP",a.gdp,"billion USD",g,334);
+  answer("aPopulation",a.population,"million",p,333);
+  answer("aCoast",a.coastline.toLocaleString(),"km",c,333);
 
-  answer("aGDP", a.gdp, "billion USD", g, 334);
-  answer("aPopulation", a.population, "million", p, 333);
-  answer("aCoast", a.coastline.toLocaleString(), "km", c, 333);
-
-  scoreAnimation("score1Label", "score1Fill", round1Score);
-
-  el("score1Note").textContent =
+  scoreAnimation("score1Label","score1Fill",round1Score);
+  el("score1Note").textContent=
     `You earned ${round1Score} out of 1000 points!`;
 
   e.target.querySelectorAll("input,button")
-    .forEach(x => x.disabled = true);
+    .forEach(x=>x.disabled=true);
 
   el("continue1").classList.add("visible");
 });
 
-el("continue1").onclick = () => {
-  transition("round1", "round2");
-  setTimeout(initMap, 1150);
+el("continue1").onclick=()=>{
+  transition("round1","round2");
+  setTimeout(initMap,1100);
 };
 
 /* ROUND 2 MAP */
 
-let map = null;
-let boundary = null;
-let boundaryReady = false;
-let drawMode = false;
-let borderSubmitted = false;
-let isDrawing = false;
-let coords = [];
+let map=null;
+let boundary=null;
+let boundaryReady=false;
+let drawMode=false;
+let borderSubmitted=false;
+let isDrawing=false;
+let coords=[];
 
-const canvas = el("drawCanvas");
-const ctx = canvas.getContext("2d");
+const canvas=el("drawCanvas");
+const ctx=canvas.getContext("2d");
 
 function mapStatus(s) {
-  el("mapStatus").textContent = s;
+  el("mapStatus").textContent=s;
 }
 
 function submitState() {
-  el("submitBorder").disabled =
-    !boundaryReady ||
-    !drawMode ||
-    borderSubmitted ||
-    isDrawing ||
-    coords.length < 10;
+  el("submitBorder").disabled=
+    !boundaryReady || !drawMode ||
+    borderSubmitted || isDrawing || coords.length<10;
 }
 
 function initMap() {
-  if (map) {
+  if(map) {
     map.invalidateSize();
     return;
   }
 
-  if (!window.L) {
+  if(!window.L) {
     mapStatus("Map library unavailable. Refresh to retry.");
     return;
   }
 
-  map = L.map("map", {
-    center: [15, 0],
-    zoom: 2,
-    minZoom: 2,
-    maxZoom: 10,
-    worldCopyJump: true
+  map=L.map("map",{
+    center:[15,0],
+    zoom:2,
+    minZoom:2,
+    maxZoom:10,
+    worldCopyJump:true
   });
 
   L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
     {
-      maxZoom: 10,
-      maxNativeZoom: 8,
-      noWrap: false,
-      attribution: "Tiles © Esri"
+      maxZoom:10,
+      maxNativeZoom:8,
+      attribution:"Tiles © Esri"
     }
   ).addTo(map);
 
   map.invalidateSize();
   resizeCanvas();
-
   mapStatus("Navigate to the country, then choose Draw.");
   loadBoundary();
 }
 
-function normalizeGeoJSON(data) {
-  if (data.type === "Feature" && data.geometry) return data;
-
-  if (data.type === "Polygon" || data.type === "MultiPolygon") {
-    return {
-      type: "Feature",
-      properties: {},
-      geometry: data
-    };
-  }
-
-  throw Error("Unsupported country geometry");
-}
-
 async function loadBoundary() {
-  boundaryReady = false;
+  boundaryReady=false;
   submitState();
 
-  const sources = [
+  const sources=[
     "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson",
     "https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson"
   ];
 
-  let lastError = "";
+  let lastError="";
 
-  for (const url of sources) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
+  for(const url of sources) {
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),15000);
 
     try {
       mapStatus("Loading scoring data...");
+      const response=await fetch(url,{signal:controller.signal});
+      if(!response.ok) throw Error("HTTP "+response.status);
 
-      const response = await fetch(url, {
-        signal: controller.signal
-      });
+      const data=await response.json();
 
-      if (!response.ok) throw Error("HTTP " + response.status);
-
-      const data = await response.json();
-
-      const feature = data.features.find(f => {
-        const p = f.properties || {};
-
+      const feature=data.features.find(f=>{
+        const p=f.properties||{};
         return (
-          p.ISO3166_1_Alpha_3 === country.code ||
-          p.ISO_A3 === country.code ||
-          p.ADM0_A3 === country.code ||
-          p.iso_a3 === country.code ||
-          p.name === country.name ||
-          p.ADMIN === country.name
+          p.ISO3166_1_Alpha_3===country.code ||
+          p.ISO_A3===country.code ||
+          p.ADM0_A3===country.code ||
+          p.iso_a3===country.code ||
+          p.name===country.name ||
+          p.ADMIN===country.name
         );
       });
 
-      if (!feature) throw Error("Country not found");
+      if(!feature) throw Error("Country not found");
 
-      boundary = normalizeGeoJSON(feature);
-      boundaryReady = true;
-
+      boundary=feature;
+      boundaryReady=true;
       submitState();
       mapStatus("Map ready. Draw the country's outline.");
-
-      el("score2Note").textContent =
-        "Draw a closed outline to earn up to 1000 points.";
-
       return;
 
-    } catch (error) {
-      lastError = error.message;
+    } catch(error) {
+      lastError=error.message;
       console.warn(error);
-
     } finally {
       clearTimeout(timeout);
     }
   }
 
   mapStatus("Unable to load country data.");
-
-  el("score2Note").textContent =
-    "Scoring unavailable: " + lastError;
+  el("score2Note").textContent=
+    "Scoring unavailable: "+lastError;
 }
 
 function setMode(draw) {
-  if (!map || borderSubmitted) return;
+  if(!map || borderSubmitted) return;
 
-  drawMode = draw;
+  drawMode=draw;
+  el("draw").classList.toggle("selected",draw);
+  el("navigate").classList.toggle("selected",!draw);
+  canvas.classList.toggle("enabled",draw);
 
-  el("draw").classList.toggle("selected", draw);
-  el("navigate").classList.toggle("selected", !draw);
-  canvas.classList.toggle("enabled", draw);
-
-  if (draw) {
+  if(draw) {
     map.dragging.disable();
     map.scrollWheelZoom.disable();
     map.doubleClickZoom.disable();
     map.touchZoom.disable();
-
     resizeCanvas();
     mapStatus("Draw a closed outline around the country.");
-
   } else {
     map.dragging.enable();
     map.scrollWheelZoom.enable();
     map.doubleClickZoom.enable();
     map.touchZoom.enable();
-
     mapStatus("Navigate and zoom, then select Draw.");
   }
 
   submitState();
 }
 
-el("navigate").onclick = () => setMode(false);
-el("draw").onclick = () => setMode(true);
+el("navigate").onclick=()=>setMode(false);
+el("draw").onclick=()=>setMode(true);
 
 function resizeCanvas() {
-  const r = canvas.getBoundingClientRect();
+  const r=canvas.getBoundingClientRect();
+  if(!r.width || !r.height) return;
 
-  if (!r.width || !r.height) return;
-
-  const d = window.devicePixelRatio || 1;
-
-  canvas.width = Math.round(r.width * d);
-  canvas.height = Math.round(r.height * d);
-
-  ctx.setTransform(d, 0, 0, d, 0, 0);
+  const d=window.devicePixelRatio||1;
+  canvas.width=Math.round(r.width*d);
+  canvas.height=Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
   redraw();
 }
 
 function canvasPoint(e) {
-  const r = canvas.getBoundingClientRect();
-
-  return {
-    x: e.clientX - r.left,
-    y: e.clientY - r.top
-  };
+  const r=canvas.getBoundingClientRect();
+  return {x:e.clientX-r.left,y:e.clientY-r.top};
 }
 
 function geo(p) {
-  const v = map.containerPointToLatLng(L.point(p.x, p.y));
-  return [v.lng, v.lat];
+  const v=map.containerPointToLatLng(L.point(p.x,p.y));
+  return [v.lng,v.lat];
 }
 
 function redraw() {
-  const r = canvas.getBoundingClientRect();
-  ctx.clearRect(0, 0, r.width, r.height);
-
-  if (!map || coords.length < 2) return;
+  const r=canvas.getBoundingClientRect();
+  ctx.clearRect(0,0,r.width,r.height);
+  if(!map || coords.length<2) return;
 
   ctx.beginPath();
 
-  coords.forEach((c, i) => {
-    const p = map.latLngToContainerPoint(
-      L.latLng(c[1], c[0])
-    );
-
-    if (i === 0) ctx.moveTo(p.x, p.y);
-    else ctx.lineTo(p.x, p.y);
+  coords.forEach((c,i)=>{
+    const p=map.latLngToContainerPoint(L.latLng(c[1],c[0]));
+    if(i===0) ctx.moveTo(p.x,p.y);
+    else ctx.lineTo(p.x,p.y);
   });
 
-  if (!isDrawing) ctx.closePath();
+  if(!isDrawing) ctx.closePath();
 
-  ctx.strokeStyle = "#00b85b";
-  ctx.lineWidth = 3.5;
-  ctx.lineJoin = "round";
-  ctx.lineCap = "round";
+  ctx.strokeStyle="#00b85b";
+  ctx.lineWidth=3.5;
+  ctx.lineJoin="round";
+  ctx.lineCap="round";
   ctx.stroke();
 
-  if (!isDrawing) {
-    ctx.fillStyle = "rgba(0,184,91,.12)";
+  if(!isDrawing) {
+    ctx.fillStyle="rgba(0,184,91,.12)";
     ctx.fill();
   }
 }
 
-canvas.addEventListener("pointerdown", e => {
-  if (!drawMode || borderSubmitted) return;
+canvas.addEventListener("pointerdown",e=>{
+  if(!drawMode || borderSubmitted) return;
 
   e.preventDefault();
   canvas.setPointerCapture(e.pointerId);
-
-  isDrawing = true;
-  coords = [geo(canvasPoint(e))];
-
+  isDrawing=true;
+  coords=[geo(canvasPoint(e))];
   redraw();
   submitState();
 });
 
-canvas.addEventListener("pointermove", e => {
-  if (!isDrawing) return;
+canvas.addEventListener("pointermove",e=>{
+  if(!isDrawing) return;
 
   e.preventDefault();
+  const p=geo(canvasPoint(e));
+  const last=coords[coords.length-1];
 
-  const p = geo(canvasPoint(e));
-  const last = coords[coords.length - 1];
-
-  if (Math.hypot(p[0] - last[0], p[1] - last[1]) > .001) {
+  if(Math.hypot(p[0]-last[0],p[1]-last[1])>.001) {
     coords.push(p);
     redraw();
   }
 });
 
 function endDrawing() {
-  if (!isDrawing) return;
-
-  isDrawing = false;
+  if(!isDrawing) return;
+  isDrawing=false;
   redraw();
   submitState();
 
   mapStatus(
-    coords.length >= 10
+    coords.length>=10
       ? "Drawing complete. Submit or clear to retry."
       : "Draw a longer outline."
   );
 }
 
-canvas.addEventListener("pointerup", endDrawing);
-canvas.addEventListener("pointercancel", endDrawing);
+canvas.addEventListener("pointerup",endDrawing);
+canvas.addEventListener("pointercancel",endDrawing);
 
-el("clear").onclick = () => {
-  if (borderSubmitted) return;
-
-  coords = [];
-  isDrawing = false;
-
+el("clear").onclick=()=>{
+  if(borderSubmitted) return;
+  coords=[];
+  isDrawing=false;
   redraw();
   submitState();
   mapStatus("Drawing cleared.");
 };
 
-el("reset").onclick = () => {
-  if (!map || borderSubmitted) return;
-
-  coords = [];
-  isDrawing = false;
-
+el("reset").onclick=()=>{
+  if(!map || borderSubmitted) return;
+  coords=[];
+  isDrawing=false;
   setMode(false);
-  map.setView([15, 0], 2);
-
+  map.setView([15,0],2);
   redraw();
   submitState();
 };
 
 /* BORDER SCORING */
 
-function inRing(point, ring) {
-  let inside = false;
-  const [x, y] = point;
+function inRing(point,ring) {
+  let inside=false;
+  const [x,y]=point;
 
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    const [xi, yi] = ring[i];
-    const [xj, yj] = ring[j];
+  for(let i=0,j=ring.length-1;i<ring.length;j=i++) {
+    const [xi,yi]=ring[i];
+    const [xj,yj]=ring[j];
 
-    if (
-      (yi > y) !== (yj > y) &&
-      x < (xj - xi) * (y - yi) / (yj - yi) + xi
-    ) {
-      inside = !inside;
-    }
+    if(
+      (yi>y)!==(yj>y) &&
+      x<(xj-xi)*(y-yi)/(yj-yi)+xi
+    ) inside=!inside;
   }
 
   return inside;
 }
 
-function inPolygon(point, rings) {
-  if (!inRing(point, rings[0])) return false;
-
-  for (let i = 1; i < rings.length; i++) {
-    if (inRing(point, rings[i])) return false;
+function inPolygon(point,rings) {
+  if(!inRing(point,rings[0])) return false;
+  for(let i=1;i<rings.length;i++) {
+    if(inRing(point,rings[i])) return false;
   }
-
   return true;
 }
 
-function inGeometry(point, g) {
-  if (g.type === "Polygon") {
-    return inPolygon(point, g.coordinates);
-  }
-
-  return g.coordinates.some(poly => inPolygon(point, poly));
+function inGeometry(point,g) {
+  if(g.type==="Polygon")
+    return inPolygon(point,g.coordinates);
+  return g.coordinates.some(poly=>inPolygon(point,poly));
 }
 
 function allCoords(g) {
-  return g.type === "Polygon"
+  return g.type==="Polygon"
     ? g.coordinates.flat()
     : g.coordinates.flat(2);
 }
 
 function calculateBorderScore() {
-  const geometry = boundary.geometry;
-  const points = allCoords(geometry).concat(coords);
+  const geometry=boundary.geometry;
+  const points=allCoords(geometry).concat(coords);
 
-  let minX = Infinity, maxX = -Infinity;
-  let minY = Infinity, maxY = -Infinity;
+  let minX=Infinity,maxX=-Infinity;
+  let minY=Infinity,maxY=-Infinity;
 
-  for (const [x, y] of points) {
-    minX = Math.min(minX, x);
-    maxX = Math.max(maxX, x);
-    minY = Math.min(minY, y);
-    maxY = Math.max(maxY, y);
+  for(const [x,y] of points) {
+    minX=Math.min(minX,x);
+    maxX=Math.max(maxX,x);
+    minY=Math.min(minY,y);
+    maxY=Math.max(maxY,y);
   }
 
-  const n = 180;
-  const dx = (maxX - minX) / n;
-  const dy = (maxY - minY) / n;
+  const n=180;
+  const dx=(maxX-minX)/n;
+  const dy=(maxY-minY)/n;
+  if(dx<=0 || dy<=0) return 0;
 
-  if (dx <= 0 || dy <= 0) return 0;
+  let intersection=0,union=0;
 
-  let intersection = 0;
-  let union = 0;
+  for(let i=0;i<n;i++) {
+    const x=minX+(i+.5)*dx;
 
-  for (let i = 0; i < n; i++) {
-    const x = minX + (i + .5) * dx;
+    for(let j=0;j<n;j++) {
+      const y=minY+(j+.5)*dy;
+      const point=[x,y];
+      const actual=inGeometry(point,geometry);
+      const drawn=inRing(point,coords);
+      const weight=Math.max(0,Math.cos(y*Math.PI/180));
 
-    for (let j = 0; j < n; j++) {
-      const y = minY + (j + .5) * dy;
-      const point = [x, y];
-
-      const actual = inGeometry(point, geometry);
-      const drawn = inRing(point, coords);
-      const weight = Math.max(
-        0, Math.cos(y * Math.PI / 180)
-      );
-
-      if (actual || drawn) union += weight;
-      if (actual && drawn) intersection += weight;
+      if(actual||drawn) union+=weight;
+      if(actual&&drawn) intersection+=weight;
     }
   }
 
   return union
-    ? Math.round(1000 * intersection / union)
+    ? Math.round(1000*intersection/union)
     : 0;
 }
 
-el("submitBorder").onclick = () => {
-  if (
-    !boundaryReady ||
-    !drawMode ||
-    borderSubmitted ||
-    coords.length < 10
-  ) return;
+el("submitBorder").onclick=()=>{
+  if(!boundaryReady || !drawMode ||
+     borderSubmitted || coords.length<10) return;
 
   try {
-    round2Score = calculateBorderScore();
-    borderSubmitted = true;
-
+    round2Score=calculateBorderScore();
+    borderSubmitted=true;
     redraw();
 
-    ["submitBorder", "clear", "reset", "navigate", "draw"]
-      .forEach(id => el(id).disabled = true);
+    ["submitBorder","clear","reset","navigate","draw"]
+      .forEach(id=>el(id).disabled=true);
 
-    L.geoJSON(boundary, {
-      style: {
-        color: "#ee564a",
-        weight: 3.5,
-        dashArray: "7,5",
-        fillColor: "#ee564a",
-        fillOpacity: .12
+    L.geoJSON(boundary,{
+      style:{
+        color:"#ee564a",
+        weight:3.5,
+        dashArray:"7,5",
+        fillColor:"#ee564a",
+        fillOpacity:.12
       },
-      interactive: false
+      interactive:false
     }).addTo(map);
 
-    scoreAnimation("score2Label", "score2Fill", round2Score);
+    scoreAnimation("score2Label","score2Fill",round2Score);
 
-    el("score2Note").textContent =
+    el("score2Note").textContent=
       `You earned ${round2Score} out of 1000 border points!`;
 
-    el("borderResult").innerHTML =
-      "<strong>Correct border revealed!</strong>" +
+    el("borderResult").innerHTML=
+      "<strong>Correct border revealed!</strong>"+
       "<div>Green: your drawing · Red: actual border</div>";
 
     el("result2").classList.add("visible");
     el("continue2").classList.add("visible");
-
     mapStatus("Compare your drawing with the correct border.");
 
-  } catch (error) {
+  } catch(error) {
     console.error(error);
     mapStatus("Scoring failed. Please try again.");
   }
 };
 
-window.addEventListener("resize", () => {
-  if (map) {
+window.addEventListener("resize",()=>{
+  if(map) {
     map.invalidateSize();
     resizeCanvas();
   }
 });
 
-/* ROUND 3 FLAG DRAWING */
+/* ROUND 3 FLAG */
 
-const flagCanvas = el("flagCanvas");
-
-const flagCtx = flagCanvas.getContext("2d", {
-  willReadFrequently: true
+const flagCanvas=el("flagCanvas");
+const flagCtx=flagCanvas.getContext("2d",{
+  willReadFrequently:true
 });
 
-let flagTool = "pen";
-let flagColor = "#ffffff";
-let flagBrush = 10;
-let flagDrawing = false;
-let flagSubmitted = false;
-let flagHistory = [];
+let flagTool="pen";
+let flagColor="#ffffff";
+let flagBrush=10;
+let flagDrawing=false;
+let flagSubmitted=false;
+let flagHistory=[];
+let previousFlagPoint=null;
 
 function fillFlagBackground() {
-  flagCtx.fillStyle = country.flagBackground;
-  flagCtx.fillRect(
-    0, 0,
-    flagCanvas.width,
-    flagCanvas.height
-  );
+  flagCtx.fillStyle=country.flagBackground;
+  flagCtx.fillRect(0,0,flagCanvas.width,flagCanvas.height);
 }
 
 function saveFlagHistory() {
   flagHistory.push(
     flagCtx.getImageData(
-      0, 0,
-      flagCanvas.width,
-      flagCanvas.height
+      0,0,flagCanvas.width,flagCanvas.height
     )
   );
-
-  if (flagHistory.length > 15) flagHistory.shift();
+  if(flagHistory.length>15) flagHistory.shift();
 }
 
 function initFlag() {
-  const w = 600;
-  const h = Math.round(w / country.flagRatio);
-
-  flagCanvas.width = w;
-  flagCanvas.height = h;
-
-  el("flagSurface").style.aspectRatio =
-    String(country.flagRatio);
-
+  flagCanvas.width=600;
+  flagCanvas.height=Math.round(600/country.flagRatio);
+  el("flagSurface").style.aspectRatio=String(country.flagRatio);
   fillFlagBackground();
-
-  flagHistory = [];
-
-  el("flagFeedback").textContent = "";
-
-  el("score3Note").textContent =
-    "Use the pen and paint bucket to complete the flag.";
+  flagHistory=[];
+  flagSubmitted=false;
 }
 
 function setFlagTool(tool) {
-  if (flagSubmitted) return;
+  if(flagSubmitted) return;
+  flagTool=tool;
 
-  flagTool = tool;
-
-  ["pen", "bucket", "eraser"].forEach(t => {
-    el(t + "Tool").classList.toggle(
-      "selected", t === tool
-    );
+  ["pen","bucket","eraser"].forEach(t=>{
+    el(t+"Tool").classList.toggle("selected",t===tool);
   });
 }
 
-el("penTool").onclick = () => setFlagTool("pen");
-el("bucketTool").onclick = () => setFlagTool("bucket");
-el("eraserTool").onclick = () => setFlagTool("eraser");
+el("penTool").onclick=()=>setFlagTool("pen");
+el("bucketTool").onclick=()=>setFlagTool("bucket");
+el("eraserTool").onclick=()=>setFlagTool("eraser");
 
-const palette = [
-  "#ffffff", "#000000", "#e4002b",
-  "#00247d", "#00843d", "#ffcc00",
-  "#ff8000", "#00aaff"
+const palette=[
+  "#ffffff","#000000","#e4002b",
+  "#00247d","#00843d","#ffcc00",
+  "#ff8000","#00aaff"
 ];
 
-const paletteElement = el("colorPalette");
+palette.forEach(color=>{
+  const button=document.createElement("button");
+  button.className="color-swatch";
+  button.style.background=color;
+  button.title=color;
+  button.setAttribute("aria-label","Select "+color);
 
-palette.forEach(color => {
-  const button = document.createElement("button");
-
-  button.className = "color-swatch";
-  button.style.background = color;
-  button.title = color;
-  button.setAttribute("aria-label", "Select " + color);
-
-  button.onclick = () => {
-    flagColor = color;
-
+  button.onclick=()=>{
+    flagColor=color;
     document.querySelectorAll(".color-swatch")
-      .forEach(b => b.classList.remove("selected"));
-
+      .forEach(b=>b.classList.remove("selected"));
     button.classList.add("selected");
   };
 
-  if (color === flagColor) {
+  if(color===flagColor)
     button.classList.add("selected");
-  }
 
-  paletteElement.appendChild(button);
+  el("colorPalette").appendChild(button);
 });
 
-el("customColor").oninput = e => {
-  flagColor = e.target.value;
-
+el("customColor").oninput=e=>{
+  flagColor=e.target.value;
   document.querySelectorAll(".color-swatch")
-    .forEach(b => b.classList.remove("selected"));
+    .forEach(b=>b.classList.remove("selected"));
 };
 
-el("brushSize").oninput = e => {
-  flagBrush = +e.target.value;
-  el("brushValue").textContent = flagBrush;
+el("brushSize").oninput=e=>{
+  flagBrush=+e.target.value;
+  el("brushValue").textContent=flagBrush;
 };
 
 function flagPoint(e) {
-  const r = flagCanvas.getBoundingClientRect();
-
+  const r=flagCanvas.getBoundingClientRect();
   return {
-    x: (e.clientX - r.left) * flagCanvas.width / r.width,
-    y: (e.clientY - r.top) * flagCanvas.height / r.height
+    x:(e.clientX-r.left)*flagCanvas.width/r.width,
+    y:(e.clientY-r.top)*flagCanvas.height/r.height
   };
 }
 
-function strokeFlag(from, to) {
+function strokeFlag(from,to) {
   flagCtx.beginPath();
-  flagCtx.moveTo(from.x, from.y);
-  flagCtx.lineTo(to.x, to.y);
-
-  flagCtx.lineCap = "round";
-  flagCtx.lineJoin = "round";
-  flagCtx.lineWidth = flagBrush;
-
-  flagCtx.strokeStyle =
-    flagTool === "eraser"
-      ? country.flagBackground
-      : flagColor;
-
+  flagCtx.moveTo(from.x,from.y);
+  flagCtx.lineTo(to.x,to.y);
+  flagCtx.lineCap="round";
+  flagCtx.lineJoin="round";
+  flagCtx.lineWidth=flagBrush;
+  flagCtx.strokeStyle=
+    flagTool==="eraser" ? country.flagBackground : flagColor;
   flagCtx.stroke();
 }
 
-/* PAINT BUCKET */
+function bucketFill(x,y,newColor) {
+  const w=flagCanvas.width,h=flagCanvas.height;
+  x=Math.floor(x);
+  y=Math.floor(y);
+  if(x<0||y<0||x>=w||y>=h) return;
 
-function bucketFill(x, y, newColor) {
-  const w = flagCanvas.width;
-  const h = flagCanvas.height;
+  const image=flagCtx.getImageData(0,0,w,h);
+  const data=image.data;
+  const start=(y*w+x)*4;
 
-  x = Math.floor(x);
-  y = Math.floor(y);
-
-  if (x < 0 || y < 0 || x >= w || y >= h) return;
-
-  const image = flagCtx.getImageData(0, 0, w, h);
-  const data = image.data;
-  const start = (y * w + x) * 4;
-
-  const target = [
-    data[start],
-    data[start + 1],
-    data[start + 2]
+  const target=[
+    data[start],data[start+1],data[start+2]
   ];
 
-  const colourCanvas = document.createElement("canvas");
-  colourCanvas.width = 1;
-  colourCanvas.height = 1;
+  const temp=document.createElement("canvas");
+  temp.width=temp.height=1;
+  const t=temp.getContext("2d");
+  t.fillStyle=newColor;
+  t.fillRect(0,0,1,1);
+  const replacement=t.getImageData(0,0,1,1).data;
 
-  const colourCtx = colourCanvas.getContext("2d");
+  if(target.every((v,i)=>v===replacement[i])) return;
 
-  colourCtx.fillStyle = newColor;
-  colourCtx.fillRect(0, 0, 1, 1);
+  const visited=new Uint8Array(w*h);
+  const stack=[y*w+x];
+  const tolerance=22;
 
-  const replacement =
-    colourCtx.getImageData(0, 0, 1, 1).data;
+  while(stack.length) {
+    const pos=stack.pop();
+    if(visited[pos]) continue;
+    visited[pos]=1;
 
-  if (target.every((v, i) => v === replacement[i])) {
-    return;
-  }
+    const o=pos*4;
 
-  const visited = new Uint8Array(w * h);
-  const stack = [y * w + x];
-  const tolerance = 22;
-
-  while (stack.length) {
-    const pos = stack.pop();
-
-    if (visited[pos]) continue;
-    visited[pos] = 1;
-
-    const offset = pos * 4;
-
-    if (
-      Math.abs(data[offset] - target[0]) > tolerance ||
-      Math.abs(data[offset + 1] - target[1]) > tolerance ||
-      Math.abs(data[offset + 2] - target[2]) > tolerance
+    if(
+      Math.abs(data[o]-target[0])>tolerance ||
+      Math.abs(data[o+1]-target[1])>tolerance ||
+      Math.abs(data[o+2]-target[2])>tolerance
     ) continue;
 
-    data[offset] = replacement[0];
-    data[offset + 1] = replacement[1];
-    data[offset + 2] = replacement[2];
-    data[offset + 3] = 255;
+    data[o]=replacement[0];
+    data[o+1]=replacement[1];
+    data[o+2]=replacement[2];
+    data[o+3]=255;
 
-    const px = pos % w;
-    const py = Math.floor(pos / w);
+    const px=pos%w;
+    const py=Math.floor(pos/w);
 
-    if (px > 0) stack.push(pos - 1);
-    if (px < w - 1) stack.push(pos + 1);
-    if (py > 0) stack.push(pos - w);
-    if (py < h - 1) stack.push(pos + w);
+    if(px>0) stack.push(pos-1);
+    if(px<w-1) stack.push(pos+1);
+    if(py>0) stack.push(pos-w);
+    if(py<h-1) stack.push(pos+w);
   }
 
-  flagCtx.putImageData(image, 0, 0);
+  flagCtx.putImageData(image,0,0);
 }
 
-let previousFlagPoint = null;
-
-flagCanvas.addEventListener("pointerdown", e => {
-  if (flagSubmitted) return;
-
+flagCanvas.addEventListener("pointerdown",e=>{
+  if(flagSubmitted) return;
   e.preventDefault();
   flagCanvas.setPointerCapture(e.pointerId);
-
   saveFlagHistory();
 
-  const p = flagPoint(e);
+  const p=flagPoint(e);
 
-  if (flagTool === "bucket") {
-    bucketFill(p.x, p.y, flagColor);
+  if(flagTool==="bucket") {
+    bucketFill(p.x,p.y,flagColor);
     return;
   }
 
-  flagDrawing = true;
-  previousFlagPoint = p;
-
-  strokeFlag(p, p);
+  flagDrawing=true;
+  previousFlagPoint=p;
+  strokeFlag(p,p);
 });
 
-flagCanvas.addEventListener("pointermove", e => {
-  if (!flagDrawing || flagSubmitted) return;
-
+flagCanvas.addEventListener("pointermove",e=>{
+  if(!flagDrawing||flagSubmitted) return;
   e.preventDefault();
-
-  const p = flagPoint(e);
-
-  strokeFlag(previousFlagPoint, p);
-  previousFlagPoint = p;
+  const p=flagPoint(e);
+  strokeFlag(previousFlagPoint,p);
+  previousFlagPoint=p;
 });
 
 function finishFlagStroke() {
-  flagDrawing = false;
-  previousFlagPoint = null;
+  flagDrawing=false;
+  previousFlagPoint=null;
 }
 
-flagCanvas.addEventListener("pointerup", finishFlagStroke);
-flagCanvas.addEventListener("pointercancel", finishFlagStroke);
+flagCanvas.addEventListener("pointerup",finishFlagStroke);
+flagCanvas.addEventListener("pointercancel",finishFlagStroke);
 
-el("undoFlag").onclick = () => {
-  if (flagSubmitted || !flagHistory.length) return;
-
-  flagCtx.putImageData(flagHistory.pop(), 0, 0);
+el("undoFlag").onclick=()=>{
+  if(flagSubmitted||!flagHistory.length) return;
+  flagCtx.putImageData(flagHistory.pop(),0,0);
 };
 
-el("resetFlag").onclick = () => {
-  if (flagSubmitted) return;
-
+el("resetFlag").onclick=()=>{
+  if(flagSubmitted) return;
   saveFlagHistory();
   fillFlagBackground();
 };
 
 /* FLAG REFERENCE */
 
-let referenceFlag = null;
-let referenceFlagReady = false;
-let referenceFlagURL = "";
+let referenceFlag=null;
+let referenceFlagReady=false;
+let referenceFlagURL="";
 
 async function loadReferenceFlag() {
-  referenceFlagReady = false;
-  el("submitFlag").disabled = true;
-
-  el("score3Note").textContent =
-    "Preparing flag scoring...";
-
-  const url =
-    `https://flagcdn.com/w640/${country.flagCode}.png`;
+  referenceFlagReady=false;
+  el("submitFlag").disabled=true;
+  el("score3Note").textContent="Preparing flag scoring...";
 
   try {
-    const image = new Image();
-    image.crossOrigin = "anonymous";
+    const image=new Image();
+    image.crossOrigin="anonymous";
 
-    await new Promise((resolve, reject) => {
-      image.onload = resolve;
-      image.onerror = () =>
-        reject(Error("Flag image unavailable"));
-
-      image.src = url;
+    await new Promise((resolve,reject)=>{
+      image.onload=resolve;
+      image.onerror=()=>reject(Error("Flag image unavailable"));
+      image.src=`https://flagcdn.com/w640/${country.flagCode}.png`;
     });
 
-    const offscreen = document.createElement("canvas");
+    const offscreen=document.createElement("canvas");
+    offscreen.width=flagCanvas.width;
+    offscreen.height=flagCanvas.height;
 
-    offscreen.width = flagCanvas.width;
-    offscreen.height = flagCanvas.height;
-
-    const offCtx = offscreen.getContext("2d", {
-      willReadFrequently: true
+    const offCtx=offscreen.getContext("2d",{
+      willReadFrequently:true
     });
 
     offCtx.drawImage(
-      image, 0, 0,
-      offscreen.width,
-      offscreen.height
+      image,0,0,offscreen.width,offscreen.height
     );
 
-    offCtx.getImageData(0, 0, 1, 1);
+    offCtx.getImageData(0,0,1,1);
+    referenceFlag=offscreen;
+    referenceFlagURL=offscreen.toDataURL("image/png");
+    referenceFlagReady=true;
 
-    referenceFlag = offscreen;
-    referenceFlagURL = offscreen.toDataURL("image/png");
-
-    referenceFlagReady = true;
-    el("submitFlag").disabled = false;
-
-    el("score3Note").textContent =
+    el("submitFlag").disabled=false;
+    el("score3Note").textContent=
       "Complete the flag, then submit your drawing.";
 
-  } catch (error) {
-    console.warn("Flag reference failed:", error);
-
-    el("score3Note").textContent =
+  } catch(error) {
+    console.warn(error);
+    el("score3Note").textContent=
       "Flag reference unavailable. Scoring cannot begin yet.";
   }
 }
 
-/* IMPROVED FLAG SCORING */
+/* STRICTER FLAG SCORING */
 
 function calculateFlagScore() {
-  const w = flagCanvas.width;
-  const h = flagCanvas.height;
+  const w=flagCanvas.width,h=flagCanvas.height;
+  const player=flagCtx.getImageData(0,0,w,h).data;
+  const correct=referenceFlag.getContext("2d")
+    .getImageData(0,0,w,h).data;
 
-  const player = flagCtx.getImageData(0, 0, w, h).data;
+  const temp=document.createElement("canvas");
+  temp.width=temp.height=1;
+  const t=temp.getContext("2d");
+  t.fillStyle=country.flagBackground;
+  t.fillRect(0,0,1,1);
+  const base=t.getImageData(0,0,1,1).data;
 
-  const correct = referenceFlag
-    .getContext("2d", { willReadFrequently: true })
-    .getImageData(0, 0, w, h).data;
+  let backgroundError=0,backgroundCount=0;
+  let featureError=0,featureCount=0;
+  let extraMarkPenalty=0;
 
-  const baseCanvas = document.createElement("canvas");
-  baseCanvas.width = 1;
-  baseCanvas.height = 1;
-
-  const baseCtx = baseCanvas.getContext("2d");
-  baseCtx.fillStyle = country.flagBackground;
-  baseCtx.fillRect(0, 0, 1, 1);
-
-  const base = baseCtx.getImageData(0, 0, 1, 1).data;
-
-  let backgroundError = 0;
-  let backgroundCount = 0;
-
-  let featureError = 0;
-  let featureCount = 0;
-
-  // RGB distance between a colour and an image pixel.
-  const distance = (a, b, i) => {
-    const dr = a[0] - b[i];
-    const dg = a[1] - b[i + 1];
-    const db = a[2] - b[i + 2];
-
-    return Math.sqrt(dr * dr + dg * dg + db * db) /
-      Math.sqrt(3 * 255 * 255);
+  const distance=(a,b,i)=>{
+    const dr=a[0]-b[i];
+    const dg=a[1]-b[i+1];
+    const db=a[2]-b[i+2];
+    return Math.sqrt(dr*dr+dg*dg+db*db)/
+      Math.sqrt(3*255*255);
   };
 
-  for (let y = 0; y < h; y += 3) {
-    for (let x = 0; x < w; x += 3) {
-      const i = (y * w + x) * 4;
+  for(let y=0;y<h;y+=3) {
+    for(let x=0;x<w;x+=3) {
+      const i=(y*w+x)*4;
+      const actual=[correct[i],correct[i+1],correct[i+2]];
+      const baseDifference=distance(base,correct,i);
+      const error=distance(actual,player,i);
 
-      const correctColor = [
-        correct[i],
-        correct[i + 1],
-        correct[i + 2]
-      ];
-
-      const differenceFromBase =
-        distance(base, correct, i);
-
-      const playerDifference =
-        distance(correctColor, player, i);
-
-      const isFeature = differenceFromBase > 0.12;
-
-      if (isFeature) {
-        featureError += playerDifference;
+      if(baseDifference>.12) {
+        featureError+=error;
         featureCount++;
       } else {
-        backgroundError += playerDifference;
+        backgroundError+=error;
         backgroundCount++;
+
+        if(error>.12) extraMarkPenalty+=error;
       }
     }
   }
 
-  const backgroundAccuracy = backgroundCount
-    ? 1 - backgroundError / backgroundCount
+  const backgroundAccuracy=backgroundCount
+    ? Math.max(0,1-backgroundError/backgroundCount)
     : 0;
 
-  const featureAccuracy = featureCount
-    ? 1 - featureError / featureCount
+  const featureAccuracy=featureCount
+    ? Math.max(0,1-featureError/featureCount)
     : 0;
 
-  // 200 points for background accuracy.
-  // 800 points for the distinctive flag elements.
-  const score =
-    backgroundAccuracy * 200 +
-    featureAccuracy * 800;
+  const penalty=backgroundCount
+    ? Math.min(250,extraMarkPenalty/backgroundCount*400)
+    : 0;
 
-  return Math.max(
-    0,
-    Math.min(1000, Math.round(score))
-  );
+  const score=
+    backgroundAccuracy*200+
+    featureAccuracy*800-
+    penalty;
+
+  return Math.max(0,Math.min(1000,Math.round(score)));
 }
 
 /* SUBMIT FLAG */
 
-el("submitFlag").onclick = () => {
-  if (flagSubmitted || !referenceFlagReady) return;
+el("submitFlag").onclick=()=>{
+  if(flagSubmitted||!referenceFlagReady) return;
 
   try {
-    round3Score = calculateFlagScore();
-    flagSubmitted = true;
+    round3Score=calculateFlagScore();
+    flagSubmitted=true;
 
-    el("userFlagPreview").src =
+    el("userFlagPreview").src=
       flagCanvas.toDataURL("image/png");
-
-    el("correctFlagPreview").src = referenceFlagURL;
-
+    el("correctFlagPreview").src=referenceFlagURL;
     el("flagComparison").classList.add("visible");
 
     [
-      "penTool", "bucketTool", "eraserTool",
-      "undoFlag", "resetFlag", "submitFlag",
-      "customColor", "brushSize"
-    ].forEach(id => el(id).disabled = true);
+      "penTool","bucketTool","eraserTool",
+      "undoFlag","resetFlag","submitFlag",
+      "customColor","brushSize"
+    ].forEach(id=>el(id).disabled=true);
 
     document.querySelectorAll(".color-swatch")
-      .forEach(b => b.disabled = true);
+      .forEach(b=>b.disabled=true);
 
-    scoreAnimation(
-      "score3Label",
-      "score3Fill",
-      round3Score
-    );
+    scoreAnimation("score3Label","score3Fill",round3Score);
 
-    el("score3Note").textContent =
+    el("score3Note").textContent=
       `You earned ${round3Score} out of 1000 flag points!`;
 
-    el("flagFeedback").innerHTML =
-      "<strong>Correct flag revealed!</strong>" +
+    el("flagFeedback").innerHTML=
+      "<strong>Correct flag revealed!</strong>"+
       "<div>Compare your drawing with the original flag.</div>";
 
-    const finalScore =
-      round1Score + round2Score + round3Score;
+    const total=round1Score+round2Score+round3Score;
 
-    el("finalTotal").textContent =
-      `Final Score: ${finalScore} / 3000`;
+    el("finalTotal").textContent=
+      `Final Score: ${total} / 3000`;
 
     el("result3").classList.add("visible");
+    el("viewResults").classList.add("visible");
 
-  } catch (error) {
-    console.error("Flag scoring failed:", error);
-
-    el("score3Note").textContent =
+  } catch(error) {
+    console.error(error);
+    el("score3Note").textContent=
       "Unable to score the flag. Please try again.";
   }
 };
 
-/* CONTINUE TO ROUND 3 */
-
-el("continue2").onclick = () => {
-  transition("round2", "round3");
+el("continue2").onclick=()=>{
+  transition("round2","round3");
   initFlag();
   loadReferenceFlag();
 };
 
+/* FINAL RESULTS */
+
+const medalTiers=[
+  {minimum:0,name:"Failed",file:"Failed.png"},
+  {minimum:20,name:"Bronze",file:"BronzeLevel.png"},
+  {minimum:40,name:"Silver",file:"SilverLevel.png"},
+  {minimum:60,name:"Gold",file:"GoldLevel.png"},
+  {minimum:80,name:"Diamond",file:"DiamondLevel.png"}
+];
+
+function getMedal(percentage) {
+  return [...medalTiers].reverse()
+    .find(tier=>percentage>=tier.minimum);
+}
+
+function drawBellCurve(percentage) {
+  const left=45,right=755,bottom=260;
+  const center=400;
+  const sigma=115;
+  const height=190;
+
+  function curveY(x) {
+    return bottom-height*
+      Math.exp(-.5*((x-center)/sigma)**2);
+  }
+
+  let path="";
+  for(let x=left;x<=right;x+=3) {
+    path+=(x===left?"M":"L")+x+" "+curveY(x)+" ";
+  }
+
+  el("curveLine").setAttribute("d",path);
+  el("curveArea").setAttribute(
+    "d",path+`L ${right} ${bottom} L ${left} ${bottom} Z`
+  );
+
+  const playerX=left+(percentage/100)*(right-left);
+  const playerY=curveY(playerX);
+
+  el("playerLine").setAttribute("x1",playerX);
+  el("playerLine").setAttribute("x2",playerX);
+  el("playerLine").setAttribute("y1",bottom);
+  el("playerLine").setAttribute("y2",playerY);
+
+  el("playerDot").setAttribute("cx",playerX);
+  el("playerDot").setAttribute("cy",playerY);
+
+  const markerX=Math.max(75,Math.min(725,playerX));
+  el("playerMarker").setAttribute("x",markerX);
+  el("playerMarker").setAttribute(
+    "y",Math.max(22,playerY-15)
+  );
+}
+
+function showFinalResults() {
+  const total=round1Score+round2Score+round3Score;
+  const percentage=total/3000*100;
+  const medal=getMedal(percentage);
+
+  el("resultsCountry").textContent=country.name;
+  el("resultsScore").textContent=
+    `${total.toLocaleString()} / 3000`;
+
+  el("medalImage").src=medal.file;
+  el("medalImage").alt=medal.name+" award";
+  el("medalName").textContent=medal.name+" Level";
+
+  el("stat1").textContent=round1Score+" / 1000";
+  el("stat2").textContent=round2Score+" / 1000";
+  el("stat3").textContent=round3Score+" / 1000";
+
+  el("curveHeading").textContent=
+    `You earned ${percentage.toFixed(1)}% of the available points`;
+
+  drawBellCurve(percentage);
+  transition("round3","results");
+}
+
+el("viewResults").onclick=showFinalResults;
+
+el("playAgain").onclick=()=>{
+  window.location.reload();
+};
 </script>
 </body>
 </html>
