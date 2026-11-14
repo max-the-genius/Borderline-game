@@ -1,53 +1,58 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Borderline</title>
 
   <style>
-
-    /* MAIN WEBPAGE */
     * {
       box-sizing: border-box;
     }
 
     html, body {
       margin: 0;
-      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: #f5f7fa;
+      background: #f5f7fa;
       font-family: Arial, sans-serif;
+      color: #252525;
     }
 
-    /* MAIN CONTENT */
-    .main-container {
-      position: relative;
+    /* BOTH SCREENS */
+    .screen {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100vh;
       height: 100dvh;
       overflow: hidden;
     }
 
-    /* LOGO POSITION */
+    /* LANDING SCREEN */
+    #homeScreen {
+      transition:
+        transform 1.2s ease-in-out,
+        opacity 1.2s ease-in-out;
+      z-index: 2;
+    }
+
+    #homeScreen.leave {
+      transform: translateY(-110%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .game-header {
       position: absolute;
       top: 38%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: min(65vw, 350px);
-
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
-    /* FLOATING GLOBE */
     .globe-logo {
       width: 100%;
       height: auto;
@@ -55,109 +60,87 @@
       animation: float 5s ease-in-out infinite;
     }
 
-    /* GLOBE FLOATING ANIMATION */
     @keyframes float {
       0%, 100% {
         transform: translateY(0);
       }
-
       50% {
         transform: translateY(-15px);
       }
     }
 
-    /* START BUTTON AND COUNTRY TEXT AREA */
     .start-area {
       position: absolute;
       top: 75%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: min(90vw, 360px);
       height: 120px;
     }
 
-    /* START BUTTON */
     .image-button {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: 200px;
       height: 90px;
-
       background: transparent;
       border: none;
       padding: 0;
       cursor: pointer;
-
       display: flex;
       justify-content: center;
       align-items: center;
-
       transition: opacity 0.3s ease;
     }
 
-    /* START BUTTON IMAGE */
     .image-button img {
       width: 65px;
       height: auto;
       display: block;
-
       transform: rotate(-90deg);
       transition: transform 0.2s ease;
     }
 
-    /* BUTTON HOVER ANIMATION */
     .image-button:hover img {
       transform: rotate(-90deg) scale(1.1);
     }
 
-    /* HIDE START BUTTON */
     .image-button.hidden {
       opacity: 0;
       pointer-events: none;
     }
 
-    /* COUNTRY ANNOUNCEMENT */
     .country-display {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-
       width: 100%;
       text-align: center;
-
       opacity: 0;
       visibility: hidden;
-
       transition: opacity 0.5s ease;
     }
 
-    /* SHOW COUNTRY ANNOUNCEMENT */
     .country-display.visible {
       opacity: 1;
       visibility: visible;
     }
 
-    /* INTRODUCTORY TEXT */
     .country-display h2 {
       font-size: clamp(18px, 3vw, 26px);
-      color: #222;
       margin: 0;
       white-space: nowrap;
     }
 
-    /* COUNTRY NAME */
     #countryName {
       color: #00b85b;
       font-size: clamp(26px, 4vw, 36px);
       margin: 12px 0 0;
     }
 
-    /* COUNTRY REVEAL ANIMATION */
     #countryName.reveal {
       animation: countryPop 0.5s ease-out;
     }
@@ -167,62 +150,235 @@
         opacity: 0;
         transform: scale(0.7);
       }
-
       to {
         opacity: 1;
         transform: scale(1);
       }
     }
 
-    /* REDUCED MOTION */
-    @media (prefers-reduced-motion: reduce) {
-      .globe-logo,
-      #countryName.reveal {
-        animation: none;
+    /* ROUND ONE SCREEN */
+    #roundScreen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transform: translateY(110%);
+      opacity: 0;
+      pointer-events: none;
+      transition:
+        transform 1.2s ease-in-out,
+        opacity 1.2s ease-in-out;
+      z-index: 1;
+    }
+
+    #roundScreen.enter {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .round-layout {
+      width: min(100%, 760px);
+      max-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(12px, 3vh, 28px);
+    }
+
+    /* ROUND HEADING */
+    .round-heading {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 30px);
+    }
+
+    .mini-globe {
+      font-size: clamp(38px, 7vw, 65px);
+      line-height: 1;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .mini-globe:last-child {
+      animation-delay: -2.5s;
+    }
+
+    .round-title {
+      text-align: center;
+    }
+
+    .round-country {
+      font-size: clamp(22px, 5vw, 40px);
+      font-weight: bold;
+      color: #00a955;
+    }
+
+    .round-number {
+      font-size: clamp(18px, 3vw, 25px);
+      margin-top: 5px;
+    }
+
+    /* QUESTIONS BOX */
+    .questions-panel {
+      width: 100%;
+      border: 2px solid #343434;
+      border-radius: 12px;
+      padding: clamp(16px, 4vw, 32px);
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(14px, 3vh, 25px);
+    }
+
+    .question {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .question label {
+      font-size: clamp(15px, 2.4vw, 21px);
+      font-weight: 600;
+    }
+
+    .answer-input {
+      width: 100%;
+      height: 48px;
+      border: 2px solid #b9c1c8;
+      border-radius: 8px;
+      padding: 0 14px;
+      font-size: 18px;
+      background: #f5f7fa;
+      outline: none;
+    }
+
+    .answer-input:focus {
+      border-color: #00a955;
+    }
+
+    .answer-input:disabled {
+      opacity: 0.75;
+    }
+
+    .submit-button {
+      align-self: center;
+      background: #00b85b;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      padding: 13px 32px;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .submit-button:hover {
+      transform: scale(1.05);
+    }
+
+    .submit-button:disabled {
+      opacity: 0.65;
+      cursor: default;
+    }
+
+    /* SCORE METER */
+    .score-section {
+      width: 100%;
+      text-align: center;
+    }
+
+    .score-label {
+      font-size: 19px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .score-track {
+      position: relative;
+      width: 100%;
+      height: 30px;
+      border: 2px solid #343434;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #e3e8ed;
+    }
+
+    .score-fill {
+      height: 100%;
+      width: 0%;
+      background: #00b85b;
+      transition: width 1s ease;
+    }
+
+    .score-scale {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .score-feedback {
+      min-height: 22px;
+      margin-top: 10px;
+      font-size: 15px;
+    }
+
+    @media (max-height: 650px) {
+      .round-layout {
+        gap: 10px;
       }
 
-      .image-button,
-      .image-button img,
-      .country-display {
-        transition: none;
+      .questions-panel {
+        gap: 10px;
+        padding: 12px;
+      }
+
+      .answer-input {
+        height: 38px;
+      }
+
+      .mini-globe {
+        font-size: 32px;
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .globe-logo,
+      .mini-globe,
+      #countryName.reveal {
+        animation: none;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <main class="main-container">
+  <!-- FIRST SCREEN -->
+  <main class="screen" id="homeScreen">
 
-    <!-- FLOATING BORDERLINE LOGO -->
     <div class="game-header">
-
       <img
         src="Untitled%202.png"
         alt="Borderline Globe Logo"
         class="globe-logo"
       >
-
     </div>
 
-    <!-- START BUTTON AND COUNTRY ANNOUNCEMENT -->
     <div class="start-area">
 
-      <!-- START BUTTON -->
       <button
         class="image-button"
         id="startButton"
         type="button"
         aria-label="Start Game"
       >
-        <img
-          src="Start2.png"
-          alt=""
-        >
+        <img src="Start2.png" alt="">
       </button>
 
-      <!-- COUNTRY ANNOUNCEMENT -->
       <div
         class="country-display"
         id="countryDisplay"
@@ -233,13 +389,125 @@
       </div>
 
     </div>
-
   </main>
 
-  <!-- JAVASCRIPT -->
+  <!-- SECOND SCREEN: ROUND ONE -->
+  <section class="screen" id="roundScreen">
+
+    <div class="round-layout">
+
+      <!-- HEADING AND GLOBES -->
+      <header class="round-heading">
+
+        <span class="mini-globe" aria-hidden="true">
+          🌍
+        </span>
+
+        <div class="round-title">
+          <div class="round-country">
+            New Zealand
+          </div>
+          <div class="round-number">
+            Round 1
+          </div>
+        </div>
+
+        <span class="mini-globe" aria-hidden="true">
+          🌎
+        </span>
+
+      </header>
+
+      <!-- THREE QUESTIONS -->
+      <form class="questions-panel" id="questionsForm">
+
+        <div class="question">
+          <label for="gdpAnswer">
+            What is the GDP of New Zealand?
+            (USD billions)
+          </label>
+
+          <input
+            class="answer-input"
+            id="gdpAnswer"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Type your answer here..."
+            required
+          >
+        </div>
+
+        <div class="question">
+          <label for="populationAnswer">
+            What is the population of New Zealand?
+            (millions)
+          </label>
+
+          <input
+            class="answer-input"
+            id="populationAnswer"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Type your answer here..."
+            required
+          >
+        </div>
+
+        <div class="question">
+          <label for="coastlineAnswer">
+            How long is the coastline of New Zealand?
+            (kilometres)
+          </label>
+
+          <input
+            class="answer-input"
+            id="coastlineAnswer"
+            type="number"
+            min="0"
+            step="any"
+            placeholder="Type your answer here..."
+            required
+          >
+        </div>
+
+        <button class="submit-button" type="submit">
+          Submit Answers
+        </button>
+
+      </form>
+
+      <!-- SCORE METER -->
+      <div class="score-section">
+
+        <div class="score-label" id="scoreLabel">
+          0 / 1000 Points
+        </div>
+
+        <div class="score-track">
+          <div class="score-fill" id="scoreFill"></div>
+        </div>
+
+        <div class="score-scale">
+          <span>0</span>
+          <span>1000</span>
+        </div>
+
+        <div
+          class="score-feedback"
+          id="scoreFeedback"
+          aria-live="polite"
+        ></div>
+
+      </div>
+
+    </div>
+  </section>
+
   <script>
 
-    // Find HTML elements
+    // LANDING SCREEN ELEMENTS
     const startButton =
       document.getElementById("startButton");
 
@@ -249,29 +517,113 @@
     const countryName =
       document.getElementById("countryName");
 
-    // Run when Start is clicked
+    const homeScreen =
+      document.getElementById("homeScreen");
+
+    const roundScreen =
+      document.getElementById("roundScreen");
+
+    // START THE GAME
     startButton.addEventListener("click", function() {
 
-      // Remove focus from button
       startButton.blur();
-
-      // Prevent multiple clicks
       startButton.disabled = true;
-
-      // Hide Start button
       startButton.classList.add("hidden");
 
-      // Display introductory text
       countryDisplay.classList.add("visible");
 
-      // Reveal country after one second
+      // Reveal New Zealand after one second
       setTimeout(function() {
-
         countryName.textContent = "New Zealand";
-
         countryName.classList.add("reveal");
-
       }, 1000);
+
+      // Transition to Round 1
+      setTimeout(function() {
+        homeScreen.classList.add("leave");
+        roundScreen.classList.add("enter");
+      }, 2800);
+
+    });
+
+    // PROTOTYPE ANSWER DATA
+    // Replace with verified, dated data later.
+    const correctAnswers = {
+      gdp: 260,
+      population: 5.3,
+      coastline: 15134
+    };
+
+    // SCORE ONE NUMERICAL GUESS
+    function calculateAccuracy(guess, actual) {
+
+      const difference = Math.abs(guess - actual);
+
+      const relativeError = difference / actual;
+
+      return Math.max(0, 1 - relativeError);
+    }
+
+    // HANDLE QUESTION SUBMISSION
+    const questionsForm =
+      document.getElementById("questionsForm");
+
+    questionsForm.addEventListener("submit", function(event) {
+
+      event.preventDefault();
+
+      const gdpGuess =
+        Number(document.getElementById("gdpAnswer").value);
+
+      const populationGuess =
+        Number(document.getElementById("populationAnswer").value);
+
+      const coastlineGuess =
+        Number(document.getElementById("coastlineAnswer").value);
+
+      // Calculate accuracy for each question
+      const gdpAccuracy =
+        calculateAccuracy(gdpGuess, correctAnswers.gdp);
+
+      const populationAccuracy =
+        calculateAccuracy(
+          populationGuess,
+          correctAnswers.population
+        );
+
+      const coastlineAccuracy =
+        calculateAccuracy(
+          coastlineGuess,
+          correctAnswers.coastline
+        );
+
+      // Numerical questions are worth 500 points total
+      const averageAccuracy =
+        (gdpAccuracy + populationAccuracy + coastlineAccuracy) / 3;
+
+      const points = Math.round(averageAccuracy * 500);
+
+      // Update score text
+      document.getElementById("scoreLabel").textContent =
+        points + " / 1000 Points";
+
+      // Update score meter
+      document.getElementById("scoreFill").style.width =
+        (points / 1000 * 100) + "%";
+
+      // Show feedback
+      document.getElementById("scoreFeedback").textContent =
+        "You earned " + points +
+        " out of 500 available question points!";
+
+      // Prevent multiple submissions
+      const inputs = questionsForm.querySelectorAll("input");
+
+      inputs.forEach(function(input) {
+        input.disabled = true;
+      });
+
+      questionsForm.querySelector("button").disabled = true;
 
     });
 
