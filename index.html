@@ -1190,21 +1190,6 @@ let round1Score=0;
 let round2Score=0;
 let round3Score=0;
 
-document.querySelectorAll(".country-name").forEach(node=>{
-  node.textContent=country.name;
-});
-
-el("qGDP").textContent=
-  `What is the GDP of ${country.name}? (USD billions)`;
-el("qPopulation").textContent=
-  `What is the population of ${country.name}? (millions)`;
-el("qCoast").textContent=
-  `How long is the coastline of ${country.name}? (kilometres)`;
-el("instructions2").textContent=
-  `Find ${country.name} on the world map and draw its borders`;
-el("instructions3").textContent=
-  `Draw the flag of ${country.name}`;
-
 /* SCREEN TRANSITIONS */
 
 function transition(from,to) {
