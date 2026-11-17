@@ -1874,5 +1874,188 @@ window.addEventListener('load', updateScrollIndicator);
   <span class="scroll-arrow" aria-hidden="true">↓</span>
 </button>
 
+<!-- BORDERLINE SCROLL INDICATOR FIX -->
+
+<style>
+  #borderlineScrollHint {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
+
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+
+    padding: 8px 22px;
+    border: 2px solid #00b85b;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.97);
+
+    color: #008e49;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 20px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+  }
+
+  #borderlineScrollHint.visible {
+    display: flex;
+  }
+
+  #borderlineScrollHint .hint-arrow {
+    font-size: 25px;
+    line-height: 1;
+    animation: borderlineArrowBounce 1.5s ease-in-out infinite;
+  }
+
+  @keyframes borderlineArrowBounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #borderlineScrollHint .hint-arrow {
+      animation: none;
+    }
+  }
+
+  /* Hide the previous scroll indicator */
+  #scrollIndicator {
+    display: none !important;
+  }
+</style>
+
+<button
+  id="borderlineScrollHint"
+  type="button"
+  aria-label="Scroll down to continue"
+>
+  <span>Scroll</span>
+  <span class="hint-arrow" aria-hidden="true">↓</span>
+</button>
+
+<script>
+(function () {
+  const indicator =
+    document.getElementById("borderlineScrollHint");
+
+  const rounds = [
+    { screen: "round1", next: "continue1" },
+    { screen: "round2", next: "continue2" },
+    { screen: "round3", next: "viewResults" }
+  ];
+
+  function getCurrentRound() {
+    return rounds.find(item => {
+      const screen = document.getElementById(item.screen);
+
+      return screen &&
+        screen.classList.contains("active");
+    });
+  }
+
+  function updateIndicator() {
+    const current = getCurrentRound();
+
+    if (!current) {
+      indicator.classList.remove("visible");
+      return;
+    }
+
+    const screen = document.getElementById(current.screen);
+    const nextButton = document.getElementById(current.next);
+
+    if (!screen || !nextButton) {
+      indicator.classList.remove("visible");
+      return;
+    }
+
+    const roundCompleted =
+      nextButton.classList.contains("visible");
+
+    const moreContentBelow =
+      screen.scrollHeight > screen.clientHeight + 20 &&
+      screen.scrollTop + screen.clientHeight <
+      screen.scrollHeight - 60;
+
+    indicator.classList.toggle(
+      "visible",
+      roundCompleted && moreContentBelow
+    );
+  }
+
+  indicator.addEventListener("click", function () {
+    const current = getCurrentRound();
+
+    if (!current) return;
+
+    const screen = document.getElementById(current.screen);
+    const nextButton = document.getElementById(current.next);
+
+    if (!screen || !nextButton) return;
+
+    const buttonPosition =
+      nextButton.getBoundingClientRect().top -
+      screen.getBoundingClientRect().top +
+      screen.scrollTop;
+
+    const destination =
+      buttonPosition - screen.clientHeight / 2;
+
+    screen.scrollTo({
+      top: Math.max(0, destination),
+      behavior: "smooth"
+    });
+  });
+
+  rounds.forEach(item => {
+    const screen = document.getElementById(item.screen);
+    const nextButton = document.getElementById(item.next);
+
+    if (screen) {
+      screen.addEventListener(
+        "scroll",
+        updateIndicator,
+        { passive: true }
+      );
+    }
+
+    const observer = new MutationObserver(function () {
+      requestAnimationFrame(updateIndicator);
+    });
+
+    if (screen) {
+      observer.observe(screen, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
+    }
+
+    if (nextButton) {
+      observer.observe(nextButton, {
+        attributes: true,
+        attributeFilter: ["class"]
+      });
+    }
+  });
+
+  window.addEventListener("resize", updateIndicator);
+
+  updateIndicator();
+})();
+</script>
+
+<!-- END SCROLL INDICATOR FIX -->
+
 </body>
 </html>
