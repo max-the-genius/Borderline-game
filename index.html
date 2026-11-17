@@ -11,9 +11,11 @@
 
 <style>
 @font-face {
-  font-family:Sigher;
-  src:url("Sigher.woff2") format("woff2");
-  font-display:swap;
+  font-family: 'Patrick Hand';
+  src: url('PatrickHand-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 :root {
   --green:#00b85b;
@@ -26,7 +28,7 @@ html,body {
   width:100%;
   height:100%;
   overflow:hidden;
-  font-family:Arial,sans-serif;
+  font-family:'Patrick Hand',cursive;
   background:var(--bg);
   color:#252525;
 }
@@ -157,10 +159,15 @@ button:disabled {opacity:.45;cursor:not-allowed}
   object-fit:contain;
   animation:float 5s ease-in-out infinite;
 }
-.round-heading {text-align:center}
-.country-title,.round-number {
-  font-family:Sigher,Arial,sans-serif;
+
+.round-heading {
+  text-align: center;
 }
+
+.country-title, .round-number {
+  font-family: 'Patrick Hand', cursive;
+}
+
 .country-title {
   color:var(--darkgreen);
   font-size:clamp(26px,5vw,40px);
@@ -463,7 +470,7 @@ button:disabled {opacity:.45;cursor:not-allowed}
   text-align:center;
 }
 .results-title {
-  font-family:Sigher,Arial,sans-serif;
+  font-family:'PatrickHand', cursive;
   color:var(--darkgreen);
   font-size:clamp(32px,6vw,55px);
   margin:12px 0 0;
