@@ -1780,8 +1780,13 @@ let flagHistory=[];
 let previousFlagPoint=null;
 
 function fillFlagBackground() {
-  flagCtx.fillStyle=country.flagBackground;
-  flagCtx.fillRect(0,0,flagCanvas.width,flagCanvas.height);
+  flagCtx.fillStyle = "#ffffff";
+  flagCtx.fillRect(
+    0,
+    0,
+    flagCanvas.width,
+    flagCanvas.height
+  );
 }
 
 function saveFlagHistory() {
