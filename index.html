@@ -994,7 +994,10 @@ getJSON("./countries.json"),
     ) {
       throw Error("Unexpected country-data format");
     }
-
+console.log(
+  "First border feature:",
+  geo.features[0]?.properties
+);
     const borders = new Map();
 
     geo.features.forEach(feature => {
