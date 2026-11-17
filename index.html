@@ -754,40 +754,69 @@ button:disabled {opacity:.45;cursor:not-allowed}
 
       <div class="flag-tools">
         <button id="penTool" class="tool-btn selected" title="Pen" aria-label="Pen">✎</button>
-        <button id="bucketTool" class="tool-btn" title="Paint bucket" aria-label="Paint bucket">🪣</button>
-       <button id="eraserTool" class="tool-btn"
+        <button id="bucketTool" class="tool-btn"
+        title="Paint bucket" aria-label="Paint bucket">
+
+  <svg width="28" height="28" viewBox="0 0 64 64"
+       xmlns="http://www.w3.org/2000/svg">
+
+    <g transform="rotate(-35 32 32)"
+       stroke="#111"
+       stroke-width="2.5"
+       stroke-linejoin="round"
+       stroke-linecap="round">
+
+      <!-- Bucket body -->
+      <path d="M15 23 L49 23 L45 49 Q32 55 19 49 Z"
+            fill="white"/>
+
+      <!-- Bucket opening -->
+      <ellipse cx="32" cy="23" rx="17" ry="6"
+               fill="#d9d9d9"/>
+
+      <!-- Handle -->
+      <path d="M23 22 V17 Q32 6 41 17 V22"
+            fill="none"/>
+
+      <!-- Bucket detail -->
+      <path d="M22 32 Q32 37 42 32"
+            fill="none"/>
+
+      <!-- Paint droplet -->
+      <path d="M51 38 Q56 43 51 48 Q46 43 51 38Z"
+            fill="#111" stroke="none"/>
+
+    </g>
+  </svg>
+
+</button>
+      <button id="eraserTool" class="tool-btn"
         title="Eraser" aria-label="Eraser">
 
-  <svg width="27" height="27" viewBox="0 0 32 32"
-       fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="28" height="28" viewBox="0 0 64 64"
+       xmlns="http://www.w3.org/2000/svg">
 
-    <g transform="rotate(-40 16 16)">
-      <!-- Eraser at the top -->
-      <rect x="11" y="3" width="10" height="8"
-            rx="3" fill="white"
-            stroke="black" stroke-width="1.8"/>
+    <g transform="rotate(-25 32 32)"
+       stroke="#111"
+       stroke-width="2.5"
+       stroke-linejoin="round">
 
-      <!-- Metal band -->
-      <rect x="11" y="10" width="10" height="4"
-            fill="#bfbfbf"
-            stroke="black" stroke-width="1.5"/>
+      <!-- Top surface -->
+      <path d="M9 24 L16 17 L54 17 L47 24 Z"
+            fill="#e2e2e2"/>
 
-      <!-- Pencil body -->
-      <rect x="11" y="14" width="10" height="12"
-            fill="white"
-            stroke="black" stroke-width="1.8"/>
+      <!-- Side surface -->
+      <path d="M47 24 L54 17 L54 36 L47 43 Z"
+            fill="#b5b5b5"/>
 
-      <!-- Pencil detail -->
-      <path d="M14 15 V25 M18 15 V25"
-            stroke="black" stroke-width="1"/>
+      <!-- Front rectangular face -->
+      <rect x="9" y="24" width="38" height="19"
+            rx="3" fill="white"/>
 
-      <!-- Pencil tip -->
-      <path d="M11 26 L16 31 L21 26 Z"
-            fill="white" stroke="black"
-            stroke-width="1.5"/>
+      <!-- Simple eraser detail -->
+      <path d="M16 32 H40"
+            stroke="#111" stroke-width="1.5"/>
 
-      <path d="M14.5 29.5 L16 31 L17.5 29.5"
-            fill="black"/>
     </g>
   </svg>
 
