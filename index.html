@@ -2079,31 +2079,40 @@ const observer = new MutationObserver(function () {
     background: transparent;
   }
 
+
 .topographic-background {
   position: fixed;
-  inset: -5%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
 
   background-image: url("Borderline_Contours.png");
 
-  /* Zoom out */
-  background-size: 75% auto;
+  /* Show one continuous image */
+  background-size: 100% 100%;
   background-position: center;
-  background-repeat: repeat;
+  background-repeat: no-repeat;
 
-  /* Make contours subtle */
-  opacity: 0.18;
+  /* Make the lines very subtle */
+  opacity: 0.12;
 
-  /* Keep the slow animation */
+  /* Gentle, slow movement */
   animation: contourMovement 90s ease-in-out infinite alternate;
 }
 
 
-  @keyframes contourMovement {
-    0% {
-      transform: translate(-8px, -5px) scale(1.02);
-    }
+
+
+@keyframes contourMovement {
+  0% {
+    transform: scale(1.01);
+  }
+
+  100% {
+    transform: scale(1.04);
+  }
+}
+
 
     100% {
       transform: translate(8px, 5px) scale(1.05);
