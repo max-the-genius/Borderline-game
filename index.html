@@ -885,18 +885,278 @@ button:disabled {opacity:.45;cursor:not-allowed}
 
 /* COUNTRY DATA */
 
-const country = {
-  name:"New Zealand",
-  code:"NZL",
-  flagCode:"nz",
-  flagBackground:"#00247d",
-  flagRatio:2,
-  answers:{
-    gdp:260,
-    population:5.3,
-    coastline:15134
+
+/* DAILY COUNTRY DATA
+   This will be populated by the daily challenge system. */
+
+let country = null;
+let dailyCountryReady = false;
+let dailyCountryError = "";
+let dailyBoundary = null;
+let dailyKey = "";
+
+
+/* DAILY COUNTRY ROTATION */
+
+const DAILY_EPOCH = Date.UTC(2026, 0, 1);
+const DAY_MS = 86400000;
+
+const utcDay = () =>
+  Math.floor((Date.now() - DAILY_EPOCH) / DAY_MS);
+
+const utcDateKey = () =>
+  new Date().toISOString().slice(0, 10);
+
+async function getJSON(url) {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw Error(`Data request failed (${response.status})`);
   }
-};
+
+  return response.json();
+}
+
+function stableShuffle(items, seed) {
+  const result = [...items];
+  let state = seed >>> 0;
+
+  const random = () => {
+    state =
+      (Math.imul(1664525, state) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+function flagBaseColor(code) {
+  const bases = {
+    nz: "#00247d",
+    au: "#00008b",
+    us: "#ffffff",
+    gb: "#012169",
+    jp: "#ffffff",
+    fr: "#ffffff",
+    de: "#000000",
+    br: "#009739",
+    cn: "#de2910",
+    tr: "#e30a17",
+    ca: "#ffffff",
+    it: "#ffffff",
+    za: "#de3831",
+    bd: "#006a4e",
+    pk: "#01411c",
+    ch: "#da291c",
+    se: "#006aa7",
+    fi: "#ffffff",
+    no: "#ba0c2f",
+    dk: "#c8102e"
+  };
+
+  return bases[code] || "#ffffff";
+}
+
+async function prepareDailyCountry() {
+  const startButton = document.getElementById("start");
+
+  startButton.disabled = true;
+  startButton.title = "Loading today's country...";
+
+  try {
+    const [rest, wb, geo] = await Promise.all([
+      getJSON(
+        "https://restcountries.com/v3.1/all?fields=name,cca2,cca3,population,area,flags,independent"
+      ),
+      getJSON(
+        "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.MKTP.CD?format=json&per_page=20000&date=2022:2025"
+      ),
+      getJSON(
+        "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
+      )
+    ]);
+
+    if (
+      !Array.isArray(rest) ||
+      !Array.isArray(wb[1]) ||
+      !Array.isArray(geo.features)
+    ) {
+      throw Error("Unexpected country-data format");
+    }
+
+    const borders = new Map();
+
+    geo.features.forEach(feature => {
+      const p = feature.properties || {};
+
+      const iso =
+        p.ISO3166_1_Alpha_3 ||
+        p.ISO_A3 ||
+        p.ADM0_A3 ||
+        p.iso_a3;
+
+      if (iso && iso !== "-99") {
+        borders.set(iso, feature);
+      }
+    });
+
+    const gdps = new Map();
+
+    wb[1].forEach(row => {
+      if (
+        !row.value ||
+        !row.countryiso3code ||
+        row.countryiso3code.length !== 3
+      ) {
+        return;
+      }
+
+      const key = row.countryiso3code;
+      const previous = gdps.get(key);
+
+      if (!previous || +row.date > previous.year) {
+        gdps.set(key, {
+          value: Number(row.value),
+          year: +row.date
+        });
+      }
+    });
+
+    const eligible = rest
+      .filter(c =>
+        c.independent !== false &&
+        c.cca3 &&
+        c.cca2 &&
+        c.population > 0 &&
+        c.area > 0 &&
+        borders.has(c.cca3) &&
+        gdps.has(c.cca3)
+      )
+      .sort((a, b) => a.cca3.localeCompare(b.cca3));
+
+    if (eligible.length < 100) {
+      throw Error("Too few supported countries loaded");
+    }
+
+    const day = utcDay();
+    const cycle = Math.floor(day / eligible.length);
+
+    const position =
+      ((day % eligible.length) + eligible.length) %
+      eligible.length;
+
+    const shuffled = stableShuffle(
+      eligible,
+      20261117 + cycle
+    );
+
+    const chosen = shuffled[position];
+    const gdp = gdps.get(chosen.cca3);
+
+    const population = chosen.population / 1e6;
+    const area = chosen.area;
+    const density = chosen.population / area;
+    const perCapita = gdp.value / chosen.population;
+
+    const thirdTypes = [
+      {
+        key: "area",
+        label: "What is the land area",
+        unit: "km²",
+        value: area
+      },
+      {
+        key: "density",
+        label: "What is the population density",
+        unit: "people per km²",
+        value: density
+      },
+      {
+        key: "gdpPerCapita",
+        label: "What is the GDP per capita",
+        unit: "USD per person",
+        value: perCapita
+      }
+    ];
+
+    const third = thirdTypes[
+      ((day % thirdTypes.length) + thirdTypes.length) %
+      thirdTypes.length
+    ];
+
+    const flagCode = chosen.cca2.toLowerCase();
+
+    country = {
+      name: chosen.name.common,
+      code: chosen.cca3,
+      flagCode: flagCode,
+      flagBackground: flagBaseColor(flagCode),
+      flagRatio: 1.5,
+      gdpYear: gdp.year,
+      third: third,
+      answers: {
+        gdp: gdp.value / 1e9,
+        population: population,
+        third: third.value
+      }
+    };
+
+    dailyBoundary = borders.get(chosen.cca3);
+    dailyKey = utcDateKey();
+    dailyCountryReady = true;
+
+    document.querySelectorAll(".country-name")
+      .forEach(node => {
+        node.textContent = country.name;
+      });
+
+    document.getElementById("qGDP").textContent =
+      `What was the GDP of ${country.name} in ${country.gdpYear}? (USD billions)`;
+
+    document.getElementById("qPopulation").textContent =
+      `What is the population of ${country.name}? (millions)`;
+
+    document.getElementById("qCoast").textContent =
+      `${third.label} of ${country.name}? (${third.unit})`;
+
+    document.getElementById("instructions2").textContent =
+      `Find ${country.name} on the world map and draw its borders`;
+
+    document.getElementById("instructions3").textContent =
+      `Draw the flag of ${country.name}`;
+
+    startButton.disabled = false;
+    startButton.title = "Start today's challenge";
+
+  } catch (error) {
+    console.error("Daily country loading failed:", error);
+
+    dailyCountryError = error.message;
+
+    const reveal = document.getElementById("reveal");
+    reveal.classList.add("visible");
+
+    document.getElementById("revealName").textContent =
+      "Could not load today's country. Check your connection and refresh.";
+  }
+}
+
+prepareDailyCountry();
+
+setInterval(() => {
+  if (
+    dailyCountryReady &&
+    utcDateKey() !== dailyKey &&
+    document.getElementById("home").classList.contains("active")
+  ) {
+    location.reload();
+  }
+}, 30000);
 
 const el=id=>document.getElementById(id);
 
@@ -929,19 +1189,41 @@ function transition(from,to) {
   el(to).scrollTop=0;
 }
 
-el("start").onclick=()=>{
-  el("start").disabled=true;
+
+/* START TODAY'S CHALLENGE */
+
+el("start").onclick = () => {
+
+  // Wait until today's country has loaded.
+  if (!dailyCountryReady) {
+    return;
+  }
+
+  // If the UTC date changed while the page was open,
+  // reload to get the new daily challenge.
+  if (utcDateKey() !== dailyKey) {
+    location.reload();
+    return;
+  }
+
+  // Prevent the player from starting twice.
+  el("start").disabled = true;
+
+  // Hide the Start button and reveal the country.
   el("start").classList.add("hidden");
   el("reveal").classList.add("visible");
 
-  setTimeout(()=>{
-    el("revealName").textContent=country.name;
-  },1000);
+  setTimeout(() => {
+    el("revealName").textContent = country.name;
+  }, 1000);
 
-  setTimeout(()=>{
-    transition("home","round1");
-  },2800);
+  // Move to Round 1.
+  setTimeout(() => {
+    transition("home", "round1");
+  }, 2800);
+
 };
+
 
 function scoreAnimation(label,fill,points) {
   el(fill).style.width=points/10+"%";
@@ -970,29 +1252,77 @@ function answer(id,value,unit,points,max) {
   el(id).classList.add("visible");
 }
 
-el("questions").addEventListener("submit",e=>{
+
+/* ROUND 1 — DAILY QUESTIONS AND SCORING */
+
+el("questions").addEventListener("submit", e => {
   e.preventDefault();
-  const a=country.answers;
 
-  const g=Math.round(accuracy(+el("gdp").value,a.gdp)*334);
-  const p=Math.round(accuracy(+el("population").value,a.population)*333);
-  const c=Math.round(accuracy(+el("coast").value,a.coastline)*333);
+  if (!dailyCountryReady || !country) {
+    return;
+  }
 
-  round1Score=g+p+c;
+  const a = country.answers;
 
-  answer("aGDP",a.gdp,"billion USD",g,334);
-  answer("aPopulation",a.population,"million",p,333);
-  answer("aCoast",a.coastline.toLocaleString(),"km",c,333);
+  // Calculate points for each question.
+  const g = Math.round(
+    accuracy(+el("gdp").value, a.gdp) * 334
+  );
 
-  scoreAnimation("score1Label","score1Fill",round1Score);
-  el("score1Note").textContent=
+  const p = Math.round(
+    accuracy(+el("population").value, a.population) * 333
+  );
+
+  const c = Math.round(
+    accuracy(+el("coast").value, a.third) * 333
+  );
+
+  round1Score = g + p + c;
+
+  // Show the correct answers.
+  answer(
+    "aGDP",
+    Number(a.gdp.toFixed(2)).toLocaleString(),
+    "billion USD",
+    g,
+    334
+  );
+
+  answer(
+    "aPopulation",
+    Number(a.population.toFixed(2)).toLocaleString(),
+    "million",
+    p,
+    333
+  );
+
+  // The third answer changes with today's question.
+  answer(
+    "aCoast",
+    Number(a.third.toFixed(2)).toLocaleString(),
+    country.third.unit,
+    c,
+    333
+  );
+
+  // Animate the score.
+  scoreAnimation(
+    "score1Label",
+    "score1Fill",
+    round1Score
+  );
+
+  el("score1Note").textContent =
     `You earned ${round1Score} out of 1000 points!`;
 
+  // Prevent duplicate submissions.
   e.target.querySelectorAll("input,button")
-    .forEach(x=>x.disabled=true);
+    .forEach(x => x.disabled = true);
 
+  // Reveal the Continue button.
   el("continue1").classList.add("visible");
 });
+
 
 el("continue1").onclick=()=>{
   transition("round1","round2");
@@ -1056,60 +1386,42 @@ function initMap() {
   loadBoundary();
 }
 
+
+/* ROUND 2 — LOAD TODAY'S COUNTRY BORDER */
+
 async function loadBoundary() {
-  boundaryReady=false;
+
+  boundaryReady = false;
   submitState();
 
-  const sources=[
-    "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson",
-    "https://cdn.jsdelivr.net/gh/datasets/geo-countries@master/data/countries.geojson"
-  ];
+  // Today's border was downloaded by the daily loader.
+  if (dailyCountryReady && dailyBoundary) {
 
-  let lastError="";
+    boundary = dailyBoundary;
+    boundaryReady = true;
 
-  for(const url of sources) {
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),15000);
+    submitState();
 
-    try {
-      mapStatus("Loading scoring data...");
-      const response=await fetch(url,{signal:controller.signal});
-      if(!response.ok) throw Error("HTTP "+response.status);
+    mapStatus(
+      "Map ready. Find " +
+      country.name +
+      " and draw its borders."
+    );
 
-      const data=await response.json();
-
-      const feature=data.features.find(f=>{
-        const p=f.properties||{};
-        return (
-          p.ISO3166_1_Alpha_3===country.code ||
-          p.ISO_A3===country.code ||
-          p.ADM0_A3===country.code ||
-          p.iso_a3===country.code ||
-          p.name===country.name ||
-          p.ADMIN===country.name
-        );
-      });
-
-      if(!feature) throw Error("Country not found");
-
-      boundary=feature;
-      boundaryReady=true;
-      submitState();
-      mapStatus("Map ready. Draw the country's outline.");
-      return;
-
-    } catch(error) {
-      lastError=error.message;
-      console.warn(error);
-    } finally {
-      clearTimeout(timeout);
-    }
+    return;
   }
 
-  mapStatus("Unable to load country data.");
-  el("score2Note").textContent=
-    "Scoring unavailable: "+lastError;
+  // The map cannot be scored without border data.
+  boundary = null;
+
+  mapStatus(
+    "Country border data unavailable. Please refresh."
+  );
+
+  el("score2Note").textContent =
+    "Unable to load the border for today's country.";
 }
+
 
 function setMode(draw) {
   if(!map || borderSubmitted) return;
@@ -1592,48 +1904,116 @@ let referenceFlag=null;
 let referenceFlagReady=false;
 let referenceFlagURL="";
 
+
+/* LOAD TODAY'S FLAG */
+
 async function loadReferenceFlag() {
-  referenceFlagReady=false;
-  el("submitFlag").disabled=true;
-  el("score3Note").textContent="Preparing flag scoring...";
+  referenceFlagReady = false;
+  referenceFlag = null;
+
+  el("submitFlag").disabled = true;
+  el("score3Note").textContent =
+    "Preparing today's flag...";
 
   try {
-    const image=new Image();
-    image.crossOrigin="anonymous";
+    if (!dailyCountryReady || !country) {
+      throw Error("Today's country is not ready");
+    }
 
-    await new Promise((resolve,reject)=>{
-      image.onload=resolve;
-      image.onerror=()=>reject(Error("Flag image unavailable"));
-      image.src=`https://flagcdn.com/w640/${country.flagCode}.png`;
+    const image = new Image();
+    image.crossOrigin = "anonymous";
+
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () =>
+        reject(Error("Flag image unavailable"));
+
+      image.src =
+        `https://flagcdn.com/w640/${country.flagCode}.png`;
     });
 
-    const offscreen=document.createElement("canvas");
-    offscreen.width=flagCanvas.width;
-    offscreen.height=flagCanvas.height;
+    // Use the actual flag's proportions.
+    const ratio =
+      image.naturalWidth / image.naturalHeight;
 
-    const offCtx=offscreen.getContext("2d",{
-      willReadFrequently:true
+    if (Number.isFinite(ratio) && ratio > 0) {
+      country.flagRatio = ratio;
+    }
+
+    flagCanvas.width = 600;
+    flagCanvas.height = Math.round(
+      600 / country.flagRatio
+    );
+
+    el("flagSurface").style.aspectRatio =
+      String(country.flagRatio);
+
+    // Determine the flag's upper-left background colour.
+    const sample = document.createElement("canvas");
+    sample.width = 1;
+    sample.height = 1;
+
+    const sampleCtx = sample.getContext("2d", {
+      willReadFrequently: true
+    });
+
+    sampleCtx.drawImage(
+      image,
+      0, 0,
+      image.naturalWidth,
+      image.naturalHeight,
+      0, 0, 1, 1
+    );
+
+    const pixel = sampleCtx.getImageData(
+      0, 0, 1, 1
+    ).data;
+
+    country.flagBackground = "#" +
+      [pixel[0], pixel[1], pixel[2]]
+        .map(v => v.toString(16).padStart(2, "0"))
+        .join("");
+
+    fillFlagBackground();
+    flagHistory = [];
+
+    // Prepare the reference flag for scoring.
+    const offscreen = document.createElement("canvas");
+
+    offscreen.width = flagCanvas.width;
+    offscreen.height = flagCanvas.height;
+
+    const offCtx = offscreen.getContext("2d", {
+      willReadFrequently: true
     });
 
     offCtx.drawImage(
-      image,0,0,offscreen.width,offscreen.height
+      image,
+      0, 0,
+      offscreen.width,
+      offscreen.height
     );
 
-    offCtx.getImageData(0,0,1,1);
-    referenceFlag=offscreen;
-    referenceFlagURL=offscreen.toDataURL("image/png");
-    referenceFlagReady=true;
+    // Confirm the reference pixels can be accessed.
+    offCtx.getImageData(0, 0, 1, 1);
 
-    el("submitFlag").disabled=false;
-    el("score3Note").textContent=
+    referenceFlag = offscreen;
+    referenceFlagURL = offscreen.toDataURL("image/png");
+    referenceFlagReady = true;
+
+    el("submitFlag").disabled = false;
+
+    el("score3Note").textContent =
       "Complete the flag, then submit your drawing.";
 
-  } catch(error) {
-    console.warn(error);
-    el("score3Note").textContent=
-      "Flag reference unavailable. Scoring cannot begin yet.";
+  } catch (error) {
+    console.error("Flag loading failed:", error);
+
+    el("score3Note").textContent =
+      "Unable to load today's flag. Please refresh.";
   }
 }
+
 
 /* STRICTER FLAG SCORING */
 
