@@ -568,6 +568,51 @@ button:disabled {opacity:.45;cursor:not-allowed}
   .screen,.score-fill {transition:none}
   .home-logo img,.round-header img {animation:none}
 }
+  
+/* Animated scroll indicator */
+.scroll-indicator {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d5dce2;
+  border-radius: 20px;
+  padding: 8px 18px;
+
+  font-family: 'Patrick Hand', cursive;
+  font-size: 20px;
+  color: #008e49;
+  cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.scroll-indicator.visible {
+  display: flex;
+}
+
+.scroll-arrow {
+  font-size: 24px;
+  line-height: 1;
+  animation: scrollBounce 1.5s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-arrow { animation: none; }
+}
+
 </style>
 </head>
 
@@ -1792,6 +1837,42 @@ el("viewResults").onclick=showFinalResults;
 el("playAgain").onclick=()=>{
   window.location.reload();
 };
+  
+const scrollIndicator = document.getElementById('scrollIndicator');
+
+function updateScrollIndicator() {
+  const canScroll =
+    document.documentElement.scrollHeight >
+    window.innerHeight + 20;
+
+  const nearBottom =
+    window.scrollY + window.innerHeight >=
+    document.documentElement.scrollHeight - 60;
+
+  scrollIndicator.classList.toggle(
+    'visible',
+    canScroll && !nearBottom
+  );
+}
+
+scrollIndicator.addEventListener('click', () => {
+  window.scrollBy({
+    top: window.innerHeight * 0.7,
+    behavior: 'smooth'
+  });
+});
+
+window.addEventListener('scroll', updateScrollIndicator);
+window.addEventListener('resize', updateScrollIndicator);
+window.addEventListener('load', updateScrollIndicator);
+
 </script>
+  
+<button class="scroll-indicator" id="scrollIndicator"
+        type="button" aria-label="Scroll down">
+  <span>Scroll</span>
+  <span class="scroll-arrow" aria-hidden="true">↓</span>
+</button>
+
 </body>
 </html>
