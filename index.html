@@ -1044,7 +1044,21 @@ getJSON("./countries.json"),
         gdps.has(c.cca3)
       )
       .sort((a, b) => a.cca3.localeCompare(b.cca3));
+console.log("Total country records:", rest.length);
+console.log("GDP records:", gdps.size);
+console.log("Border records:", borders.size);
 
+console.log(
+  "Countries matching GDP:",
+  rest.filter(c => gdps.has(c.cca3)).length
+);
+
+console.log(
+  "Countries matching borders:",
+  rest.filter(c => borders.has(c.cca3)).length
+);
+
+console.log("Fully eligible countries:", eligible.length);
     if (eligible.length < 100) {
       throw Error("Too few supported countries loaded");
     }
