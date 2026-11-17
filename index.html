@@ -998,21 +998,24 @@ console.log(
   "First border feature:",
   geo.features[0]?.properties
 );
-    const borders = new Map();
+   
+const borders = new Map();
 
-    geo.features.forEach(feature => {
-      const p = feature.properties || {};
+geo.features.forEach(feature => {
+  const p = feature.properties || {};
 
-      const iso =
-        p.ISO3166_1_Alpha_3 ||
-        p.ISO_A3 ||
-        p.ADM0_A3 ||
-        p.iso_a3;
+  const iso =
+    p["ISO3166-1-Alpha-3"] ||
+    p.ISO3166_1_Alpha_3 ||
+    p.ISO_A3 ||
+    p.ADM0_A3 ||
+    p.iso_a3;
 
-      if (iso && iso !== "-99") {
-        borders.set(iso, feature);
-      }
-    });
+  if (iso && iso !== "-99") {
+    borders.set(iso, feature);
+  }
+});
+
 
     const gdps = new Map();
 
