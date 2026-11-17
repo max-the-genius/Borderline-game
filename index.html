@@ -2084,13 +2084,20 @@ function calculateFlagScore() {
   let featureError=0,featureCount=0;
   let extraMarkPenalty=0;
 
-  const distance=(a,b,i)=>{
-    const dr=a[0]-b[i];
-    const dg=a[1]-b[i+1];
-    const db=a[2]-b[i+2];
-    return Math.sqrt(dr*dr+dg*dg+db*db)/
-      Math.sqrt(3*255*255);
-  };
+
+const distance=(a,b,i)=>{
+  const dr=a[0]-b[i];
+  const dg=a[1]-b[i+1];
+  const db=a[2]-b[i+2];
+
+  const rawDistance=Math.sqrt(
+    dr*dr+dg*dg+db*db
+  )/Math.sqrt(3*255*255);
+
+  // Penalize incorrect colours more strongly.
+  return Math.min(1,rawDistance*2.5);
+};
+
 
   for(let y=0;y<h;y+=3) {
     for(let x=0;x<w;x+=3) {
