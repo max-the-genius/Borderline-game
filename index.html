@@ -970,9 +970,7 @@ async function prepareDailyCountry() {
 
   try {
     const [rest, wb, geo] = await Promise.all([
-      getJSON(
-        "https://restcountries.com/v3.1/all?fields=name,cca2,cca3,population,area,flags,independent"
-      ),
+  getJSON("https://restcountries.com/v3.1/all?fields=name,cca2,cca3,population,area,independent"),
       getJSON(
         "https://api.worldbank.org/v2/country/all/indicator/NY.GDP.MKTP.CD?format=json&per_page=20000&date=2022:2025"
       ),
@@ -980,6 +978,23 @@ async function prepareDailyCountry() {
         "https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson"
       )
     ]);
+
+    
+// Convert the new country dataset into the format
+// expected by the rest of Borderline's daily loader.
+const countries = rest.map(c => ({
+  name: {
+    common: c.name?.common || c.name
+  },
+  cca2: c.cca2 || c.alpha2,
+  cca3: c.cca3 || c.alpha3,
+  population: c.population,
+  area: c.area,
+  independent: c.independent
+}));
+
+// Use the converted dataset for country selection.
+rest.splice(0, rest.length, ...countries);
 
     if (
       !Array.isArray(rest) ||
