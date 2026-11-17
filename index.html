@@ -1253,7 +1253,21 @@ setInterval(() => {
 }, 30000);
 
 const el=id=>document.getElementById(id);
+/* Restore mobile viewport after keyboard dismissal */
+document.querySelectorAll("#round1 input").forEach(input => {
+  input.addEventListener("blur", () => {
+    setTimeout(() => {
+      if (document.activeElement?.tagName === "INPUT") return;
 
+      window.scrollTo(0, 0);
+
+      const round = document.getElementById("round1");
+      if (round) {
+        round.scrollTop = 0;
+      }
+    }, 300);
+  });
+});
 let round1Score=0;
 let round2Score=0;
 let round3Score=0;
