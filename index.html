@@ -755,7 +755,43 @@ button:disabled {opacity:.45;cursor:not-allowed}
       <div class="flag-tools">
         <button id="penTool" class="tool-btn selected" title="Pen" aria-label="Pen">✎</button>
         <button id="bucketTool" class="tool-btn" title="Paint bucket" aria-label="Paint bucket">🪣</button>
-        <button id="eraserTool" class="tool-btn" title="Eraser" aria-label="Eraser">⌫</button>
+       <button id="eraserTool" class="tool-btn"
+        title="Eraser" aria-label="Eraser">
+
+  <svg width="27" height="27" viewBox="0 0 32 32"
+       fill="none" xmlns="http://www.w3.org/2000/svg">
+
+    <g transform="rotate(-40 16 16)">
+      <!-- Eraser at the top -->
+      <rect x="11" y="3" width="10" height="8"
+            rx="3" fill="white"
+            stroke="black" stroke-width="1.8"/>
+
+      <!-- Metal band -->
+      <rect x="11" y="10" width="10" height="4"
+            fill="#bfbfbf"
+            stroke="black" stroke-width="1.5"/>
+
+      <!-- Pencil body -->
+      <rect x="11" y="14" width="10" height="12"
+            fill="white"
+            stroke="black" stroke-width="1.8"/>
+
+      <!-- Pencil detail -->
+      <path d="M14 15 V25 M18 15 V25"
+            stroke="black" stroke-width="1"/>
+
+      <!-- Pencil tip -->
+      <path d="M11 26 L16 31 L21 26 Z"
+            fill="white" stroke="black"
+            stroke-width="1.5"/>
+
+      <path d="M14.5 29.5 L16 31 L17.5 29.5"
+            fill="black"/>
+    </g>
+  </svg>
+
+</button>
         <div id="colorPalette" style="display:flex;flex-direction:column;align-items:center;gap:9px;margin-top:6px"></div>
         <input id="customColor" type="color" value="#ffffff" title="Custom colour" aria-label="Custom colour">
       </div>
