@@ -1861,6 +1861,45 @@ function bucketFill(x,y,newColor) {
     if(py<h-1) stack.push(pos+w);
   }
 
+  // Slightly expand the filled region to cover
+  // antialiased pixels along pencil boundaries.
+  const filled = new Uint8Array(w * h);
+
+  for (let pos = 0; pos < w * h; pos++) {
+    const o = pos * 4;
+
+    if (
+      data[o] === replacement[0] &&
+      data[o + 1] === replacement[1] &&
+      data[o + 2] === replacement[2]
+    ) {
+      filled[pos] = 1;
+    }
+  }
+
+  const edgePixels = [];
+
+  for (let pos = 0; pos < w * h; pos++) {
+    if (!filled[pos]) continue;
+
+    const px = pos % w;
+    const py = Math.floor(pos / w);
+
+    if (px > 0 && !filled[pos - 1]) edgePixels.push(pos - 1);
+    if (px < w - 1 && !filled[pos + 1]) edgePixels.push(pos + 1);
+    if (py > 0 && !filled[pos - w]) edgePixels.push(pos - w);
+    if (py < h - 1 && !filled[pos + w]) edgePixels.push(pos + w);
+  }
+
+  for (const pos of edgePixels) {
+    const o = pos * 4;
+
+    data[o] = replacement[0];
+    data[o + 1] = replacement[1];
+    data[o + 2] = replacement[2];
+    data[o + 3] = 255;
+  }
+
   flagCtx.putImageData(image,0,0);
 }
 
