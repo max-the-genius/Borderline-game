@@ -2030,9 +2030,15 @@ window.addEventListener('load', updateScrollIndicator);
       );
     }
 
-    const observer = new MutationObserver(function () {
-      requestAnimationFrame(updateIndicator);
-    });
+ 
+const observer = new MutationObserver(function () {
+  indicator.classList.remove("visible");
+
+  setTimeout(function () {
+    requestAnimationFrame(updateIndicator);
+  }, 1500);
+});
+
 
     if (screen) {
       observer.observe(screen, {
