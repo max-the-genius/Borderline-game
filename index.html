@@ -2063,44 +2063,44 @@ const observer = new MutationObserver(function () {
 
 <!-- END SCROLL INDICATOR FIX -->
 
-<!-- BORDERLINE ANIMATED TOPOGRAPHIC BACKGROUND -->
+
+<!-- BORDERLINE TOPOGRAPHIC BACKGROUND -->
 
 <style>
-  /* Warm paper-like background */
   :root {
-    --bg: #f8f7f1;
+    --bg: #ffffff;
   }
 
-  /* Animated topographic layer */
+  html, body {
+    background: #ffffff;
+  }
+
+  .screen {
+    background: transparent;
+  }
+
   .topographic-background {
     position: fixed;
-    inset: -15%;
+    inset: -5%;
     z-index: 0;
     pointer-events: none;
 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600' viewBox='0 0 600 600'%3E%3Cg fill='none' stroke='%239bc9aa' stroke-width='1.5' opacity='0.55'%3E%3Cpath d='M-100 100 C80 -50 160 240 320 90 S520 20 700 150'/%3E%3Cpath d='M-100 125 C80 -25 160 265 320 115 S520 45 700 175'/%3E%3Cpath d='M-100 150 C80 0 160 290 320 140 S520 70 700 200'/%3E%3Cpath d='M-100 175 C80 25 160 315 320 165 S520 95 700 225'/%3E%3Cpath d='M-100 200 C80 50 160 340 320 190 S520 120 700 250'/%3E%3Cpath d='M-100 225 C80 75 160 365 320 215 S520 145 700 275'/%3E%3Cpath d='M-100 250 C80 100 160 390 320 240 S520 170 700 300'/%3E%3Cpath d='M-100 275 C80 125 160 415 320 265 S520 195 700 325'/%3E%3Cpath d='M-100 300 C80 150 160 440 320 290 S520 220 700 350'/%3E%3Cpath d='M-100 325 C80 175 160 465 320 315 S520 245 700 375'/%3E%3Cpath d='M-100 350 C80 200 160 490 320 340 S520 270 700 400'/%3E%3Cpath d='M-100 375 C80 225 160 515 320 365 S520 295 700 425'/%3E%3Cpath d='M-100 400 C80 250 160 540 320 390 S520 320 700 450'/%3E%3Cpath d='M-100 425 C80 275 160 565 320 415 S520 345 700 475'/%3E%3Cpath d='M-100 450 C80 300 160 590 320 440 S520 370 700 500'/%3E%3Cpath d='M-100 475 C80 325 160 615 320 465 S520 395 700 525'/%3E%3C/g%3E%3C/svg%3E");
+    background-image: url("Borderline_Contours.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
-    background-size: 600px 600px;
-    background-repeat: repeat;
-    opacity: 0.38;
-
-    animation: topoDrift 60s ease-in-out infinite alternate;
-    will-change: transform;
+    animation: contourMovement 90s ease-in-out infinite alternate;
   }
 
-  @keyframes topoDrift {
-    from {
-      transform: translate(-12px, -8px);
+  @keyframes contourMovement {
+    0% {
+      transform: translate(-8px, -5px) scale(1.02);
     }
 
-    to {
-      transform: translate(12px, 8px);
+    100% {
+      transform: translate(8px, 5px) scale(1.05);
     }
-  }
-
-  /* Keep the background behind all game content */
-  .screen {
-    background: transparent;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -2110,10 +2110,10 @@ const observer = new MutationObserver(function () {
   }
 </style>
 
-<!-- Background layer -->
 <div class="topographic-background" aria-hidden="true"></div>
 
 <!-- END TOPOGRAPHIC BACKGROUND -->
+
 
 </body>
 </html>
