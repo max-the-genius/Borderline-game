@@ -38,9 +38,12 @@ button:disabled {opacity:.45;cursor:not-allowed}
 .screen {
   position:absolute;
   inset:0;
-  height:100dvh;
-  background:var(--bg);
-  overflow:hidden;
+min-height:100dvh;
+height:100dvh;
+background:var(--bg);
+overflow-y:auto;
+overflow-x:hidden;
+-webkit-overflow-scrolling:touch;
   transform:translateY(110%);
   opacity:0;
   pointer-events:none;
