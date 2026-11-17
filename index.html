@@ -2067,76 +2067,67 @@ async function loadReferenceFlag() {
 
 /* STRICTER FLAG SCORING */
 
+
 function calculateFlagScore() {
-  const w=flagCanvas.width,h=flagCanvas.height;
-  const player=flagCtx.getImageData(0,0,w,h).data;
-  const correct=referenceFlag.getContext("2d")
-    .getImageData(0,0,w,h).data;
+  const w = flagCanvas.width;
+  const h = flagCanvas.height;
 
-  const temp=document.createElement("canvas");
-  temp.width=temp.height=1;
-  const t=temp.getContext("2d");
-  t.fillStyle=country.flagBackground;
-  t.fillRect(0,0,1,1);
-  const base=t.getImageData(0,0,1,1).data;
+  const playerCanvas = flagCanvas;
+  const correctCanvas = referenceFlag;
 
-  let backgroundError=0,backgroundCount=0;
-  let featureError=0,featureCount=0;
-  let extraMarkPenalty=0;
+  function compareAtResolution(cols, rows) {
+    const playerSmall = document.createElement("canvas");
+    const correctSmall = document.createElement("canvas");
 
+    playerSmall.width = correctSmall.width = cols;
+    playerSmall.height = correctSmall.height = rows;
 
-const distance=(a,b,i)=>{
-  const dr=a[0]-b[i];
-  const dg=a[1]-b[i+1];
-  const db=a[2]-b[i+2];
+    const pCtx = playerSmall.getContext("2d");
+    const cCtx = correctSmall.getContext("2d");
 
-  const rawDistance=Math.sqrt(
-    dr*dr+dg*dg+db*db
-  )/Math.sqrt(3*255*255);
+    pCtx.drawImage(playerCanvas, 0, 0, cols, rows);
+    cCtx.drawImage(correctCanvas, 0, 0, cols, rows);
 
-  // Penalize incorrect colours more strongly.
-  return Math.min(1,rawDistance*2.5);
-};
+    const p = pCtx.getImageData(0, 0, cols, rows).data;
+    const c = cCtx.getImageData(0, 0, cols, rows).data;
 
+    let totalSimilarity = 0;
+    const pixels = cols * rows;
 
-  for(let y=0;y<h;y+=3) {
-    for(let x=0;x<w;x+=3) {
-      const i=(y*w+x)*4;
-      const actual=[correct[i],correct[i+1],correct[i+2]];
-      const baseDifference=distance(base,correct,i);
-      const error=distance(actual,player,i);
+    for (let i = 0; i < p.length; i += 4) {
+      const dr = p[i] - c[i];
+      const dg = p[i + 1] - c[i + 1];
+      const db = p[i + 2] - c[i + 2];
 
-      if(baseDifference>.12) {
-        featureError+=error;
-        featureCount++;
-      } else {
-        backgroundError+=error;
-        backgroundCount++;
+      const distance = Math.sqrt(
+        dr * dr + dg * dg + db * db
+      ) / Math.sqrt(3 * 255 * 255);
 
-        if(error>.12) extraMarkPenalty+=error;
-      }
+      // Forgiving of small colour differences,
+      // but penalizes substantially incorrect colours.
+      const similarity = Math.pow(
+        Math.max(0, 1 - distance),
+        1.3
+      );
+
+      totalSimilarity += similarity;
     }
+
+    return totalSimilarity / pixels;
   }
 
-  const backgroundAccuracy=backgroundCount
-    ? Math.max(0,1-backgroundError/backgroundCount)
-    : 0;
+  const overall = compareAtResolution(8, 5);
+  const regional = compareAtResolution(32, 20);
+  const detailed = compareAtResolution(120, 75);
 
-  const featureAccuracy=featureCount
-    ? Math.max(0,1-featureError/featureCount)
-    : 0;
+  const score =
+    overall * 450 +
+    regional * 350 +
+    detailed * 200;
 
-  const penalty=backgroundCount
-    ? Math.min(250,extraMarkPenalty/backgroundCount*400)
-    : 0;
-
-  const score=
-    backgroundAccuracy*200+
-    featureAccuracy*800-
-    penalty;
-
-  return Math.max(0,Math.min(1000,Math.round(score)));
+  return Math.max(0, Math.min(1000, Math.round(score)));
 }
+
 
 /* SUBMIT FLAG */
 
