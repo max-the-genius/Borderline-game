@@ -2786,12 +2786,15 @@ function updateScrollIndicator() {
   );
 }
 
+if (scrollIndicator) {
+
 scrollIndicator.addEventListener('click', () => {
   window.scrollBy({
     top: window.innerHeight * 0.7,
     behavior: 'smooth'
   });
 });
+}
 
 window.addEventListener('scroll', updateScrollIndicator);
 window.addEventListener('resize', updateScrollIndicator);
