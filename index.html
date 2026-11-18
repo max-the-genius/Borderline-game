@@ -625,6 +625,8 @@ overflow-x:hidden;
   justify-content: center;
   gap: 8px;
   margin: 14px auto 18px;
+position: relative;
+z-index: 1;
   color: #252525;
   font-size: 28px;
   font-weight: bold;
@@ -1460,6 +1462,8 @@ el("start").onclick = () => {
 
   // Hide the Start button and reveal the country.
   el("start").classList.add("hidden");
+  // Hide the streak during the country reveal animation.
+el("homeStreak").style.display = "none";
   el("reveal").classList.add("visible");
 
   setTimeout(() => {
