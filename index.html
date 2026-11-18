@@ -4,8 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Borderline</title>
-
+<title>Borderline - Daily Geography Challange</title>
+<meta name="description" 
+  content="Play Borderline, a free daily geography game. Guess country statistics, draw borders, recreate flags, and compete for 3,000 points.">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -946,6 +947,11 @@ overflow-x:hidden;
       <button id="playAgain" class="primary">Play Again</button>
     </div>
   </div>
+  <div style="text-align:center; margin:30px 0;">
+  <button id="shareResults" class="primary">
+    Share Results ↗
+  </button>
+</div>
 </section>
 
 <script>
@@ -2574,6 +2580,44 @@ const observer = new MutationObserver(function () {
 
   updateIndicator();
 })();
+
+  /* SHARE DAILY RESULTS */
+
+document.getElementById("shareResults").addEventListener("click", async () => {
+  const total = round1Score + round2Score + round3Score;
+
+  const medal = document.getElementById("medalName").textContent.trim();
+
+  const shareText =
+    `🌍 BORDERLINE — DAILY CHALLENGE\n` +
+    `📅 ${dailyKey}\n` +
+    `🏆 ${medal}\n\n` +
+    `🎯 Total: ${total.toLocaleString()} / 3000\n` +
+    `📊 Statistics: ${round1Score} / 1000\n` +
+    `🗺️ Borders: ${round2Score} / 1000\n` +
+    `🎨 Flag: ${round3Score} / 1000\n\n` +
+    `Can you beat my score?\n` +
+    `${window.location.origin}${window.location.pathname}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Borderline — Daily Geography Challenge",
+        text: shareText
+      });
+      return;
+    } catch (error) {
+      if (error.name === "AbortError") return;
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(shareText);
+    alert("Results copied! Share them with your friends.");
+  } catch (error) {
+    window.prompt("Copy your results:", shareText);
+  }
+});
 </script>
 
 <!-- END SCROLL INDICATOR FIX -->
