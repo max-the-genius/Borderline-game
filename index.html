@@ -110,6 +110,115 @@ overflow-x:hidden;
   opacity:0;
   pointer-events:none;
 }
+  /* PERSONAL STATISTICS BUTTON */
+.stats-btn {
+  display: block;
+  margin: 18px auto 0;
+  padding: 10px 24px;
+
+  background: white;
+  color: #008e49;
+  border: 2px solid #00b85b;
+  border-radius: 14px;
+
+  font-family: 'Patrick Hand', cursive;
+  font-size: 22px;
+  font-weight: bold;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stats-btn:hover {
+  background: #00b85b;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.stats-btn:active {
+  transform: scale(0.97);
+}
+  
+/* PERSONAL STATISTICS PAGE */
+
+.stats-layout {
+  width: min(90%, 700px);
+  margin: 0 auto;
+  padding: 45px 0 70px;
+  text-align: center;
+}
+
+.stats-layout h1 {
+  font-size: 46px;
+  color: #008e49;
+  margin-bottom: 5px;
+}
+
+.stats-layout > p {
+  font-size: 22px;
+  margin-bottom: 30px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: white;
+  border: 2px solid #d5dfe3;
+  border-radius: 16px;
+  padding: 22px 12px;
+}
+
+.stat-card h2 {
+  font-size: 21px;
+  margin: 0 0 12px;
+}
+
+.stat-card p {
+  font-size: 34px;
+  color: #008e49;
+  font-weight: bold;
+  margin: 0;
+}
+
+#backHome {
+  margin: 15px auto;
+  padding: 12px 30px;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 23px;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .stats-layout {
+    padding-top: 25px;
+  }
+
+  .stats-layout h1 {
+    font-size: 36px;
+  }
+
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 16px 8px;
+  }
+
+  .stat-card h2 {
+    font-size: 17px;
+  }
+
+  .stat-card p {
+    font-size: 27px;
+  }
+}
+
 .country-reveal {
   position:absolute;
   inset:0;
@@ -672,12 +781,58 @@ z-index: 1;
     <button id="start" class="start-btn" aria-label="Start game">
       <img src="Start2.png" alt="">
     </button>
+    <!-- PERSONAL STATISTICS BUTTON -->
+<button id="openStats" class="stats-btn" type="button">
+  📊 My Statistics
+</button>
     <div id="reveal" class="country-reveal">
       <h2>Today's country is...</h2>
       <h1 id="revealName"></h1>
     </div>
   </div>
 </main>
+  
+<!-- PERSONAL STATISTICS SCREEN -->
+<section id="stats" class="screen">
+  <div class="stats-layout">
+
+    <h1>My Statistics</h1>
+    <p>Your Borderline journey so far</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h2>🔥 Current Streak</h2>
+        <p id="statsCurrentStreak">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>🏆 Longest Streak</h2>
+        <p id="statsLongestStreak">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>🌍 Games Played</h2>
+        <p id="statsGamesPlayed">0</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>📊 Average Score</h2>
+        <p id="statsAverageScore">0 / 3000</p>
+      </div>
+
+      <div class="stat-card">
+        <h2>⭐ Highest Score</h2>
+        <p id="statsHighestScore">0 / 3000</p>
+      </div>
+    </div>
+
+    <button id="backHome" class="primary" type="button">
+      Back to Home
+    </button>
+
+  </div>
+</section>
+
 
 <!-- ROUND 1 -->
 <section id="round1" class="screen round-screen">
@@ -2483,8 +2638,80 @@ function drawBellCurve(percentage) {
   );
 }
 
+  
+/* PERSONAL STATISTICS STORAGE */
+
+const STATS_KEY = "borderline_player_stats_v1";
+
+function getPlayerStats() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STATS_KEY));
+    return {
+      gamesPlayed: saved?.gamesPlayed || 0,
+      totalScore: saved?.totalScore || 0,
+      highestScore: saved?.highestScore || 0,
+      lastRecordedDay: saved?.lastRecordedDay || ""
+    };
+  } catch {
+    return {
+      gamesPlayed: 0,
+      totalScore: 0,
+      highestScore: 0,
+      lastRecordedDay: ""
+    };
+  }
+}
+
+function savePlayerStats(total) {
+  const stats = getPlayerStats();
+  const today = utcDateKey();
+
+  // Count each daily challenge only once.
+  if (stats.lastRecordedDay === today) return;
+
+  stats.gamesPlayed++;
+  stats.totalScore += total;
+  stats.highestScore = Math.max(stats.highestScore, total);
+  stats.lastRecordedDay = today;
+
+  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+}
+
+function updateStatsPage() {
+  const stats = getPlayerStats();
+
+  const average = stats.gamesPlayed
+    ? Math.round(stats.totalScore / stats.gamesPlayed)
+    : 0;
+
+  el("statsGamesPlayed").textContent = stats.gamesPlayed;
+  el("statsAverageScore").textContent = average + " / 3000";
+  el("statsHighestScore").textContent = stats.highestScore + " / 3000";
+
+  
+const streakData = loadStreak();
+
+const today = utcDateKey();
+const yesterday = new Date(Date.now() - 86400000)
+  .toISOString()
+  .slice(0, 10);
+
+// A streak remains active if the player completed
+// today's or yesterday's challenge.
+const currentStreak =
+  streakData.lastCompleted === today ||
+  streakData.lastCompleted === yesterday
+    ? streakData.streak
+    : 0;
+
+el("statsCurrentStreak").textContent = currentStreak;
+el("statsLongestStreak").textContent = streakData.bestStreak;
+
+
+
 function showFinalResults() {
   const total=round1Score+round2Score+round3Score;
+  savePlayerStats(total);
   const percentage=total/3000*100;
   const medal=getMedal(percentage);
 
@@ -2520,6 +2747,18 @@ transition("round3","results");
 }
 
 el("viewResults").onclick=showFinalResults;
+  
+/* PERSONAL STATISTICS NAVIGATION */
+
+el("openStats").onclick = () => {
+  updateStatsPage();
+  transition("home", "stats");
+};
+
+el("backHome").onclick = () => {
+  transition("stats", "home");
+};
+
 
 el("playAgain").onclick=()=>{
   window.location.reload();
