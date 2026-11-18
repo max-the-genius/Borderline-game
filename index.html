@@ -127,16 +127,20 @@ overflow-x:hidden;
 
   cursor: pointer;
   transition: all 0.2s ease;
+  position: absolute;
+top: calc(50% + 85px);
+left: 50%;
+  transform: translateX(-50%);
 }
 
 .stats-btn:hover {
   background: #00b85b;
   color: white;
-  transform: translateY(-2px);
+ transform: translate(-50%, -2px);
 }
 
 .stats-btn:active {
-  transform: scale(0.97);
+ transform: translateX(-50%) scale(0.97);
 }
   
 /* PERSONAL STATISTICS PAGE */
