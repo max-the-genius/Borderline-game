@@ -885,6 +885,20 @@ overflow-x:hidden;
     <div class="final-score-number" id="resultsScore">
       0 / 3000
     </div>
+    
+<!-- DAILY STREAK DISPLAY -->
+<div id="streakDisplay" style="text-align:center; margin:20px 0;">
+  <div style="font-size:24px; color:#008e49;">
+    🔥 Current Streak:
+    <span id="currentStreak">0</span> days
+  </div>
+
+  <div style="font-size:20px; margin-top:8px;">
+    🏆 Best Streak:
+    <span id="bestStreak">0</span> days
+  </div>
+</div>
+
 
     <img id="medalImage" class="medal-image"
       src="Failed.png" alt="Your award">
@@ -1274,6 +1288,75 @@ document.querySelectorAll("#round1 input").forEach(input => {
     }, 300);
   });
 });
+
+  
+/* DAILY STREAK STORAGE */
+
+const STREAK_STORAGE_KEY = "borderline_daily_streak_v1";
+
+function loadStreak() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(STREAK_STORAGE_KEY)
+    );
+
+    return {
+      streak: Math.max(0, Number(saved?.streak) || 0),
+      bestStreak: Math.max(0, Number(saved?.bestStreak) || 0),
+      lastCompleted: saved?.lastCompleted || null
+    };
+  } catch (error) {
+    return {
+      streak: 0,
+      bestStreak: 0,
+      lastCompleted: null
+    };
+  }
+}
+
+function saveStreak(data) {
+  try {
+    localStorage.setItem(
+      STREAK_STORAGE_KEY,
+      JSON.stringify(data)
+    );
+    return true;
+  } catch (error) {
+    console.warn("Could not save daily streak:", error);
+    return false;
+  }
+}
+
+function completeDailyStreak() {
+  const today = new Date().toISOString().slice(0, 10);
+  const data = loadStreak();
+
+  // Prevent multiple completions on the same day.
+  if (data.lastCompleted === today) {
+    return data;
+  }
+
+  const yesterday = new Date(Date.now() - 86400000)
+    .toISOString()
+    .slice(0, 10);
+
+  if (data.lastCompleted === yesterday) {
+    data.streak += 1;
+  } else {
+    data.streak = 1;
+  }
+
+  data.bestStreak = Math.max(
+    data.bestStreak,
+    data.streak
+  );
+
+  data.lastCompleted = today;
+  saveStreak(data);
+
+  return data;
+}
+
 let round1Score=0;
 let round2Score=0;
 let round3Score=0;
@@ -2350,7 +2433,19 @@ function showFinalResults() {
     `You earned ${percentage.toFixed(1)}% of the available points`;
 
   drawBellCurve(percentage);
-  transition("round3","results");
+
+
+const streakData = completeDailyStreak();
+
+// Display the saved streaks on the results screen.
+document.getElementById("currentStreak").textContent =
+  streakData.streak;
+
+document.getElementById("bestStreak").textContent =
+  streakData.bestStreak;
+
+
+transition("round3","results");
 }
 
 el("viewResults").onclick=showFinalResults;
