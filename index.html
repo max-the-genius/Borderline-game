@@ -1681,9 +1681,12 @@ el("questions").addEventListener("submit", e => {
     accuracy(+el("gdp").value, a.gdp) * 334
   );
 
-  const p = Math.round(
-    accuracy(+el("population").value, a.population) * 333
-  );
+ const populationGuess = +el("population").value;
+const populationCorrect = Number(a.population.toFixed(2));
+
+const p = populationGuess === populationCorrect
+  ? 333
+  : Math.round(accuracy(populationGuess, a.population) * 333);
 
   const c = Math.round(
     accuracy(+el("coast").value, a.third) * 333
